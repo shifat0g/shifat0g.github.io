@@ -1,34 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Website</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shifat — Personal</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
 </head>
 <body>
-    <header>
-        <h1>Hi, I'm Shifat!</h1>
-        <p>Welcome to my personal website.</p>
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+    <span class="toggle-track">
+      <span class="toggle-icon sun">☀</span>
+      <span class="toggle-icon moon">☽</span>
+      <span class="toggle-thumb"></span>
+    </span>
+  </button>
+
+  <!-- Background decorative elements -->
+  <div class="bg-ornament top-left"></div>
+  <div class="bg-ornament bottom-right"></div>
+
+  <main class="container">
+
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-line"></div>
+      <div class="header-content">
+        <p class="label">Personal Website</p>
+        <h1 class="name">Shifat</h1>
+        <p class="tagline">Welcome.</p>
+      </div>
+      <div class="header-line"></div>
     </header>
 
-    <section class="about">
-        <h2>About Me</h2>
-        <p>This is a simple personal website where I can share info about myself and links to my social media profiles.</p>
+    <!-- About -->
+    <section class="section about-section">
+      <span class="section-tag">01 — About</span>
+      <div class="about-body">
+        <p class="about-text">
+          This is a simple personal website where I can share info about myself and links to my social media profiles.
+        </p>
+      </div>
     </section>
 
-    <section class="social">
-        <h2>Connect with me</h2>
-        <div class="social-links">
-            <a href="https://x.com/shifat0g" target="_blank">X</a>
-            <a href="https://t.me/shifat0g" target="_blank">Telegram</a>
-            <a href="https://discord.gg/CwBRgm7R" target="_blank">Discord</a>
-            <a href="https://open.spotify.com/user/31ekvjurmvqdmb32n43znyj7rq6u?si=BhGleQm-QUqMeMKd0mcYsg" target="_blank">Spotify Playlist</a>
-        </div>
+    <!-- Connect -->
+    <section class="section connect-section">
+      <span class="section-tag">02 — Connect</span>
+      <p class="connect-intro">Find me across the internet</p>
+
+      <div class="links-grid">
+
+        <a href="#" class="link-card" data-platform="x">
+          <div class="link-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
+          <div class="link-info">
+            <span class="link-name">X (Twitter)</span>
+            <span class="link-arrow">↗</span>
+          </div>
+        </a>
+
+        <a href="#" class="link-card" data-platform="telegram">
+          <div class="link-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          </div>
+          <div class="link-info">
+            <span class="link-name">Telegram</span>
+            <span class="link-arrow">↗</span>
+          </div>
+        </a>
+
+        <a href="#" class="link-card" data-platform="discord">
+          <div class="link-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.087.119 18.116.137 18.132a19.93 19.93 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          </div>
+          <div class="link-info">
+            <span class="link-name">Discord</span>
+            <span class="link-arrow">↗</span>
+          </div>
+        </a>
+
+        <a href="#" class="link-card" data-platform="spotify">
+          <div class="link-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+          </div>
+          <div class="link-info">
+            <span class="link-name">Spotify Playlist</span>
+            <span class="link-arrow">↗</span>
+          </div>
+        </a>
+
+      </div>
     </section>
 
-    <footer>
-        <p>&copy; 2026 Shifat. All rights reserved.</p>
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-line"></div>
+      <p class="footer-text">© 2026 Shifat. All rights reserved.</p>
     </footer>
+
+  </main>
+
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+
+    // Load saved preference
+    const saved = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', saved);
+
+    toggle.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  </script>
+
 </body>
 </html>
