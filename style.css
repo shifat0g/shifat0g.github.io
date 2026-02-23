@@ -440,3 +440,127 @@ a {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-soft);
 }
+/* ── Sidebar ── */
+.sidebar-tab {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 200;
+  width: 22px;
+  height: 56px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--accent);
+  cursor: pointer;
+  transition: width var(--transition), background var(--transition), color var(--transition);
+  user-select: none;
+}
+
+.sidebar-tab:hover {
+  width: 28px;
+  background: var(--bg-card-hover);
+}
+
+.sidebar-tab.open {
+  transform: translateY(-50%) scaleX(-1);
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100vh;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  z-index: 190;
+  transition: left var(--transition);
+  box-shadow: 4px 0 24px var(--shadow);
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-inner {
+  padding: 3rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.sidebar-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.85rem;
+}
+
+.sidebar-section {
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 2rem;
+}
+
+.sidebar-section:last-child {
+  border-bottom: none;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sidebar-link {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  padding: 0.5rem 0.6rem;
+  border-radius: 5px;
+  letter-spacing: 0.05em;
+  transition: background var(--transition), color var(--transition);
+}
+
+.sidebar-link:hover {
+  background: var(--bg);
+  color: var(--text-primary);
+}
+
+.sidebar-social {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.s-arrow {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  transition: color var(--transition), transform var(--transition);
+}
+
+.sidebar-link:hover .s-arrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  background: rgba(0,0,0,0.18);
+  backdrop-filter: blur(1px);
+}
+
+.sidebar-overlay.open {
+  display: block;
+}
