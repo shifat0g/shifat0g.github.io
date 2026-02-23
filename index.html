@@ -11,6 +11,41 @@
 </head>
 <body>
 
+<!-- Sidebar -->
+  <div class="sidebar-tab" id="sidebarTab">&#8250;</div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">Navigate</p>
+        <nav class="sidebar-nav">
+          <a href="#about" class="sidebar-link" onclick="closeSidebar()">About</a>
+          <a href="#connect" class="sidebar-link" onclick="closeSidebar()">Connect</a>
+        </nav>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">Socials</p>
+        <nav class="sidebar-nav">
+          <a href="#" class="sidebar-link sidebar-social">
+            <span>X (Twitter)</span><span class="s-arrow">↗</span>
+          </a>
+          <a href="#" class="sidebar-link sidebar-social">
+            <span>Telegram</span><span class="s-arrow">↗</span>
+          </a>
+          <a href="#" class="sidebar-link sidebar-social">
+            <span>Discord</span><span class="s-arrow">↗</span>
+          </a>
+          <a href="#" class="sidebar-link sidebar-social">
+            <span>Spotify</span><span class="s-arrow">↗</span>
+          </a>
+        </nav>
+      </div>
+
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  
   <!-- Theme Toggle -->
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
     <span class="toggle-track">
@@ -39,6 +74,7 @@
 
     <!-- About -->
     <section class="section about-section">
+      <section class="section about-section" id="about">
       <span class="section-tag">01 — About</span>
       <div class="about-body">
         <p class="about-text">
@@ -49,6 +85,7 @@
 
     <!-- Connect -->
     <section class="section connect-section">
+      <section class="section connect-section" id="connect">
       <span class="section-tag">02 — Connect</span>
       <p class="connect-intro">Find me across the internet</p>
 
@@ -120,6 +157,28 @@
       localStorage.setItem('theme', next);
     });
   </script>
+<script>
+    const tab = document.getElementById('sidebarTab');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
 
+    tab.addEventListener('click', () => {
+      const isOpen = sidebar.classList.contains('open');
+      isOpen ? closeSidebar() : openSidebar();
+    });
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+      tab.classList.add('open');
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+      tab.classList.remove('open');
+    }
+</script>
+      
 </body>
 </html>
