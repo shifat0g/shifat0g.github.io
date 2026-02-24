@@ -355,58 +355,91 @@ function drawShip(x, y, flicker) {
   const px = Math.floor(x);
   const py = Math.floor(y);
 
-  // Thruster flame
+  // Thruster glow
+  const glowGrad = ctx.createRadialGradient(px - 8, py + 9, 0, px - 8, py + 9, 18);
+  glowGrad.addColorStop(0, 'rgba(255, 140, 0, 0.6)');
+  glowGrad.addColorStop(1, 'rgba(255, 60, 0, 0)');
+  ctx.fillStyle = glowGrad;
+  ctx.fillRect(px - 26, py - 2, 36, 22);
+
+  // Thruster flame (animated)
   ship.thrusterFrame = (ship.thrusterFrame + 1) % 6;
-  const flameH = ship.thrusterFrame < 3 ? 10 : 7;
-  const grad = ctx.createLinearGradient(px - 6, py + 8, px - 6 - flameH, py + 8);
-  grad.addColorStop(0, 'rgba(255,255,255,0.9)');
-  grad.addColorStop(0.4, 'rgba(200,200,200,0.5)');
-  grad.addColorStop(1, 'rgba(100,100,100,0)');
-  ctx.fillStyle = grad;
+  const flameLen = ship.thrusterFrame < 3 ? 18 : 12;
+  const flameGrad = ctx.createLinearGradient(px - 4, py + 9, px - 4 - flameLen, py + 9);
+  flameGrad.addColorStop(0, '#ffffff');
+  flameGrad.addColorStop(0.3, '#ffaa00');
+  flameGrad.addColorStop(1, 'rgba(255,40,0,0)');
+  ctx.fillStyle = flameGrad;
   ctx.beginPath();
   ctx.moveTo(px - 4, py + 5);
-  ctx.lineTo(px - 4 - flameH, py + 8);
-  ctx.lineTo(px - 4, py + 11);
+  ctx.lineTo(px - 4 - flameLen, py + 9);
+  ctx.lineTo(px - 4, py + 13);
   ctx.closePath();
   ctx.fill();
 
-  // Main body
+  // --- BODY (bright cyan/teal) ---
+  ctx.fillStyle = '#00e5ff';
+  ctx.fillRect(px, py + 6, 22, 8);
+
+  // --- NOSE CONE (bright yellow) ---
+  ctx.fillStyle = '#ffe600';
+  ctx.beginPath();
+  ctx.moveTo(px + 22, py + 6);
+  ctx.lineTo(px + 34, py + 10);
+  ctx.lineTo(px + 22, py + 14);
+  ctx.closePath();
+  ctx.fill();
+
+  // Nose tip highlight
   ctx.fillStyle = '#ffffff';
-ctx.fillRect(px - 4, py + 4, 20, 10);
-ctx.strokeStyle = '#aaaaaa';
-ctx.lineWidth = 1;
-ctx.strokeRect(px - 4, py + 4, 20, 10);
+  ctx.fillRect(px + 29, py + 9, 3, 2);
 
-  // Cockpit
-  ctx.fillStyle = '#000';
-  ctx.fillRect(px + 10, py + 5, 8, 8);
-  ctx.fillStyle = '#ccc';
-  ctx.fillRect(px + 11, py + 6, 6, 6);
+  // --- TOP WING (bright magenta/pink) ---
+  ctx.fillStyle = '#ff3cac';
+  ctx.beginPath();
+  ctx.moveTo(px + 4, py + 6);
+  ctx.lineTo(px + 16, py - 4);
+  ctx.lineTo(px + 22, py + 6);
+  ctx.closePath();
+  ctx.fill();
 
-  // Wing top
-ctx.fillStyle = '#dddddd';
-ctx.beginPath();
-ctx.moveTo(px + 2, py + 4);
-ctx.lineTo(px + 8, py - 2);
-ctx.lineTo(px + 16, py + 4);
-ctx.closePath();
-ctx.fill();
+  // Wing edge highlight
+  ctx.fillStyle = '#ffaadd';
+  ctx.fillRect(px + 10, py + 1, 8, 2);
 
-// Wing bottom
-ctx.beginPath();
-ctx.moveTo(px + 2, py + 14);
-ctx.lineTo(px + 8, py + 20);
-ctx.lineTo(px + 16, py + 14);
-ctx.closePath();
-ctx.fill();
+  // --- BOTTOM WING (bright magenta/pink) ---
+  ctx.fillStyle = '#ff3cac';
+  ctx.beginPath();
+  ctx.moveTo(px + 4, py + 14);
+  ctx.lineTo(px + 16, py + 24);
+  ctx.lineTo(px + 22, py + 14);
+  ctx.closePath();
+  ctx.fill();
 
-  // Engine block
-  ctx.fillStyle = '#888';
-  ctx.fillRect(px - 4, py + 6, 6, 6);
+  ctx.fillStyle = '#ffaadd';
+  ctx.fillRect(px + 10, py + 17, 8, 2);
 
-  // Pixel highlights
-  ctx.fillStyle = 'rgba(255,255,255,0.4)';
-  ctx.fillRect(px, py + 5, 8, 1);
+  // --- ENGINE BLOCK (orange) ---
+  ctx.fillStyle = '#ff6a00';
+  ctx.fillRect(px - 4, py + 6, 8, 8);
+
+  // Engine vent lines
+  ctx.fillStyle = '#ffaa44';
+  ctx.fillRect(px - 2, py + 8, 5, 1);
+  ctx.fillRect(px - 2, py + 10, 5, 1);
+  ctx.fillRect(px - 2, py + 12, 5, 1);
+
+  // --- COCKPIT WINDOW (bright green glow) ---
+  ctx.fillStyle = '#00ff88';
+  ctx.fillRect(px + 16, py + 7, 7, 6);
+
+  // Window shine
+  ctx.fillStyle = '#afffdc';
+  ctx.fillRect(px + 17, py + 8, 2, 2);
+
+  // --- Body stripe ---
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(px + 2, py + 9, 14, 2);
 
   ctx.restore();
 }
