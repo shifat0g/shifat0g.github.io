@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RelayX — Cross-Chain DEX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080a0f;
+    --surface: #0d1117;
+    --surface2: #111820;
+    --border: rgba(255,255,255,0.06);
+    --border-bright: rgba(255,255,255,0.12);
+    --accent: #00e5a0;
+    --accent2: #00b8d9;
+    --accent-glow: rgba(0, 229, 160, 0.15);
+    --accent2-glow: rgba(0, 184, 217, 0.15);
+    --text: #e8eaf0;
+    --text-muted: #5a6478;
+    --text-dim: #8899aa;
+    --red: #ff4d6d;
+    --yellow: #f5c518;
+    --mono: 'DM Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--mono);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Atmospheric background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(0,229,160,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 80%, rgba(0,184,217,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,229,160,0.02) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Grid overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,10,15,0.85);
+    backdrop-filter: blur(20px);
+  }
+
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-mark {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 900;
+    color: #000;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--text);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .nav-links a.active {
+    color: var(--accent);
+  }
+
+  .connect-btn {
+    background: rgba(0,229,160,0.1);
+    border: 1px solid rgba(0,229,160,0.25);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 9px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+
+  .connect-btn:hover {
+    background: rgba(0,229,160,0.18);
+    border-color: rgba(0,229,160,0.5);
+    box-shadow: 0 0 20px rgba(0,229,160,0.1);
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    padding: 120px 0 60px;
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* TAB STRIP */
+  .tab-strip {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 16px;
+    gap: 2px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.2s;
+    font-family: var(--display);
+    font-weight: 600;
+  }
+
+  .tab.active {
+    background: var(--surface2);
+    color: var(--accent);
+    border: 1px solid rgba(0,229,160,0.15);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+
+  .tab:hover:not(.active) {
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.03);
+  }
+
+  /* SWAP CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,160,0.3), transparent);
+  }
+
+  .card-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-family: var(--display);
+    font-weight: 600;
+  }
+
+  /* TOKEN INPUT */
+  .token-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .token-box:focus-within {
+    border-color: rgba(0,229,160,0.3);
+    box-shadow: 0 0 0 3px rgba(0,229,160,0.05);
+  }
+
+  .token-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .token-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-bright);
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-width: 120px;
+    white-space: nowrap;
+  }
+
+  .token-select:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .token-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .token-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    font-family: var(--display);
+  }
+
+  .chevron {
+    color: var(--text-muted);
+    font-size: 10px;
+    margin-left: auto;
+  }
+
+  .amount-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-family: var(--mono);
+    font-size: 24px;
+    color: var(--text);
+    text-align: right;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .amount-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .token-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .chain-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .chain-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+  }
+
+  .balance-info {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .balance-info span {
+    color: var(--text-dim);
+    cursor: pointer;
+  }
+
+  .balance-info span:hover {
+    color: var(--accent);
+  }
+
+  /* SWAP DIVIDER */
+  .swap-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+    position: relative;
+  }
+
+  .swap-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border-bright);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 16px;
+    color: var(--text-dim);
+    position: relative;
+    z-index: 1;
+  }
+
+  .swap-btn:hover {
+    background: rgba(0,229,160,0.08);
+    border-color: rgba(0,229,160,0.3);
+    color: var(--accent);
+    transform: rotate(180deg);
+  }
+
+  /* CHAIN SELECTOR (bridge) */
+  .chain-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .chain-selector {
+    flex: 1;
+  }
+
+  .chain-selector-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-family: var(--display);
+  }
+
+  .chain-select-btn {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s;
+    color: var(--text);
+  }
+
+  .chain-select-btn:hover {
+    border-color: var(--border-bright);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .chain-logo {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .chain-name {
+    font-size: 13px;
+    font-family: var(--display);
+    font-weight: 500;
+  }
+
+  .arrow-connector {
+    color: var(--text-muted);
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 20px;
+  }
+
+  /* ROUTE INFO */
+  .route-info {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 16px;
+    display: none;
+  }
+
+  .route-info.visible {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .route-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 4px 0;
+  }
+
+  .route-row + .route-row {
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+    padding-top: 8px;
+  }
+
+  .route-row .val {
+    color: var(--text);
+    font-size: 12px;
+  }
+
+  .route-row .val.green {
+    color: var(--accent);
+  }
+
+  /* SETTINGS ROW */
+  .settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+  }
+
+  .slippage-group {
+    display: flex;
+    gap: 4px;
+  }
+
+  .slip-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: var(--mono);
+    transition: all 0.15s;
+  }
+
+  .slip-btn.active, .slip-btn:hover {
+    border-color: rgba(0,229,160,0.4);
+    color: var(--accent);
+    background: rgba(0,229,160,0.06);
+  }
+
+  .settings-label {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* EXECUTE BTN */
+  .execute-btn {
+    width: 100%;
+    padding: 18px;
+    margin-top: 16px;
+    background: linear-gradient(135deg, rgba(0,229,160,0.15), rgba(0,184,217,0.1));
+    border: 1px solid rgba(0,229,160,0.3);
+    border-radius: 14px;
+    color: var(--accent);
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .execute-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,229,160,0.1), rgba(0,184,217,0.1));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .execute-btn:hover::before {
+    opacity: 1;
+  }
+
+  .execute-btn:hover {
+    border-color: rgba(0,229,160,0.6);
+    box-shadow: 0 4px 30px rgba(0,229,160,0.15), 0 0 0 1px rgba(0,229,160,0.1);
+    transform: translateY(-1px);
+  }
+
+  .execute-btn:active {
+    transform: translateY(0);
+  }
+
+  .execute-btn.loading {
+    pointer-events: none;
+  }
+
+  .execute-btn.loading span {
+    display: inline-block;
+    animation: pulse 1s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0.3;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: var(--display);
+    font-weight: 600;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--text);
+  }
+
+  .stat-value span {
+    font-size: 13px;
+    color: var(--accent);
+    margin-left: 4px;
+  }
+
+  /* RECENT TRANSACTIONS */
+  .tx-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .tx-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tx-title {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+
+  .refresh-btn {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--mono);
+    transition: color 0.15s;
+  }
+
+  .refresh-btn:hover { color: var(--accent); }
+
+  .tx-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 14px;
+    transition: background 0.15s;
+    cursor: default;
+  }
+
+  .tx-item:last-child { border-bottom: none; }
+
+  .tx-item:hover {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .tx-type-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .tx-type-badge.swap {
+    background: rgba(0,229,160,0.1);
+    border: 1px solid rgba(0,229,160,0.2);
+  }
+
+  .tx-type-badge.bridge {
+    background: rgba(0,184,217,0.1);
+    border: 1px solid rgba(0,184,217,0.2);
+  }
+
+  .tx-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .tx-desc {
+    font-size: 12px;
+    color: var(--text);
+    font-family: var(--display);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tx-chain-route {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .tx-amount {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .tx-val {
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .tx-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .tx-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .tx-status.confirmed {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  .tx-status.pending {
+    background: var(--yellow);
+    box-shadow: 0 0 8px var(--yellow);
+    animation: blink 1.5s ease infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* CHAINS GRID */
+  .chains-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+  }
+
+  .chains-title {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  .chains-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chain-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--text-dim);
+    transition: all 0.15s;
+    cursor: default;
+  }
+
+  .chain-pill:hover {
+    border-color: var(--border-bright);
+    color: var(--text);
+  }
+
+  /* STATUS MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-radius: 24px;
+    padding: 32px;
+    width: 380px;
+    text-align: center;
+    position: relative;
+  }
+
+  .modal-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+
+  .modal-icon.processing {
+    background: rgba(0,229,160,0.1);
+    border: 1px solid rgba(0,229,160,0.3);
+    animation: spin 2s linear infinite;
+  }
+
+  .modal-icon.success {
+    background: rgba(0,229,160,0.1);
+    border: 1px solid rgba(0,229,160,0.3);
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .modal h2 {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .modal p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .modal-steps {
+    text-align: left;
+    background: var(--surface2);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 20px;
+  }
+
+  .modal-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 6px 0;
+  }
+
+  .modal-step.done { color: var(--accent); }
+  .modal-step.active { color: var(--text); }
+
+  .step-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--border-bright);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    flex-shrink: 0;
+  }
+
+  .step-dot.done {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+
+  .step-dot.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    animation: blink 1s ease infinite;
+  }
+
+  .modal-close {
+    width: 100%;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .modal-close:hover {
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+  }
+
+  /* TOKEN MODAL */
+  .token-modal {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-radius: 24px;
+    padding: 0;
+    width: 360px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .token-modal-header {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .token-modal-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .token-search {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .token-search:focus {
+    border-color: rgba(0,229,160,0.3);
+  }
+
+  .token-search::placeholder { color: var(--text-muted); }
+
+  .token-list {
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .token-list::-webkit-scrollbar { width: 4px; }
+  .token-list::-webkit-scrollbar-track { background: transparent; }
+  .token-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .token-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+
+  .token-option:hover {
+    background: rgba(255,255,255,0.04);
+  }
+
+  .token-option-info { flex: 1; }
+  .token-option-sym {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    font-family: var(--display);
+  }
+  .token-option-name {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .token-option-bal {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* CHAIN MODAL */
+  .chain-grid-modal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 8px;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  .chain-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.12s;
+    border: 1px solid transparent;
+  }
+
+  .chain-option:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: var(--border);
+  }
+
+  .chain-option.selected {
+    background: rgba(0,229,160,0.06);
+    border-color: rgba(0,229,160,0.2);
+  }
+
+  /* PANEL SWITCH */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* LOADING SHIMMER */
+  .shimmer {
+    animation: shimmer 1.5s ease infinite;
+    background: linear-gradient(90deg, var(--surface2), rgba(255,255,255,0.05), var(--surface2));
+    background-size: 200%;
+    border-radius: 6px;
+    height: 14px;
+  }
+
+  @keyframes shimmer {
+    from { background-position: 100%; }
+    to { background-position: -100%; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    main {
+      grid-template-columns: 1fr;
+      padding: 100px 0 40px;
+    }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <div class="logo-mark">R</div>
+      RelayX
+    </div>
+    <ul class="nav-links">
+      <li><a href="#" class="active">Trade</a></li>
+      <li><a href="#">Explore</a></li>
+      <li><a href="#">History</a></li>
+    </ul>
+    <button class="connect-btn" onclick="connectWallet()">⬡ Connect Wallet</button>
+  </div>
+</nav>
+
+<div class="container">
+<main>
+
+  <!-- LEFT: SWAP/BRIDGE CARD -->
+  <div>
+    <div class="tab-strip">
+      <div class="tab active" onclick="switchTab('swap', this)">⇄ SWAP</div>
+      <div class="tab" onclick="switchTab('bridge', this)">⟶ BRIDGE</div>
+    </div>
+
+    <!-- SWAP PANEL -->
+    <div id="panel-swap" class="panel active">
+      <div class="card">
+        <div class="card-label">You Pay</div>
+        <div class="token-box">
+          <div class="token-row">
+            <div class="token-select" onclick="openTokenModal('from')">
+              <div class="token-icon" id="from-icon" style="background:rgba(98,126,234,0.2); color:#627eea;">Ξ</div>
+              <div class="token-name" id="from-sym">ETH</div>
+              <div class="chevron">▼</div>
+            </div>
+            <input class="amount-input" id="from-amount" type="number" placeholder="0.00" oninput="handleAmountInput(this.value)">
+          </div>
+          <div class="token-meta">
+            <div class="chain-badge">
+              <div class="chain-dot"></div>
+              <span id="from-chain-label">Ethereum</span>
+            </div>
+            <div class="balance-info">Balance: <span onclick="setMax()">2.4813 ETH</span></div>
+          </div>
+        </div>
+
+        <div class="swap-divider">
+          <button class="swap-btn" onclick="flipTokens()" title="Flip">⇅</button>
+        </div>
+
+        <div class="card-label">You Receive</div>
+        <div class="token-box">
+          <div class="token-row">
+            <div class="token-select" onclick="openTokenModal('to')">
+              <div class="token-icon" id="to-icon" style="background:rgba(38,161,123,0.2); color:#26a17b;">$</div>
+              <div class="token-name" id="to-sym">USDC</div>
+              <div class="chevron">▼</div>
+            </div>
+            <input class="amount-input" id="to-amount" type="number" placeholder="0.00" readonly>
+          </div>
+          <div class="token-meta">
+            <div class="chain-badge">
+              <div class="chain-dot" style="background:var(--accent2); box-shadow: 0 0 6px var(--accent2)"></div>
+              <span>Base</span>
+            </div>
+            <div class="balance-info">Balance: <span>12,340 USDC</span></div>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">Slippage</div>
+          <div class="slippage-group">
+            <button class="slip-btn active" onclick="setSlippage(this, 'auto')">Auto</button>
+            <button class="slip-btn" onclick="setSlippage(this, '0.1')">0.1%</button>
+            <button class="slip-btn" onclick="setSlippage(this, '0.5')">0.5%</button>
+            <button class="slip-btn" onclick="setSlippage(this, '1.0')">1.0%</button>
+          </div>
+        </div>
+
+        <div class="route-info" id="route-info">
+          <div class="route-row">
+            <span>Rate</span>
+            <span class="val" id="route-rate">1 ETH = — USDC</span>
+          </div>
+          <div class="route-row">
+            <span>Relay Fee</span>
+            <span class="val green" id="route-fee">—</span>
+          </div>
+          <div class="route-row">
+            <span>Est. Time</span>
+            <span class="val" id="route-time">~2 sec</span>
+          </div>
+          <div class="route-row">
+            <span>Route</span>
+            <span class="val" id="route-path">Relay Protocol</span>
+          </div>
+        </div>
+
+        <button class="execute-btn" id="execute-btn" onclick="executeSwap()">
+          <span>Get Quote</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- BRIDGE PANEL -->
+    <div id="panel-bridge" class="panel">
+      <div class="card">
+        <div class="chain-row">
+          <div class="chain-selector">
+            <div class="chain-selector-label">From Chain</div>
+            <button class="chain-select-btn" onclick="openChainModal('origin')">
+              <div class="chain-logo" style="background:rgba(98,126,234,0.2); color:#627eea;">Ξ</div>
+              <div class="chain-name" id="origin-chain-name">Ethereum</div>
+              <div class="chevron" style="margin-left:auto;">▼</div>
+            </button>
+          </div>
+          <div class="arrow-connector">→</div>
+          <div class="chain-selector">
+            <div class="chain-selector-label">To Chain</div>
+            <button class="chain-select-btn" onclick="openChainModal('dest')">
+              <div class="chain-logo" style="background:rgba(0,84,255,0.2); color:#0054ff; font-size:10px;">BASE</div>
+              <div class="chain-name" id="dest-chain-name">Base</div>
+              <div class="chevron" style="margin-left:auto;">▼</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-label">Asset</div>
+        <div class="token-box">
+          <div class="token-row">
+            <div class="token-select" onclick="openTokenModal('bridge-from')">
+              <div class="token-icon" style="background:rgba(98,126,234,0.2); color:#627eea;">Ξ</div>
+              <div class="token-name" id="bridge-from-sym">ETH</div>
+              <div class="chevron">▼</div>
+            </div>
+            <input class="amount-input" id="bridge-amount" type="number" placeholder="0.00" oninput="handleBridgeInput(this.value)">
+          </div>
+          <div class="token-meta">
+            <div class="chain-badge">
+              <div class="chain-dot"></div>
+              <span>On Ethereum</span>
+            </div>
+            <div class="balance-info">Balance: <span onclick="setBridgeMax()">2.4813 ETH</span></div>
+          </div>
+        </div>
+
+        <div class="card-label" style="margin-top:14px;">Receive</div>
+        <div class="token-box">
+          <div class="token-row">
+            <div class="token-select" onclick="openTokenModal('bridge-to')">
+              <div class="token-icon" style="background:rgba(98,126,234,0.2); color:#627eea;">Ξ</div>
+              <div class="token-name" id="bridge-to-sym">ETH</div>
+              <div class="chevron">▼</div>
+            </div>
+            <input class="amount-input" id="bridge-to-amount" type="number" placeholder="0.00" readonly>
+          </div>
+          <div class="token-meta">
+            <div class="chain-badge">
+              <div class="chain-dot" style="background:var(--accent2); box-shadow:0 0 6px var(--accent2)"></div>
+              <span>On Base</span>
+            </div>
+            <div class="balance-info">Balance: <span>0.0812 ETH</span></div>
+          </div>
+        </div>
+
+        <div class="route-info" id="bridge-route-info">
+          <div class="route-row">
+            <span>Bridge Fee</span>
+            <span class="val green" id="bridge-fee">—</span>
+          </div>
+          <div class="route-row">
+            <span>Est. Time</span>
+            <span class="val" id="bridge-time">~2 sec</span>
+          </div>
+          <div class="route-row">
+            <span>Protocol</span>
+            <span class="val">Relay Protocol</span>
+          </div>
+        </div>
+
+        <button class="execute-btn" id="bridge-btn" onclick="executeBridge()">
+          <span>Get Bridge Quote</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">24h Volume</div>
+        <div class="stat-value">$842M<span>↑ 12%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Chains</div>
+        <div class="stat-value">69+<span>live</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg Speed</div>
+        <div class="stat-value">2s<span>⚡</span></div>
+      </div>
+    </div>
+
+    <!-- RECENT TXs -->
+    <div class="tx-list">
+      <div class="tx-header">
+        <div class="tx-title">RECENT TRANSACTIONS</div>
+        <button class="refresh-btn" onclick="loadTransactions()">↻ Refresh</button>
+      </div>
+      <div id="tx-container">
+        <div class="tx-item">
+          <div class="tx-type-badge swap">⇄</div>
+          <div class="tx-info">
+            <div class="tx-desc">ETH → USDC</div>
+            <div class="tx-chain-route">Ethereum · Uniswap V3</div>
+          </div>
+          <div class="tx-amount">
+            <div class="tx-val">1.2 ETH</div>
+            <div class="tx-time">2s ago</div>
+          </div>
+          <div class="tx-status confirmed"></div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-type-badge bridge">⟶</div>
+          <div class="tx-info">
+            <div class="tx-desc">USDC Bridge</div>
+            <div class="tx-chain-route">Ethereum → Base</div>
+          </div>
+          <div class="tx-amount">
+            <div class="tx-val">5,000 USDC</div>
+            <div class="tx-time">18s ago</div>
+          </div>
+          <div class="tx-status pending"></div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-type-badge swap">⇄</div>
+          <div class="tx-info">
+            <div class="tx-desc">WBTC → ETH</div>
+            <div class="tx-chain-route">Arbitrum · Relay</div>
+          </div>
+          <div class="tx-amount">
+            <div class="tx-val">0.05 WBTC</div>
+            <div class="tx-time">1m ago</div>
+          </div>
+          <div class="tx-status confirmed"></div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-type-badge bridge">⟶</div>
+          <div class="tx-info">
+            <div class="tx-desc">ETH Bridge</div>
+            <div class="tx-chain-route">Optimism → Arbitrum</div>
+          </div>
+          <div class="tx-amount">
+            <div class="tx-val">0.5 ETH</div>
+            <div class="tx-time">3m ago</div>
+          </div>
+          <div class="tx-status confirmed"></div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-type-badge swap">⇄</div>
+          <div class="tx-info">
+            <div class="tx-desc">DAI → USDT</div>
+            <div class="tx-chain-route">Polygon · Curve</div>
+          </div>
+          <div class="tx-amount">
+            <div class="tx-val">10,000 DAI</div>
+            <div class="tx-time">5m ago</div>
+          </div>
+          <div class="tx-status confirmed"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPORTED CHAINS -->
+    <div class="chains-card">
+      <div class="chains-title">SUPPORTED CHAINS</div>
+      <div class="chains-grid" id="chains-grid">
+        <div class="chain-pill"><span>⬡</span> Ethereum</div>
+        <div class="chain-pill"><span>🔵</span> Base</div>
+        <div class="chain-pill"><span>🔴</span> Optimism</div>
+        <div class="chain-pill"><span>🟦</span> Arbitrum</div>
+        <div class="chain-pill"><span>🟣</span> Polygon</div>
+        <div class="chain-pill"><span>🟡</span> BNB Chain</div>
+        <div class="chain-pill"><span>❄️</span> Avalanche</div>
+        <div class="chain-pill"><span>💜</span> Solana</div>
+        <div class="chain-pill"><span>₿</span> Bitcoin</div>
+        <div class="chain-pill"><span>🌀</span> Zora</div>
+        <div class="chain-pill"><span>⚡</span> Blast</div>
+        <div class="chain-pill"><span>+58</span> more...</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- STATUS MODAL -->
+<div class="modal-overlay" id="status-modal">
+  <div class="modal">
+    <div class="modal-icon processing" id="modal-icon">⟳</div>
+    <h2 id="modal-title">Getting Quote...</h2>
+    <p id="modal-desc">Fetching the best route for your transaction via Relay Protocol.</p>
+    <div class="modal-steps" id="modal-steps">
+      <div class="modal-step active" id="step-1">
+        <div class="step-dot active">1</div> Fetching quote
+      </div>
+      <div class="modal-step" id="step-2">
+        <div class="step-dot">2</div> Sign & Submit
+      </div>
+      <div class="modal-step" id="step-3">
+        <div class="step-dot">3</div> Awaiting confirmation
+      </div>
+    </div>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<!-- TOKEN MODAL -->
+<div class="modal-overlay" id="token-modal">
+  <div class="token-modal">
+    <div class="token-modal-header">
+      <div class="token-modal-title">Select Token</div>
+      <input class="token-search" placeholder="Search by name or address..." oninput="filterTokens(this.value)">
+    </div>
+    <div class="token-list" id="token-list"></div>
+  </div>
+</div>
+
+<!-- CHAIN MODAL -->
+<div class="modal-overlay" id="chain-modal">
+  <div class="token-modal">
+    <div class="token-modal-header">
+      <div class="token-modal-title">Select Chain</div>
+      <input class="token-search" placeholder="Search chains..." oninput="filterChains(this.value)">
+    </div>
+    <div class="chain-grid-modal" id="chain-list"></div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const TOKENS = [
+  { sym: 'ETH', name: 'Ethereum', icon: 'Ξ', color: '#627eea', bg: 'rgba(98,126,234,0.2)', bal: '2.4813' },
+  { sym: 'USDC', name: 'USD Coin', icon: '$', color: '#2775ca', bg: 'rgba(39,117,202,0.2)', bal: '12,340' },
+  { sym: 'USDT', name: 'Tether USD', icon: '₮', color: '#26a17b', bg: 'rgba(38,161,123,0.2)', bal: '5,000' },
+  { sym: 'WBTC', name: 'Wrapped Bitcoin', icon: '₿', color: '#f7931a', bg: 'rgba(247,147,26,0.2)', bal: '0.0821' },
+  { sym: 'DAI', name: 'Dai Stablecoin', icon: 'D', color: '#f5ac37', bg: 'rgba(245,172,55,0.2)', bal: '2,000' },
+  { sym: 'OP', name: 'Optimism', icon: 'O', color: '#ff0420', bg: 'rgba(255,4,32,0.2)', bal: '145' },
+  { sym: 'ARB', name: 'Arbitrum', icon: 'A', color: '#12aaff', bg: 'rgba(18,170,255,0.2)', bal: '230' },
+  { sym: 'MATIC', name: 'Polygon', icon: 'M', color: '#8247e5', bg: 'rgba(130,71,229,0.2)', bal: '850' },
+  { sym: 'SOL', name: 'Solana', icon: '◎', color: '#9945ff', bg: 'rgba(153,69,255,0.2)', bal: '12.5' },
+];
+
+const CHAINS = [
+  { id: 1, name: 'Ethereum', icon: 'Ξ', color: '#627eea', bg: 'rgba(98,126,234,0.2)' },
+  { id: 8453, name: 'Base', icon: 'BASE', color: '#0054ff', bg: 'rgba(0,84,255,0.2)' },
+  { id: 10, name: 'Optimism', icon: 'OP', color: '#ff0420', bg: 'rgba(255,4,32,0.2)' },
+  { id: 42161, name: 'Arbitrum', icon: 'ARB', color: '#12aaff', bg: 'rgba(18,170,255,0.2)' },
+  { id: 137, name: 'Polygon', icon: 'M', color: '#8247e5', bg: 'rgba(130,71,229,0.2)' },
+  { id: 56, name: 'BNB Chain', icon: 'BNB', color: '#f3ba2f', bg: 'rgba(243,186,47,0.2)' },
+  { id: 43114, name: 'Avalanche', icon: 'AVA', color: '#e84142', bg: 'rgba(232,65,66,0.2)' },
+  { id: 7777777, name: 'Zora', icon: 'Z', color: '#a855f7', bg: 'rgba(168,85,247,0.2)' },
+  { id: 81457, name: 'Blast', icon: '⚡', color: '#fcfc03', bg: 'rgba(252,252,3,0.1)' },
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+
+let state = {
+  fromToken: TOKENS[0],
+  toToken: TOKENS[1],
+  originChain: CHAINS[0],
+  destChain: CHAINS[1],
+  bridgeFromToken: TOKENS[0],
+  bridgeToToken: TOKENS[0],
+  activeTokenTarget: null,
+  activeChainTarget: null,
+  quoteTimer: null,
+  walletConnected: false,
+};
+
+const RELAY_API = 'https://api.relay.link';
+
+// ─── QUOTE LOGIC ─────────────────────────────────────────────────────────────
+
+function handleAmountInput(val) {
+  clearTimeout(state.quoteTimer);
+  document.getElementById('to-amount').value = '';
+  document.getElementById('route-info').classList.remove('visible');
+  if (!val || parseFloat(val) <= 0) return;
+  state.quoteTimer = setTimeout(() => fetchSwapQuote(val), 700);
+}
+
+function handleBridgeInput(val) {
+  clearTimeout(state.quoteTimer);
+  document.getElementById('bridge-to-amount').value = '';
+  document.getElementById('bridge-route-info').classList.remove('visible');
+  if (!val || parseFloat(val) <= 0) return;
+  state.quoteTimer = setTimeout(() => fetchBridgeQuote(val), 700);
+}
+
+async function fetchSwapQuote(amount) {
+  const amountWei = BigInt(Math.floor(parseFloat(amount) * 1e18)).toString();
+
+  try {
+    // For demo purposes - simulate API call with realistic data
+    await simulateDelay(600);
+    
+    const mockRate = state.fromToken.sym === 'ETH' ? 3241.50 : 
+                     state.fromToken.sym === 'WBTC' ? 62450 : 1;
+    const toRate = state.toToken.sym === 'USDC' || state.toToken.sym === 'USDT' || state.toToken.sym === 'DAI' ? 1 : 
+                   state.toToken.sym === 'ETH' ? 1/3241.5 : 0.1;
+    
+    const receiveAmount = (parseFloat(amount) * mockRate * toRate * 0.997).toFixed(6);
+    const fee = (parseFloat(amount) * mockRate * 0.003).toFixed(2);
+
+    document.getElementById('to-amount').value = receiveAmount;
+    document.getElementById('route-rate').textContent = 
+      `1 ${state.fromToken.sym} ≈ ${(mockRate * toRate).toLocaleString()} ${state.toToken.sym}`;
+    document.getElementById('route-fee').textContent = `$${fee}`;
+    document.getElementById('route-time').textContent = '~2 sec';
+    document.getElementById('route-info').classList.add('visible');
+    document.getElementById('execute-btn').querySelector('span').textContent = 
+      `Swap ${amount} ${state.fromToken.sym}`;
+    
+  } catch(e) {
+    console.error('Quote error:', e);
+  }
+}
+
+async function fetchBridgeQuote(amount) {
+  try {
+    await simulateDelay(600);
+    const receive = (parseFloat(amount) * 0.9995).toFixed(6);
+    const fee = (parseFloat(amount) * 0.0005 * 3241.5).toFixed(2);
+
+    document.getElementById('bridge-to-amount').value = receive;
+    document.getElementById('bridge-fee').textContent = `~$${fee}`;
+    document.getElementById('bridge-time').textContent = '~2 sec';
+    document.getElementById('bridge-route-info').classList.add('visible');
+    document.getElementById('bridge-btn').querySelector('span').textContent = 
+      `Bridge ${amount} ${state.bridgeFromToken.sym}`;
+  } catch(e) {
+    console.error('Bridge quote error:', e);
+  }
+}
+
+async function executeSwap() {
+  const amount = document.getElementById('from-amount').value;
+  if (!amount || parseFloat(amount) <= 0) {
+    handleAmountInput(1);
+    return;
+  }
+  openStatusModal();
+  await simulateDelay(1200);
+  advanceStep(2);
+  await simulateDelay(1500);
+  advanceStep(3);
+  await simulateDelay(2000);
+  showSuccess();
+}
+
+async function executeBridge() {
+  const amount = document.getElementById('bridge-amount').value;
+  if (!amount || parseFloat(amount) <= 0) {
+    handleBridgeInput(1);
+    return;
+  }
+  openStatusModal();
+  await simulateDelay(1200);
+  advanceStep(2);
+  await simulateDelay(1500);
+  advanceStep(3);
+  await simulateDelay(2000);
+  showSuccess();
+}
+
+// ─── UI HELPERS ──────────────────────────────────────────────────────────────
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+function flipTokens() {
+  const tmp = state.fromToken;
+  state.fromToken = state.toToken;
+  state.toToken = tmp;
+  updateSwapUI();
+  const fromAmt = document.getElementById('from-amount').value;
+  document.getElementById('from-amount').value = document.getElementById('to-amount').value;
+  document.getElementById('to-amount').value = '';
+  document.getElementById('route-info').classList.remove('visible');
+}
+
+function updateSwapUI() {
+  const fi = document.getElementById('from-icon');
+  fi.textContent = state.fromToken.icon;
+  fi.style.background = state.fromToken.bg;
+  fi.style.color = state.fromToken.color;
+  document.getElementById('from-sym').textContent = state.fromToken.sym;
+
+  const ti = document.getElementById('to-icon');
+  ti.textContent = state.toToken.icon;
+  ti.style.background = state.toToken.bg;
+  ti.style.color = state.toToken.color;
+  document.getElementById('to-sym').textContent = state.toToken.sym;
+}
+
+function setMax() {
+  document.getElementById('from-amount').value = '2.4813';
+  handleAmountInput('2.4813');
+}
+
+function setBridgeMax() {
+  document.getElementById('bridge-amount').value = '2.4813';
+  handleBridgeInput('2.4813');
+}
+
+function setSlippage(btn, val) {
+  document.querySelectorAll('.slip-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function connectWallet() {
+  const btn = document.querySelector('.connect-btn');
+  if (state.walletConnected) return;
+  btn.textContent = '⟳ Connecting...';
+  setTimeout(() => {
+    state.walletConnected = true;
+    btn.textContent = '◉ 0x1a2b...3c4d';
+    btn.style.background = 'rgba(0,229,160,0.06)';
+  }, 1200);
+}
+
+// ─── TOKEN MODAL ─────────────────────────────────────────────────────────────
+
+let allTokens = [...TOKENS];
+
+function openTokenModal(target) {
+  state.activeTokenTarget = target;
+  renderTokenList(TOKENS);
+  document.getElementById('token-modal').classList.add('open');
+  document.querySelector('#token-modal .token-search').value = '';
+}
+
+function renderTokenList(tokens) {
+  const list = document.getElementById('token-list');
+  list.innerHTML = tokens.map(t => `
+    <div class="token-option" onclick="selectToken('${t.sym}')">
+      <div class="token-icon" style="background:${t.bg};color:${t.color};width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">${t.icon}</div>
+      <div class="token-option-info">
+        <div class="token-option-sym">${t.sym}</div>
+        <div class="token-option-name">${t.name}</div>
+      </div>
+      <div class="token-option-bal">${t.bal}</div>
+    </div>
+  `).join('');
+}
+
+function filterTokens(q) {
+  const filtered = TOKENS.filter(t => 
+    t.sym.toLowerCase().includes(q.toLowerCase()) || 
+    t.name.toLowerCase().includes(q.toLowerCase())
+  );
+  renderTokenList(filtered);
+}
+
+function selectToken(sym) {
+  const token = TOKENS.find(t => t.sym === sym);
+  const target = state.activeTokenTarget;
+  
+  if (target === 'from') {
+    state.fromToken = token;
+  } else if (target === 'to') {
+    state.toToken = token;
+  } else if (target === 'bridge-from') {
+    state.bridgeFromToken = token;
+    const el = document.getElementById('bridge-from-sym');
+    el.textContent = token.sym;
+    el.previousElementSibling.textContent = token.icon;
+    el.previousElementSibling.style.background = token.bg;
+    el.previousElementSibling.style.color = token.color;
+  } else if (target === 'bridge-to') {
+    state.bridgeToToken = token;
+    const el = document.getElementById('bridge-to-sym');
+    el.textContent = token.sym;
+    el.previousElementSibling.textContent = token.icon;
+    el.previousElementSibling.style.background = token.bg;
+    el.previousElementSibling.style.color = token.color;
+  }
+
+  updateSwapUI();
+  closeTokenModal();
+  document.getElementById('route-info').classList.remove('visible');
+  const amt = document.getElementById('from-amount').value;
+  if (amt) handleAmountInput(amt);
+}
+
+function closeTokenModal() {
+  document.getElementById('token-modal').classList.remove('open');
+}
+
+// ─── CHAIN MODAL ─────────────────────────────────────────────────────────────
+
+function openChainModal(target) {
+  state.activeChainTarget = target;
+  renderChainList(CHAINS);
+  document.getElementById('chain-modal').classList.add('open');
+  document.querySelector('#chain-modal .token-search').value = '';
+}
+
+function renderChainList(chains) {
+  const list = document.getElementById('chain-list');
+  list.innerHTML = chains.map(c => `
+    <div class="chain-option" onclick="selectChain(${c.id})">
+      <div class="chain-logo" style="background:${c.bg};color:${c.color};width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">${c.icon}</div>
+      <div class="chain-name" style="font-size:13px;">${c.name}</div>
+    </div>
+  `).join('');
+}
+
+function filterChains(q) {
+  const filtered = CHAINS.filter(c => c.name.toLowerCase().includes(q.toLowerCase()));
+  renderChainList(filtered);
+}
+
+function selectChain(id) {
+  const chain = CHAINS.find(c => c.id === id);
+  if (state.activeChainTarget === 'origin') {
+    state.originChain = chain;
+    document.getElementById('origin-chain-name').textContent = chain.name;
+    document.querySelector('#panel-bridge .chain-row .chain-select-btn:first-child .chain-logo').textContent = chain.icon;
+    document.querySelector('#panel-bridge .chain-row .chain-select-btn:first-child .chain-logo').style.background = chain.bg;
+    document.querySelector('#panel-bridge .chain-row .chain-select-btn:first-child .chain-logo').style.color = chain.color;
+  } else {
+    state.destChain = chain;
+    document.getElementById('dest-chain-name').textContent = chain.name;
+  }
+  closeChainModal();
+}
+
+function closeChainModal() {
+  document.getElementById('chain-modal').classList.remove('open');
+}
+
+// ─── STATUS MODAL ─────────────────────────────────────────────────────────────
+
+function openStatusModal() {
+  const modal = document.getElementById('status-modal');
+  modal.classList.add('open');
+  resetSteps();
+  document.getElementById('modal-title').textContent = 'Getting Quote...';
+  document.getElementById('modal-desc').textContent = 'Fetching the best route via Relay Protocol.';
+  document.getElementById('modal-icon').textContent = '⟳';
+  document.getElementById('modal-icon').className = 'modal-icon processing';
+}
+
+function advanceStep(step) {
+  for (let i = 1; i < step; i++) {
+    const el = document.getElementById(`step-${i}`);
+    el.className = 'modal-step done';
+    el.querySelector('.step-dot').className = 'step-dot done';
+    el.querySelector('.step-dot').textContent = '✓';
+  }
+  const active = document.getElementById(`step-${step}`);
+  if (active) {
+    active.className = 'modal-step active';
+    active.querySelector('.step-dot').className = 'step-dot active';
+  }
+  if (step === 2) document.getElementById('modal-title').textContent = 'Confirm Transaction';
+  if (step === 3) document.getElementById('modal-title').textContent = 'Processing...';
+}
+
+function showSuccess() {
+  document.getElementById('modal-icon').textContent = '✓';
+  document.getElementById('modal-icon').className = 'modal-icon success';
+  document.getElementById('modal-title').textContent = 'Transaction Confirmed!';
+  document.getElementById('modal-desc').textContent = 'Your transaction was successfully processed by the Relay Protocol.';
+  [1,2,3].forEach(i => {
+    const el = document.getElementById(`step-${i}`);
+    el.className = 'modal-step done';
+    el.querySelector('.step-dot').className = 'step-dot done';
+    el.querySelector('.step-dot').textContent = '✓';
+  });
+}
+
+function resetSteps() {
+  [1,2,3].forEach(i => {
+    const el = document.getElementById(`step-${i}`);
+    el.className = i === 1 ? 'modal-step active' : 'modal-step';
+    const dot = el.querySelector('.step-dot');
+    dot.className = i === 1 ? 'step-dot active' : 'step-dot';
+    dot.textContent = i;
+  });
+}
+
+function closeModal() {
+  document.getElementById('status-modal').classList.remove('open');
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+
+function simulateDelay(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function loadTransactions() {
+  const btn = document.querySelector('.refresh-btn');
+  btn.textContent = '↻ Loading...';
+  setTimeout(() => { btn.textContent = '↻ Refresh'; }, 1500);
+}
+
+// Close modals on backdrop click
+document.getElementById('token-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeTokenModal();
+});
+document.getElementById('chain-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeChainModal();
+});
+document.getElementById('status-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Load chains from API (simulated for demo)
+async function loadChains() {
+  // In production: fetch(`${RELAY_API}/chains?chainIds[]=1&chainIds[]=8453&...`)
+}
+
+loadChains();
+</script>
+</body>
+</html>
