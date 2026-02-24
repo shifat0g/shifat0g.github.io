@@ -559,9 +559,8 @@ function gameLoop() {
   ctx.clearRect(0, 0, W, H);
 
   // Background
-ctx.fillStyle = '#2a2a2a';
-ctx.fillRect(0, H - 40, W, 40);
-
+ctx.fillStyle = '#0d0d1a';
+ctx.fillRect(0, 0, W, H);
   // Parallax stars
   bgStars.forEach(s => {
     s.x -= s.speed * (speed / 5);
