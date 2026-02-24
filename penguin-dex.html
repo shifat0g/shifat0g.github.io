@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penguin 🐧 — Cross-Chain DEX</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.1/ethers.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06080e;
+  --surface: #0c1018;
+  --surface2: #111827;
+  --surface3: #1a2333;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --accent: #5b8dee;
+  --accent2: #38bdf8;
+  --accent-soft: rgba(91,141,238,0.12);
+  --accent2-soft: rgba(56,189,248,0.1);
+  --green: #34d399;
+  --green-soft: rgba(52,211,153,0.1);
+  --red: #f87171;
+  --yellow: #fbbf24;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #475569;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Space Grotesk', sans-serif;
+  --r: 16px;
+  --r2: 12px;
+  --r3: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND ── */
+.bg-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.bg-glow::before {
+  content: '';
+  position: absolute;
+  width: 700px; height: 700px;
+  top: -200px; left: -100px;
+  background: radial-gradient(circle, rgba(91,141,238,0.07) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.bg-glow::after {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  bottom: -150px; right: -100px;
+  background: radial-gradient(circle, rgba(56,189,248,0.06) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: 64px;
+  display: flex; align-items: center;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(6,8,14,0.8);
+  backdrop-filter: blur(24px);
+  justify-content: space-between;
+}
+
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 18px; color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+}
+.nav-brand-icon { font-size: 26px; line-height: 1; }
+.nav-brand-name { letter-spacing: -0.3px; }
+.nav-brand-badge {
+  font-size: 10px; font-weight: 600;
+  background: var(--accent-soft);
+  border: 1px solid rgba(91,141,238,0.25);
+  color: var(--accent);
+  padding: 2px 7px; border-radius: 20px;
+  letter-spacing: 0.05em;
+}
+
+.nav-tabs {
+  display: flex; gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 3px;
+}
+.nav-tab {
+  padding: 7px 18px;
+  font-size: 13px; font-weight: 600;
+  border-radius: 7px;
+  cursor: pointer; color: var(--text3);
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+.nav-tab.active { background: var(--surface3); color: var(--text); }
+.nav-tab:hover:not(.active) { color: var(--text2); }
+
+.nav-right { display: flex; align-items: center; gap: 10px; }
+
+.network-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 12px; color: var(--text2);
+  font-family: var(--mono);
+}
+.net-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+}
+
+#connect-btn {
+  padding: 8px 18px;
+  background: linear-gradient(135deg, var(--accent), #4a7de0);
+  border: none; border-radius: 10px;
+  color: #fff; font-family: var(--sans);
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+#connect-btn:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(91,141,238,0.35); }
+
+/* ── LAYOUT ── */
+.app {
+  position: relative; z-index: 1;
+  padding: 88px 24px 48px;
+  max-width: 1160px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 440px 1fr;
+  gap: 24px; align-items: start;
+}
+
+/* ── PANEL ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  position: relative; overflow: hidden;
+}
+.card-head {
+  padding: 20px 20px 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.card-title {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--text2);
+}
+.card-body { padding: 20px; }
+
+/* ── TOKEN BOX ── */
+.token-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 14px 16px;
+  transition: border-color 0.15s;
+}
+.token-box:focus-within { border-color: rgba(91,141,238,0.4); }
+
+.tb-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.tb-label { font-size: 11px; color: var(--text3); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+
+.token-pick {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: var(--r3);
+  cursor: pointer; transition: all 0.15s;
+  min-width: 130px;
+}
+.token-pick:hover { border-color: rgba(91,141,238,0.35); background: rgba(91,141,238,0.06); }
+
+.tok-logo {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+  overflow: hidden;
+}
+.tok-logo img { width: 100%; height: 100%; border-radius: 50%; }
+.tok-sym { font-size: 14px; font-weight: 700; color: var(--text); }
+.tok-chev { margin-left: auto; color: var(--text3); font-size: 10px; }
+
+.amount-wrap { flex: 1; min-width: 0; }
+.amount-inp {
+  width: 100%; background: none; border: none; outline: none;
+  font-family: var(--mono); font-size: 26px; font-weight: 300;
+  color: var(--text); text-align: right;
+}
+.amount-inp::placeholder { color: var(--text3); }
+.amount-inp::-webkit-inner-spin-button,
+.amount-inp::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.tb-bottom {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 8px; padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.chain-tag {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--text3);
+}
+.chain-tag img { width: 14px; height: 14px; border-radius: 50%; }
+.chain-tag .cdot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent2); }
+.bal-tag { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+.bal-max {
+  color: var(--accent); cursor: pointer; margin-left: 4px;
+  font-weight: 600; font-size: 10px;
+  background: var(--accent-soft); padding: 2px 6px; border-radius: 4px;
+}
+.bal-max:hover { background: rgba(91,141,238,0.2); }
+
+.usd-val { font-size: 12px; color: var(--text3); font-family: var(--mono); text-align: right; margin-top: 4px; }
+
+/* ── SWAP ARROW ── */
+.swap-mid {
+  display: flex; align-items: center; justify-content: center;
+  position: relative; margin: 6px 0;
+}
+.flip-btn {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--surface3); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; color: var(--text2);
+  transition: all 0.2s; z-index: 1;
+}
+.flip-btn:hover { background: var(--accent-soft); border-color: rgba(91,141,238,0.4); color: var(--accent); transform: rotate(180deg); }
+
+/* ── BRIDGE CHAIN ROW ── */
+.bridge-chains {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px;
+  align-items: end; margin-bottom: 16px;
+}
+.bc-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.chain-pick {
+  width: 100%;
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 14px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--r2); cursor: pointer; transition: all 0.15s;
+  font-size: 14px; font-weight: 600; color: var(--text);
+}
+.chain-pick:hover { border-color: var(--border2); }
+.chain-pick img { width: 22px; height: 22px; border-radius: 50%; }
+.chain-pick .cp-chev { margin-left: auto; color: var(--text3); font-size: 10px; }
+.bridge-arrow { display: flex; align-items: center; justify-content: center; padding-bottom: 2px; color: var(--text3); font-size: 18px; }
+
+/* ── QUOTE DETAILS ── */
+.quote-details {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  overflow: hidden;
+  margin-top: 12px;
+  display: none;
+}
+.quote-details.show { display: block; animation: slideDown 0.2s ease; }
+@keyframes slideDown { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+.qd-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px; font-size: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.qd-row:last-child { border-bottom: none; }
+.qd-key { color: var(--text3); }
+.qd-val { color: var(--text); font-family: var(--mono); font-weight: 500; }
+.qd-val.green { color: var(--green); }
+.qd-val.blue { color: var(--accent2); }
+
+/* ── SLIPPAGE ── */
+.slip-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+.slip-label { font-size: 11px; color: var(--text3); }
+.slip-btns { display: flex; gap: 4px; }
+.slip-opt {
+  padding: 5px 10px; font-size: 11px; font-weight: 600;
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text3); cursor: pointer;
+  font-family: var(--mono); transition: all 0.12s;
+}
+.slip-opt.on, .slip-opt:hover { border-color: rgba(91,141,238,0.4); color: var(--accent); background: var(--accent-soft); }
+
+/* ── EXEC BTN ── */
+.exec-btn {
+  width: 100%; padding: 16px;
+  margin-top: 14px;
+  background: linear-gradient(135deg, var(--accent), #4a7de0);
+  border: none; border-radius: var(--r2);
+  color: #fff; font-family: var(--sans);
+  font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+  position: relative; overflow: hidden;
+  letter-spacing: 0.02em;
+}
+.exec-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(91,141,238,0.3); }
+.exec-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.exec-btn.loading { pointer-events: none; }
+.exec-btn.loading::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+/* ── RIGHT PANEL ── */
+.right-col { display: flex; flex-direction: column; gap: 16px; }
+
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.stat-c {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r2); padding: 16px;
+}
+.stat-l { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 8px; }
+.stat-v { font-size: 20px; font-weight: 300; color: var(--text); font-family: var(--mono); }
+.stat-v small { font-size: 11px; color: var(--green); margin-left: 4px; }
+
+/* ── TX TABLE ── */
+.tx-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r); overflow: hidden;
+}
+.tx-card-head {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.tx-card-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); }
+.tx-refresh-btn {
+  font-size: 11px; color: var(--text3); background: none; border: none;
+  cursor: pointer; font-family: var(--mono); transition: color 0.12s;
+}
+.tx-refresh-btn:hover { color: var(--accent); }
+
+.tx-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s; cursor: default;
+}
+.tx-item:last-child { border-bottom: none; }
+.tx-item:hover { background: rgba(255,255,255,0.015); }
+
+.tx-badge {
+  width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.tx-badge.sw { background: var(--accent-soft); border: 1px solid rgba(91,141,238,0.2); }
+.tx-badge.br { background: var(--accent2-soft); border: 1px solid rgba(56,189,248,0.2); }
+
+.tx-info { flex: 1; min-width: 0; }
+.tx-main { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tx-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+.tx-right { text-align: right; flex-shrink: 0; }
+.tx-amt { font-size: 12px; font-family: var(--mono); color: var(--text); }
+.tx-time { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+.tx-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.tx-dot.ok { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.tx-dot.wait { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); animation: pulse 1.4s ease infinite; }
+.tx-dot.fail { background: var(--red); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── CHAINS CARD ── */
+.chains-mini {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r); padding: 18px;
+}
+.chains-mini-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); margin-bottom: 12px; }
+.chains-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+.ch-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 10px; border-radius: 20px;
+  background: var(--surface2); border: 1px solid var(--border);
+  font-size: 11px; color: var(--text2); transition: all 0.12s;
+}
+.ch-pill img { width: 14px; height: 14px; border-radius: 50%; }
+.ch-pill:hover { border-color: var(--border2); color: var(--text); }
+
+/* ── MODALS ── */
+.overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(10px);
+  display: none; align-items: center; justify-content: center;
+}
+.overlay.open { display: flex; animation: fadeIn 0.15s ease; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* Status Modal */
+.status-modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 24px; padding: 32px;
+  width: 360px; text-align: center;
+}
+.smod-icon {
+  width: 68px; height: 68px; border-radius: 50%;
+  margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+}
+.smod-icon.spin { animation: rotate 1.5s linear infinite; }
+@keyframes rotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+.smod-icon.processing { background: var(--accent-soft); border: 1px solid rgba(91,141,238,0.3); }
+.smod-icon.success { background: var(--green-soft); border: 1px solid rgba(52,211,153,0.3); }
+.smod-icon.error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); }
+.smod-h { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.smod-p { font-size: 12px; color: var(--text3); line-height: 1.6; margin-bottom: 20px; }
+
+.smod-steps { text-align: left; background: var(--surface2); border-radius: 10px; padding: 12px; margin-bottom: 18px; }
+.smod-step { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 11px; color: var(--text3); }
+.smod-step.done { color: var(--green); }
+.smod-step.act { color: var(--text); }
+.sd-dot {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700;
+  border: 1px solid var(--border2); color: var(--text3);
+}
+.sd-dot.done { background: var(--green); border-color: var(--green); color: #000; }
+.sd-dot.act { border-color: var(--accent); color: var(--accent); animation: pulse 1s ease infinite; }
+
+.smod-hash {
+  font-family: var(--mono); font-size: 10px; color: var(--accent2);
+  background: var(--surface2); padding: 8px 12px; border-radius: 8px;
+  margin-bottom: 14px; word-break: break-all; text-align: left;
+  display: none;
+}
+.smod-hash.show { display: block; }
+
+.smod-close {
+  width: 100%; padding: 12px; border-radius: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text2); font-family: var(--sans); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.12s;
+}
+.smod-close:hover { background: var(--surface3); color: var(--text); }
+
+/* Token Select Modal */
+.tok-modal {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 20px; width: 380px;
+  overflow: hidden;
+}
+.tok-modal-head { padding: 18px 18px 14px; border-bottom: 1px solid var(--border); }
+.tok-modal-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+.tok-search {
+  width: 100%; padding: 10px 14px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; outline: none;
+  font-family: var(--mono); font-size: 12px; color: var(--text);
+  transition: border-color 0.15s;
+}
+.tok-search:focus { border-color: rgba(91,141,238,0.4); }
+.tok-search::placeholder { color: var(--text3); }
+.tok-list { max-height: 340px; overflow-y: auto; padding: 8px; }
+.tok-list::-webkit-scrollbar { width: 3px; }
+.tok-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.tok-opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: 10px;
+  cursor: pointer; transition: background 0.1s;
+}
+.tok-opt:hover { background: rgba(255,255,255,0.04); }
+.tok-opt-info { flex: 1; }
+.tok-opt-sym { font-size: 14px; font-weight: 700; }
+.tok-opt-name { font-size: 11px; color: var(--text3); }
+.tok-opt-bal { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+
+/* Chain Select Modal */
+.chain-modal {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 20px; width: 380px; overflow: hidden;
+}
+.chain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 10px; max-height: 380px; overflow-y: auto; }
+.chain-opt {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 12px; border-radius: 10px; cursor: pointer;
+  transition: all 0.1s; border: 1px solid transparent;
+}
+.chain-opt:hover { background: rgba(255,255,255,0.04); border-color: var(--border); }
+.chain-opt.sel { background: var(--accent-soft); border-color: rgba(91,141,238,0.3); }
+.chain-opt img { width: 28px; height: 28px; border-radius: 50%; }
+.chain-opt-name { font-size: 13px; font-weight: 600; }
+
+/* Error Banner */
+.err-banner {
+  background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2);
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 12px; color: var(--red);
+  margin-top: 10px; display: none;
+}
+.err-banner.show { display: block; }
+
+/* Loading skeleton */
+.skeleton { animation: sk 1.5s ease infinite; background: linear-gradient(90deg, var(--surface2), rgba(255,255,255,0.04), var(--surface2)); background-size: 200%; border-radius: 4px; height: 12px; }
+@keyframes sk { from{background-position:100%} to{background-position:-100%} }
+
+/* ── WALLET NOT CONNECTED ── */
+.connect-prompt {
+  text-align: center; padding: 32px 20px;
+  color: var(--text3); font-size: 13px;
+}
+.connect-prompt .big-emoji { font-size: 40px; margin-bottom: 12px; display: block; }
+.connect-prompt p { margin-bottom: 16px; line-height: 1.6; }
+.connect-prompt-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--accent), #4a7de0);
+  border: none; border-radius: 10px;
+  color: #fff; font-family: var(--sans);
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.connect-prompt-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* ── BACK BUTTON ── */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--text3);
+  background: none; border: none;
+  cursor: pointer; font-family: var(--sans);
+  transition: color 0.12s; padding: 0;
+  text-decoration: none;
+}
+.back-btn:hover { color: var(--text); }
+
+/* ── RESPONSIVE ── */
+@media(max-width: 860px) {
+  .app { grid-template-columns: 1fr; padding: 80px 16px 40px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  nav { padding: 0 16px; }
+  .nav-tabs { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-brand" href="#" onclick="goHome(event)">
+    <span class="nav-brand-icon">🐧</span>
+    <span class="nav-brand-name">Penguin</span>
+    <span class="nav-brand-badge">DEX</span>
+  </a>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="switchMode('swap',this)">Swap</div>
+    <div class="nav-tab" onclick="switchMode('bridge',this)">Bridge</div>
+  </div>
+  <div class="nav-right">
+    <div class="network-badge" id="network-name">
+      <span class="net-dot"></span>
+      <span id="net-label">Ethereum</span>
+    </div>
+    <button id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
+  </div>
+</nav>
+
+<!-- ── APP ── -->
+<div class="app">
+
+  <!-- LEFT: TRADE CARD -->
+  <div>
+
+    <!-- ── SWAP PAGE ── -->
+    <div id="page-swap" class="page active">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Swap Tokens</span>
+          <div class="slip-btns">
+            <button class="slip-opt on" onclick="setSlip(this,'auto')">Auto</button>
+            <button class="slip-opt" onclick="setSlip(this,'50')">0.5%</button>
+            <button class="slip-opt" onclick="setSlip(this,'100')">1%</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="token-box" id="from-box">
+            <div class="tb-top">
+              <span class="tb-label">You Pay</span>
+              <span class="usd-val" id="from-usd"></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="token-pick" onclick="openTokenModal('from')" id="from-pick">
+                <div class="tok-logo" id="from-logo"></div>
+                <span class="tok-sym" id="from-sym">ETH</span>
+                <span class="tok-chev">▼</span>
+              </div>
+              <div class="amount-wrap">
+                <input class="amount-inp" id="from-amt" type="number" placeholder="0.0" step="any" oninput="onAmountChange()">
+              </div>
+            </div>
+            <div class="tb-bottom">
+              <div class="chain-tag" id="from-chain-tag">
+                <span class="cdot"></span>
+                <span id="from-chain-name-tag">Ethereum</span>
+              </div>
+              <div class="bal-tag">
+                Bal: <span id="from-bal">—</span>
+                <span class="bal-max" onclick="setMax()">MAX</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="swap-mid">
+            <button class="flip-btn" onclick="flipTokens()" title="Flip tokens">⇅</button>
+          </div>
+
+          <div class="token-box">
+            <div class="tb-top">
+              <span class="tb-label">You Receive</span>
+              <span class="usd-val" id="to-usd"></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="token-pick" onclick="openTokenModal('to')" id="to-pick">
+                <div class="tok-logo" id="to-logo"></div>
+                <span class="tok-sym" id="to-sym">USDC</span>
+                <span class="tok-chev">▼</span>
+              </div>
+              <div class="amount-wrap">
+                <input class="amount-inp" id="to-amt" type="number" placeholder="0.0" readonly>
+              </div>
+            </div>
+            <div class="tb-bottom">
+              <div class="chain-tag">
+                <span class="cdot" style="background:var(--accent2)"></span>
+                <span id="to-chain-name-tag">Ethereum</span>
+              </div>
+              <div class="bal-tag">Bal: <span id="to-bal">—</span></div>
+            </div>
+          </div>
+
+          <div class="quote-details" id="swap-quote-details">
+            <div class="qd-row"><span class="qd-key">Rate</span><span class="qd-val" id="q-rate">—</span></div>
+            <div class="qd-row"><span class="qd-key">Fee</span><span class="qd-val green" id="q-fee">—</span></div>
+            <div class="qd-row"><span class="qd-key">Gas Est.</span><span class="qd-val" id="q-gas">—</span></div>
+            <div class="qd-row"><span class="qd-key">Time</span><span class="qd-val blue" id="q-time">~2 sec</span></div>
+            <div class="qd-row"><span class="qd-key">Min Received</span><span class="qd-val" id="q-min">—</span></div>
+          </div>
+
+          <div class="err-banner" id="swap-err"></div>
+
+          <button class="exec-btn" id="swap-btn" onclick="executeSwap()">Get Quote</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BRIDGE PAGE ── -->
+    <div id="page-bridge" class="page">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Bridge Assets</span>
+        </div>
+        <div class="card-body">
+          <div class="bridge-chains">
+            <div>
+              <div class="bc-label">From</div>
+              <div class="chain-pick" id="origin-chain-btn" onclick="openChainModal('origin')">
+                <img id="origin-chain-img" src="" alt="" onerror="this.style.display='none'">
+                <span id="origin-chain-label">Ethereum</span>
+                <span class="cp-chev">▼</span>
+              </div>
+            </div>
+            <div class="bridge-arrow">→</div>
+            <div>
+              <div class="bc-label">To</div>
+              <div class="chain-pick" id="dest-chain-btn" onclick="openChainModal('dest')">
+                <img id="dest-chain-img" src="" alt="" onerror="this.style.display='none'">
+                <span id="dest-chain-label">Base</span>
+                <span class="cp-chev">▼</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="token-box">
+            <div class="tb-top"><span class="tb-label">You Send</span></div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="token-pick" onclick="openTokenModal('bridge-from')">
+                <div class="tok-logo" id="bridge-from-logo"></div>
+                <span class="tok-sym" id="bridge-from-sym">ETH</span>
+                <span class="tok-chev">▼</span>
+              </div>
+              <div class="amount-wrap">
+                <input class="amount-inp" id="bridge-from-amt" type="number" placeholder="0.0" step="any" oninput="onBridgeAmountChange()">
+              </div>
+            </div>
+            <div class="tb-bottom">
+              <div class="chain-tag"><span class="cdot"></span><span id="bridge-from-chain-tag">Ethereum</span></div>
+              <div class="bal-tag">Bal: <span id="bridge-from-bal">—</span><span class="bal-max" onclick="setBridgeMax()">MAX</span></div>
+            </div>
+          </div>
+
+          <div class="swap-mid" style="margin:6px 0">
+            <div style="width:38px;height:38px;border-radius:10px;background:var(--surface3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;color:var(--text3)">↓</div>
+          </div>
+
+          <div class="token-box">
+            <div class="tb-top"><span class="tb-label">You Receive</span></div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="token-pick" onclick="openTokenModal('bridge-to')">
+                <div class="tok-logo" id="bridge-to-logo"></div>
+                <span class="tok-sym" id="bridge-to-sym">ETH</span>
+                <span class="tok-chev">▼</span>
+              </div>
+              <div class="amount-wrap">
+                <input class="amount-inp" id="bridge-to-amt" type="number" placeholder="0.0" readonly>
+              </div>
+            </div>
+            <div class="tb-bottom">
+              <div class="chain-tag"><span class="cdot" style="background:var(--accent2)"></span><span id="bridge-to-chain-tag">Base</span></div>
+              <div class="bal-tag">Bal: <span id="bridge-to-bal">—</span></div>
+            </div>
+          </div>
+
+          <div class="quote-details" id="bridge-quote-details">
+            <div class="qd-row"><span class="qd-key">Bridge Fee</span><span class="qd-val green" id="bq-fee">—</span></div>
+            <div class="qd-row"><span class="qd-key">Est. Time</span><span class="qd-val blue" id="bq-time">~2 sec</span></div>
+            <div class="qd-row"><span class="qd-key">Min Received</span><span class="qd-val" id="bq-min">—</span></div>
+            <div class="qd-row"><span class="qd-key">Protocol</span><span class="qd-val">Relay Protocol</span></div>
+          </div>
+
+          <div class="err-banner" id="bridge-err"></div>
+          <button class="exec-btn" id="bridge-btn" onclick="executeBridge()">Get Quote</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end left -->
+
+  <!-- RIGHT PANEL -->
+  <div class="right-col">
+    <div class="stats-row">
+      <div class="stat-c">
+        <div class="stat-l">Volume 24h</div>
+        <div class="stat-v">$842M<small>↑12%</small></div>
+      </div>
+      <div class="stat-c">
+        <div class="stat-l">Networks</div>
+        <div class="stat-v" id="chain-count">—</div>
+      </div>
+      <div class="stat-c">
+        <div class="stat-l">Avg Speed</div>
+        <div class="stat-v">~2s<small>⚡</small></div>
+      </div>
+    </div>
+
+    <div class="tx-card">
+      <div class="tx-card-head">
+        <span class="tx-card-title">Recent Transactions</span>
+        <button class="tx-refresh-btn" onclick="loadRecentTx()">↻ Refresh</button>
+      </div>
+      <div id="tx-list">
+        <div class="tx-item">
+          <div class="tx-badge sw">⇄</div>
+          <div class="tx-info"><div class="tx-main">ETH → USDC</div><div class="tx-sub">Ethereum · Relay</div></div>
+          <div class="tx-right"><div class="tx-amt">1.2 ETH</div><div class="tx-time">2s ago</div></div>
+          <div class="tx-dot ok"></div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-badge br">⟶</div>
+          <div class="tx-info"><div class="tx-main">USDC Bridge</div><div class="tx-sub">Ethereum → Base</div></div>
+          <div class="tx-right"><div class="tx-amt">5,000 USDC</div><div class="tx-time">18s ago</div></div>
+          <div class="tx-dot wait"></div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-badge sw">⇄</div>
+          <div class="tx-info"><div class="tx-main">WBTC → ETH</div><div class="tx-sub">Arbitrum · Relay</div></div>
+          <div class="tx-right"><div class="tx-amt">0.05 WBTC</div><div class="tx-time">1m ago</div></div>
+          <div class="tx-dot ok"></div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-badge br">⟶</div>
+          <div class="tx-info"><div class="tx-main">ETH Bridge</div><div class="tx-sub">Optimism → Arbitrum</div></div>
+          <div class="tx-right"><div class="tx-amt">0.5 ETH</div><div class="tx-time">3m ago</div></div>
+          <div class="tx-dot ok"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chains-mini">
+      <div class="chains-mini-title">Supported Chains</div>
+      <div class="chains-pills" id="chains-pills">
+        <span class="ch-pill">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .app -->
+
+
+<!-- ── STATUS MODAL ── -->
+<div class="overlay" id="status-overlay">
+  <div class="status-modal">
+    <div class="smod-icon processing" id="smod-icon">⟳</div>
+    <div class="smod-h" id="smod-title">Processing...</div>
+    <p class="smod-p" id="smod-desc">Fetching the best route via Relay Protocol.</p>
+    <div class="smod-steps" id="smod-steps">
+      <div class="smod-step act" id="sstep-1"><div class="sd-dot act">1</div><span>Fetching quote</span></div>
+      <div class="smod-step" id="sstep-2"><div class="sd-dot">2</div><span>Awaiting wallet approval</span></div>
+      <div class="smod-step" id="sstep-3"><div class="sd-dot">3</div><span>Submitting transaction</span></div>
+      <div class="smod-step" id="sstep-4"><div class="sd-dot">4</div><span>Confirming on-chain</span></div>
+    </div>
+    <div class="smod-hash" id="smod-hash"></div>
+    <button class="smod-close" onclick="closeStatusModal()">Close</button>
+  </div>
+</div>
+
+<!-- ── TOKEN MODAL ── -->
+<div class="overlay" id="token-overlay" onclick="handleOverlayClick(event,'token-overlay')">
+  <div class="tok-modal">
+    <div class="tok-modal-head">
+      <div class="tok-modal-title">Select Token</div>
+      <input class="tok-search" id="tok-search" placeholder="Search name or paste address..." oninput="filterTokList(this.value)">
+    </div>
+    <div class="tok-list" id="tok-list"></div>
+  </div>
+</div>
+
+<!-- ── CHAIN MODAL ── -->
+<div class="overlay" id="chain-overlay" onclick="handleOverlayClick(event,'chain-overlay')">
+  <div class="chain-modal">
+    <div class="tok-modal-head">
+      <div class="tok-modal-title">Select Chain</div>
+      <input class="tok-search" id="chain-search" placeholder="Search chains..." oninput="filterChainList(this.value)">
+    </div>
+    <div class="chain-grid" id="chain-list"></div>
+  </div>
+</div>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  PENGUIN DEX — FULL IMPLEMENTATION
+//  Powered by Relay Protocol (api.relay.link)
+// ═══════════════════════════════════════════════════════════════════
+
+const RELAY = 'https://api.relay.link';
+const NATIVE = '0x0000000000000000000000000000000000000000';
+
+// ─── STATE ───────────────────────────────────────────────────────
+
+const S = {
+  mode: 'swap',            // 'swap' | 'bridge'
+  wallet: null,            // ethers signer
+  userAddr: null,
+  chainId: null,
+  provider: null,
+
+  chains: [],              // from Relay /chains
+  tokens: [],              // from Relay /currencies/v2
+
+  // swap
+  fromToken: null,
+  toToken: null,
+  fromChain: null,
+  toChain: null,           // same chain for swap
+  slippage: 'auto',
+
+  // bridge
+  bridgeFromToken: null,
+  bridgeToToken: null,
+  originChain: null,
+  destChain: null,
+
+  swapQuote: null,
+  bridgeQuote: null,
+  tokModalTarget: null,
+  chainModalTarget: null,
+  quoteTimer: null,
+  statusPollTimer: null,
+};
+
+// ─── INIT ─────────────────────────────────────────────────────────
+
+async function init() {
+  await loadChains();
+  await loadTokens(1); // Ethereum default
+}
+
+// ─── CHAINS ──────────────────────────────────────────────────────
+
+async function loadChains() {
+  try {
+    const r = await fetch(`${RELAY}/chains`);
+    const d = await r.json();
+    S.chains = (d.chains || []).filter(c => !c.disabled && c.vmType === 'evm');
+    document.getElementById('chain-count').textContent = S.chains.length + '+';
+
+    // Default chains
+    S.fromChain  = S.chains.find(c=>c.id===1) || S.chains[0];
+    S.toChain    = S.fromChain;
+    S.originChain= S.fromChain;
+    S.destChain  = S.chains.find(c=>c.id===8453) || S.chains[1] || S.fromChain;
+
+    updateChainUI();
+    renderChainPills();
+  } catch(e) {
+    console.error('loadChains', e);
+  }
+}
+
+function updateChainUI() {
+  if (!S.fromChain) return;
+  document.getElementById('from-chain-name-tag').textContent = S.fromChain.displayName || S.fromChain.name;
+  document.getElementById('to-chain-name-tag').textContent   = (S.toChain||S.fromChain).displayName || (S.toChain||S.fromChain).name;
+  document.getElementById('net-label').textContent = S.fromChain.displayName || S.fromChain.name;
+
+  if (S.originChain) {
+    document.getElementById('origin-chain-label').textContent = S.originChain.displayName || S.originChain.name;
+    document.getElementById('bridge-from-chain-tag').textContent = S.originChain.displayName || S.originChain.name;
+    const oImg = document.getElementById('origin-chain-img');
+    if (S.originChain.iconUrl) { oImg.src = S.originChain.iconUrl; oImg.style.display=''; }
+    else oImg.style.display='none';
+  }
+  if (S.destChain) {
+    document.getElementById('dest-chain-label').textContent = S.destChain.displayName || S.destChain.name;
+    document.getElementById('bridge-to-chain-tag').textContent = S.destChain.displayName || S.destChain.name;
+    const dImg = document.getElementById('dest-chain-img');
+    if (S.destChain.iconUrl) { dImg.src = S.destChain.iconUrl; dImg.style.display=''; }
+    else dImg.style.display='none';
+  }
+}
+
+function renderChainPills() {
+  const container = document.getElementById('chains-pills');
+  const visible = S.chains.slice(0,16);
+  container.innerHTML = visible.map(c => `
+    <span class="ch-pill">
+      ${c.iconUrl ? `<img src="${c.iconUrl}" alt="${c.name}" onerror="this.style.display='none'">` : ''}
+      ${c.displayName || c.name}
+    </span>
+  `).join('') + (S.chains.length > 16 ? `<span class="ch-pill">+${S.chains.length-16} more</span>` : '');
+}
+
+// ─── TOKENS ──────────────────────────────────────────────────────
+
+async function loadTokens(chainId) {
+  try {
+    const r = await fetch(`${RELAY}/currencies/v2`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ defaultList: true, chainIds: [chainId], verified: true, limit: 50 })
+    });
+    const d = await r.json();
+    S.tokens = Array.isArray(d) ? d : [];
+
+    // Set defaults
+    const native = S.tokens.find(t=>t.metadata?.isNative) || S.tokens[0];
+    const stableUSDC = S.tokens.find(t=>t.symbol==='USDC') || S.tokens[1] || S.tokens[0];
+
+    if (!S.fromToken) S.fromToken = native;
+    if (!S.toToken) S.toToken = stableUSDC !== native ? stableUSDC : S.tokens[1] || native;
+    if (!S.bridgeFromToken) S.bridgeFromToken = native;
+    if (!S.bridgeToToken) S.bridgeToToken = native;
+
+    updateTokenUI();
+    if (S.userAddr) loadBalances();
+  } catch(e) {
+    console.error('loadTokens', e);
+  }
+}
+
+function tokenLogoHtml(tok, id) {
+  if (!tok) return '';
+  const uri = tok.metadata?.logoURI;
+  if (uri) {
+    return `<img src="${uri}" alt="${tok.symbol}" style="width:100%;height:100%;border-radius:50%" onerror="this.parentNode.textContent='${(tok.symbol||'?')[0]}'">`;
+  }
+  return tok.symbol?.[0] || '?';
+}
+
+function setLogoEl(elId, tok) {
+  const el = document.getElementById(elId);
+  if (!el || !tok) return;
+  const uri = tok.metadata?.logoURI;
+  if (uri) {
+    el.innerHTML = `<img src="${uri}" alt="${tok.symbol}" style="width:100%;height:100%;border-radius:50%" onerror="this.parentNode.textContent='${(tok.symbol||'?')[0]}'">`;
+  } else {
+    el.textContent = tok.symbol?.[0] || '?';
+    el.style.background = 'var(--surface3)';
+    el.style.color = 'var(--text)';
+  }
+}
+
+function updateTokenUI() {
+  if (S.fromToken) {
+    setLogoEl('from-logo', S.fromToken);
+    document.getElementById('from-sym').textContent = S.fromToken.symbol;
+  }
+  if (S.toToken) {
+    setLogoEl('to-logo', S.toToken);
+    document.getElementById('to-sym').textContent = S.toToken.symbol;
+  }
+  if (S.bridgeFromToken) {
+    setLogoEl('bridge-from-logo', S.bridgeFromToken);
+    document.getElementById('bridge-from-sym').textContent = S.bridgeFromToken.symbol;
+  }
+  if (S.bridgeToToken) {
+    setLogoEl('bridge-to-logo', S.bridgeToToken);
+    document.getElementById('bridge-to-sym').textContent = S.bridgeToToken.symbol;
+  }
+}
+
+// ─── BALANCES ────────────────────────────────────────────────────
+
+async function loadBalances() {
+  if (!S.userAddr || !S.provider) return;
+  try {
+    // Native ETH balance
+    const ethBal = await S.provider.getBalance(S.userAddr);
+    const fmt = v => parseFloat(ethers.formatEther(v)).toFixed(4);
+    if (S.fromToken?.metadata?.isNative) {
+      document.getElementById('from-bal').textContent = fmt(ethBal);
+    }
+    if (S.toToken?.metadata?.isNative) {
+      document.getElementById('to-bal').textContent = fmt(ethBal);
+    }
+    if (S.bridgeFromToken?.metadata?.isNative) {
+      document.getElementById('bridge-from-bal').textContent = fmt(ethBal);
+    }
+
+    // ERC20 balances (simplified ABI)
+    const erc20abi = ['function balanceOf(address) view returns (uint256)','function decimals() view returns (uint8)'];
+    for (const [tok, elId] of [
+      [S.fromToken, 'from-bal'],
+      [S.toToken, 'to-bal'],
+      [S.bridgeFromToken, 'bridge-from-bal'],
+    ]) {
+      if (tok && !tok.metadata?.isNative && tok.address !== NATIVE) {
+        try {
+          const contract = new ethers.Contract(tok.address, erc20abi, S.provider);
+          const [bal, dec] = await Promise.all([contract.balanceOf(S.userAddr), contract.decimals()]);
+          document.getElementById(elId).textContent = parseFloat(ethers.formatUnits(bal, dec)).toFixed(4);
+        } catch {}
+      }
+    }
+  } catch(e) {}
+}
+
+// ─── WALLET ──────────────────────────────────────────────────────
+
+async function connectWallet() {
+  if (!window.ethereum) {
+    alert('No wallet detected. Please install MetaMask or another Web3 wallet.');
+    return;
+  }
+  try {
+    const btn = document.getElementById('connect-btn');
+    btn.textContent = 'Connecting...';
+    btn.disabled = true;
+
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    S.provider = new ethers.BrowserProvider(window.ethereum);
+    S.wallet   = await S.provider.getSigner();
+    S.userAddr = await S.wallet.getAddress();
+    const network = await S.provider.getNetwork();
+    S.chainId = Number(network.chainId);
+
+    const short = S.userAddr.slice(0,6) + '...' + S.userAddr.slice(-4);
+    btn.textContent = '◉ ' + short;
+    btn.disabled = false;
+    btn.style.background = 'rgba(52,211,153,0.12)';
+    btn.style.color = 'var(--green)';
+    btn.style.border = '1px solid rgba(52,211,153,0.25)';
+
+    // Match UI chain to wallet chain
+    const wc = S.chains.find(c=>c.id===S.chainId);
+    if (wc) {
+      S.fromChain = wc; S.toChain = wc;
+      document.getElementById('net-label').textContent = wc.displayName || wc.name;
+      await loadTokens(S.chainId);
+    }
+    loadBalances();
+
+    // Watch for account/network changes
+    window.ethereum.on('accountsChanged', accs => {
+      if (!accs.length) { resetWallet(); return; }
+      S.userAddr = accs[0];
+      document.getElementById('connect-btn').textContent = '◉ ' + accs[0].slice(0,6)+'...'+accs[0].slice(-4);
+      loadBalances();
+    });
+    window.ethereum.on('chainChanged', () => location.reload());
+
+  } catch(e) {
+    console.error('connectWallet', e);
+    const btn = document.getElementById('connect-btn');
+    btn.textContent = 'Connect Wallet'; btn.disabled = false;
+    btn.style.background = '';  btn.style.color = '';  btn.style.border = '';
+  }
+}
+
+function resetWallet() {
+  S.wallet = null; S.userAddr = null; S.provider = null;
+  const btn = document.getElementById('connect-btn');
+  btn.textContent = 'Connect Wallet';
+  btn.style.background = '';  btn.style.color = '';  btn.style.border = '';
+}
+
+function goHome(e) {
+  e.preventDefault();
+  // If embedded via #dex hash routing, go back to home hash
+  if (window.location.hash === '#dex') {
+    window.location.hash = '';
+  } else if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    window.location.href = '/';
+  }
+}
+
+// ─── AMOUNT HELPERS ──────────────────────────────────────────────
+
+function amtToWei(amount, decimals) {
+  try {
+    const d = Number(decimals) || 18;
+    const val = parseFloat(amount);
+    if (isNaN(val) || val <= 0) return null;
+    return BigInt(Math.floor(val * 10**d)).toString();
+  } catch { return null; }
+}
+
+function weiToAmt(wei, decimals) {
+  try {
+    const d = Number(decimals) || 18;
+    return ethers.formatUnits(BigInt(wei), d);
+  } catch { return '0'; }
+}
+
+function setMax() {
+  const bal = document.getElementById('from-bal').textContent;
+  if (bal && bal !== '—') {
+    const v = parseFloat(bal);
+    const leave = S.fromToken?.metadata?.isNative ? 0.01 : 0;
+    const safe = Math.max(0, v - leave).toFixed(6);
+    document.getElementById('from-amt').value = safe;
+    onAmountChange();
+  }
+}
+function setBridgeMax() {
+  const bal = document.getElementById('bridge-from-bal').textContent;
+  if (bal && bal !== '—') {
+    const v = parseFloat(bal);
+    const leave = S.bridgeFromToken?.metadata?.isNative ? 0.01 : 0;
+    const safe = Math.max(0, v - leave).toFixed(6);
+    document.getElementById('bridge-from-amt').value = safe;
+    onBridgeAmountChange();
+  }
+}
+
+// ─── QUOTE TRIGGERS ──────────────────────────────────────────────
+
+function onAmountChange() {
+  clearTimeout(S.quoteTimer);
+  document.getElementById('to-amt').value = '';
+  document.getElementById('swap-quote-details').classList.remove('show');
+  hideErr('swap-err');
+  const v = document.getElementById('from-amt').value;
+  if (!v || parseFloat(v) <= 0) {
+    document.getElementById('swap-btn').textContent = 'Get Quote';
+    return;
+  }
+  document.getElementById('swap-btn').textContent = 'Fetching quote...';
+  document.getElementById('swap-btn').classList.add('loading');
+  S.quoteTimer = setTimeout(() => fetchSwapQuote(v), 600);
+}
+
+function onBridgeAmountChange() {
+  clearTimeout(S.quoteTimer);
+  document.getElementById('bridge-to-amt').value = '';
+  document.getElementById('bridge-quote-details').classList.remove('show');
+  hideErr('bridge-err');
+  const v = document.getElementById('bridge-from-amt').value;
+  if (!v || parseFloat(v) <= 0) {
+    document.getElementById('bridge-btn').textContent = 'Get Quote';
+    return;
+  }
+  document.getElementById('bridge-btn').textContent = 'Fetching quote...';
+  document.getElementById('bridge-btn').classList.add('loading');
+  S.quoteTimer = setTimeout(() => fetchBridgeQuote(v), 600);
+}
+
+// ─── RELAY QUOTE API ─────────────────────────────────────────────
+
+async function fetchRelayQuote({originChainId, destChainId, originCurrency, destCurrency, amount}) {
+  const user = S.userAddr || '0x0000000000000000000000000000000000000001';
+  const body = {
+    user,
+    recipient: user,
+    originChainId,
+    destinationChainId: destChainId,
+    originCurrency,
+    destinationCurrency: destCurrency,
+    amount,
+    tradeType: 'EXACT_INPUT',
+    slippageTolerance: S.slippage === 'auto' ? undefined : S.slippage,
+    referrer: 'penguin-dex',
+  };
+  const r = await fetch(`${RELAY}/quote/v2`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) {
+    const err = await r.json().catch(()=>({message:r.statusText}));
+    throw new Error(err.message || 'Quote failed');
+  }
+  return r.json();
+}
+
+async function fetchSwapQuote(amt) {
+  const from = S.fromToken;
+  const to   = S.toToken;
+  const chain = S.fromChain;
+  if (!from || !to || !chain) { stopBtnLoad('swap-btn','Get Quote'); return; }
+
+  const wei = amtToWei(amt, from.decimals);
+  if (!wei) { stopBtnLoad('swap-btn','Get Quote'); return; }
+
+  try {
+    const data = await fetchRelayQuote({
+      originChainId: chain.id,
+      destChainId: chain.id,
+      originCurrency: from.address || NATIVE,
+      destCurrency: to.address || NATIVE,
+      amount: wei,
+    });
+    S.swapQuote = data;
+    renderSwapQuote(data, from, to, amt);
+  } catch(e) {
+    showErr('swap-err', e.message);
+    stopBtnLoad('swap-btn', 'Get Quote');
+  }
+}
+
+async function fetchBridgeQuote(amt) {
+  const from  = S.bridgeFromToken;
+  const to    = S.bridgeToToken;
+  const oChain = S.originChain;
+  const dChain = S.destChain;
+  if (!from || !to || !oChain || !dChain) { stopBtnLoad('bridge-btn','Get Quote'); return; }
+  if (oChain.id === dChain.id) { showErr('bridge-err','Origin and destination chains must be different.'); stopBtnLoad('bridge-btn','Get Quote'); return; }
+
+  const wei = amtToWei(amt, from.decimals);
+  if (!wei) { stopBtnLoad('bridge-btn','Get Quote'); return; }
+
+  try {
+    const data = await fetchRelayQuote({
+      originChainId: oChain.id,
+      destChainId: dChain.id,
+      originCurrency: from.address || NATIVE,
+      destCurrency: to.address || NATIVE,
+      amount: wei,
+    });
+    S.bridgeQuote = data;
+    renderBridgeQuote(data, from, to, amt);
+  } catch(e) {
+    showErr('bridge-err', e.message);
+    stopBtnLoad('bridge-btn','Get Quote');
+  }
+}
+
+function renderSwapQuote(data, from, to, inputAmt) {
+  const det = data.details;
+  const outAmt = det?.currencyOut?.amountFormatted || weiToAmt(det?.currencyOut?.amount || '0', to.decimals);
+  document.getElementById('to-amt').value = parseFloat(outAmt).toFixed(6);
+
+  const rate = parseFloat(inputAmt) > 0 ? (parseFloat(outAmt)/parseFloat(inputAmt)).toFixed(4) : '—';
+  document.getElementById('q-rate').textContent = `1 ${from.symbol} ≈ ${rate} ${to.symbol}`;
+
+  const feeUsd = det?.totalFees?.usd || data.fees?.relayer?.amountUsd;
+  document.getElementById('q-fee').textContent = feeUsd ? `$${parseFloat(feeUsd).toFixed(4)}` : '—';
+
+  const gasEst = data.fees?.gas?.amountFormatted;
+  document.getElementById('q-gas').textContent = gasEst ? `${parseFloat(gasEst).toFixed(6)} ${from.symbol}` : '—';
+
+  document.getElementById('q-time').textContent = '~2 sec';
+  const minOut = det?.currencyOut?.minimumAmountFormatted || parseFloat(outAmt)*0.995;
+  document.getElementById('q-min').textContent = `${parseFloat(minOut).toFixed(6)} ${to.symbol}`;
+
+  document.getElementById('swap-quote-details').classList.add('show');
+  document.getElementById('swap-btn').classList.remove('loading');
+  document.getElementById('swap-btn').textContent = `Swap ${from.symbol} → ${to.symbol}`;
+}
+
+function renderBridgeQuote(data, from, to, inputAmt) {
+  const det = data.details;
+  const outAmt = det?.currencyOut?.amountFormatted || weiToAmt(det?.currencyOut?.amount || '0', to.decimals);
+  document.getElementById('bridge-to-amt').value = parseFloat(outAmt).toFixed(6);
+
+  const feeUsd = det?.totalFees?.usd || data.fees?.relayer?.amountUsd;
+  document.getElementById('bq-fee').textContent = feeUsd ? `$${parseFloat(feeUsd).toFixed(4)}` : '—';
+  document.getElementById('bq-time').textContent = '~2 sec';
+  const minOut = det?.currencyOut?.minimumAmountFormatted || parseFloat(outAmt)*0.995;
+  document.getElementById('bq-min').textContent = `${parseFloat(minOut).toFixed(6)} ${to.symbol}`;
+
+  document.getElementById('bridge-quote-details').classList.add('show');
+  document.getElementById('bridge-btn').classList.remove('loading');
+  document.getElementById('bridge-btn').textContent = `Bridge ${from.symbol} → ${to.symbol}`;
+}
+
+// ─── EXECUTE ─────────────────────────────────────────────────────
+
+async function executeSwap() {
+  if (!S.swapQuote) {
+    const v = document.getElementById('from-amt').value;
+    if (v && parseFloat(v) > 0) await fetchSwapQuote(v);
+    return;
+  }
+  if (!S.wallet) { alert('Please connect your wallet first.'); return; }
+  await executeSteps(S.swapQuote);
+}
+
+async function executeBridge() {
+  if (!S.bridgeQuote) {
+    const v = document.getElementById('bridge-from-amt').value;
+    if (v && parseFloat(v) > 0) await fetchBridgeQuote(v);
+    return;
+  }
+  if (!S.wallet) { alert('Please connect your wallet first.'); return; }
+  await executeSteps(S.bridgeQuote);
+}
+
+// ─── STEP EXECUTION (Relay Protocol standard flow) ───────────────
+
+async function executeSteps(quote) {
+  const steps = quote.steps;
+  if (!steps?.length) {
+    showErr('swap-err', 'No execution steps returned by Relay.');
+    return;
+  }
+
+  openStatusModal();
+  let requestId = quote.requestId;
+
+  try {
+    for (let si = 0; si < steps.length; si++) {
+      const step = steps[si];
+      if (!step.items?.length) continue;
+
+      for (const item of step.items) {
+        // ── SIGNATURE step ────────────────────────────────────────
+        if (step.id === 'deposit' || item.data?.sign) {
+          const signData = item.data?.sign;
+          if (signData) {
+            setStatusStep(2, 'Signing message...');
+            let sig;
+            if (signData.signatureKind === 'eip712') {
+              sig = await S.wallet.signTypedData(signData.domain, signData.types, signData.value);
+            } else {
+              sig = await S.wallet.signMessage(signData.message);
+            }
+            // Post signature
+            if (item.data?.post) {
+              setStatusStep(3, 'Submitting signature...');
+              const postUrl = item.data.post.endpoint + `?signature=${sig}`;
+              const pr = await fetch(postUrl, {
+                method: item.data.post.method || 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(item.data.post.body || {})
+              });
+              const pd = await pr.json();
+              if (pd.requestId) requestId = pd.requestId;
+            }
+            continue;
+          }
+        }
+
+        // ── TRANSACTION step ──────────────────────────────────────
+        if (item.data && (item.data.to || item.data.data)) {
+          setStatusStep(2, 'Approve in wallet...');
+          const txParams = {
+            to:   item.data.to,
+            data: item.data.data || '0x',
+            value: item.data.value ? BigInt(item.data.value) : 0n,
+          };
+          if (item.data.gas)      txParams.gasLimit = BigInt(item.data.gas);
+          if (item.data.maxFeePerGas) {
+            txParams.maxFeePerGas = BigInt(item.data.maxFeePerGas);
+            txParams.maxPriorityFeePerGas = BigInt(item.data.maxPriorityFeePerGas || '1000000000');
+          }
+
+          const tx = await S.wallet.sendTransaction(txParams);
+          setStatusStep(3, 'Transaction submitted...');
+          showTxHash(tx.hash);
+
+          // Update requestId from check URL if present
+          if (item.check?.endpoint) {
+            const checkUrl = item.check.endpoint;
+            const rid = new URL(checkUrl).searchParams.get('requestId');
+            if (rid) requestId = rid;
+          }
+
+          await tx.wait(1);
+          setStatusStep(4, 'Waiting for Relay to fill...');
+        }
+      }
+    }
+
+    // ── POLL STATUS ───────────────────────────────────────────────
+    if (requestId) {
+      await pollRelayStatus(requestId);
+    } else {
+      setSuccess('Transaction sent!', '');
+    }
+
+  } catch(e) {
+    closeStatusModal();
+    const errEl = S.mode === 'swap' ? 'swap-err' : 'bridge-err';
+    const msg = e.reason || e.message || 'Transaction failed';
+    if (!msg.includes('user rejected') && !msg.includes('User denied')) {
+      showErr(errEl, msg.slice(0,120));
+    }
+    console.error('executeSteps', e);
+  }
+}
+
+async function pollRelayStatus(requestId, attempts = 0) {
+  if (attempts > 60) { setSuccess('Submitted', 'Check explorer for final status.'); return; }
+  try {
+    const r = await fetch(`${RELAY}/intents/status/v3?requestId=${encodeURIComponent(requestId)}`);
+    const d = await r.json();
+
+    const STATUS_MAP = {
+      waiting:   { label:'Waiting for deposit...', step:3 },
+      pending:   { label:'Relay processing...', step:3 },
+      submitted: { label:'Destination tx submitted...', step:4 },
+      success:   null,
+      delayed:   { label:'Delayed — still processing...', step:4 },
+      refunded:  { label:'Refunded', step:4 },
+      failure:   { label:'Failed', step:4 },
+    };
+
+    if (d.status === 'success') {
+      const outHash = d.txHashes?.[0];
+      setSuccess('Transaction Complete! 🐧', outHash ? `Destination tx: ${outHash}` : '');
+      if (outHash) showTxHash(outHash);
+      S.swapQuote = null; S.bridgeQuote = null;
+      document.getElementById('from-amt').value = '';
+      document.getElementById('to-amt').value = '';
+      document.getElementById('bridge-from-amt').value = '';
+      document.getElementById('bridge-to-amt').value = '';
+      loadBalances();
+      return;
+    }
+    if (d.status === 'failure') {
+      setError('Transaction failed on destination chain.');
+      return;
+    }
+    if (d.status === 'refunded') {
+      setError('Transaction was refunded.');
+      return;
+    }
+
+    const info = STATUS_MAP[d.status];
+    if (info) setStatusStep(info.step, info.label);
+
+    setTimeout(() => pollRelayStatus(requestId, attempts+1), 2000);
+  } catch(e) {
+    setTimeout(() => pollRelayStatus(requestId, attempts+1), 3000);
+  }
+}
+
+// ─── TOKEN MODAL ─────────────────────────────────────────────────
+
+function openTokenModal(target) {
+  S.tokModalTarget = target;
+  document.getElementById('tok-search').value = '';
+  renderTokList(S.tokens);
+  document.getElementById('token-overlay').classList.add('open');
+  document.getElementById('tok-search').focus();
+}
+
+function renderTokList(tokens) {
+  const list = document.getElementById('tok-list');
+  if (!tokens.length) {
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:12px">No tokens found</div>';
+    return;
+  }
+  list.innerHTML = tokens.map(t => `
+    <div class="tok-opt" onclick="selectToken('${escHtml(t.address)}','${escHtml(t.chainId)}')">
+      <div class="tok-logo" style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;background:var(--surface3);overflow:hidden;flex-shrink:0">
+        ${t.metadata?.logoURI ? `<img src="${escHtml(t.metadata.logoURI)}" style="width:100%;height:100%;border-radius:50%" onerror="this.parentNode.textContent='${escHtml((t.symbol||'?')[0])}'">` : escHtml((t.symbol||'?')[0])}
+      </div>
+      <div class="tok-opt-info">
+        <div class="tok-opt-sym">${escHtml(t.symbol)}</div>
+        <div class="tok-opt-name">${escHtml(t.name)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function filterTokList(q) {
+  if (!q) { renderTokList(S.tokens); return; }
+  const lq = q.toLowerCase();
+
+  // If it's an address, search by it
+  if (q.startsWith('0x') && q.length > 10) {
+    try {
+      const r = await fetch(`${RELAY}/currencies/v2`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ address: q, useExternalSearch: true, limit: 10 })
+      });
+      const d = await r.json();
+      renderTokList(Array.isArray(d) ? d : []);
+      return;
+    } catch {}
+  }
+
+  const filtered = S.tokens.filter(t =>
+    t.symbol?.toLowerCase().includes(lq) ||
+    t.name?.toLowerCase().includes(lq)
+  );
+  if (filtered.length) { renderTokList(filtered); return; }
+
+  // Search API
+  try {
+    const r = await fetch(`${RELAY}/currencies/v2`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ term: q, verified: true, limit: 20 })
+    });
+    const d = await r.json();
+    renderTokList(Array.isArray(d) ? d : []);
+  } catch { renderTokList([]); }
+}
+
+function selectToken(address, chainId) {
+  const tok = S.tokens.find(t => t.address === address && String(t.chainId) === String(chainId))
+           || S.tokens.find(t => t.address === address);
+  if (!tok) return;
+
+  const target = S.tokModalTarget;
+  if (target === 'from') S.fromToken = tok;
+  else if (target === 'to') S.toToken = tok;
+  else if (target === 'bridge-from') S.bridgeFromToken = tok;
+  else if (target === 'bridge-to') S.bridgeToToken = tok;
+
+  updateTokenUI();
+  document.getElementById('token-overlay').classList.remove('open');
+
+  // Reset quotes
+  S.swapQuote = null; S.bridgeQuote = null;
+  document.getElementById('to-amt').value = '';
+  document.getElementById('bridge-to-amt').value = '';
+  document.getElementById('swap-quote-details').classList.remove('show');
+  document.getElementById('bridge-quote-details').classList.remove('show');
+  document.getElementById('swap-btn').textContent = 'Get Quote';
+  document.getElementById('bridge-btn').textContent = 'Get Quote';
+}
+
+// ─── CHAIN MODAL ─────────────────────────────────────────────────
+
+function openChainModal(target) {
+  S.chainModalTarget = target;
+  document.getElementById('chain-search').value = '';
+  renderChainList(S.chains);
+  document.getElementById('chain-overlay').classList.add('open');
+}
+
+function renderChainList(chains) {
+  const target = S.chainModalTarget;
+  const selId = target === 'origin' ? S.originChain?.id : S.destChain?.id;
+  document.getElementById('chain-list').innerHTML = chains.map(c => `
+    <div class="chain-opt ${c.id===selId?'sel':''}" onclick="selectChain(${c.id})">
+      ${c.iconUrl ? `<img src="${escHtml(c.iconUrl)}" alt="${escHtml(c.name)}" onerror="this.style.display='none'">` : `<div style="width:28px;height:28px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">${escHtml((c.name||'?')[0])}</div>`}
+      <div class="chain-opt-name">${escHtml(c.displayName || c.name)}</div>
+    </div>
+  `).join('');
+}
+
+function filterChainList(q) {
+  const lq = q.toLowerCase();
+  renderChainList(q ? S.chains.filter(c=>(c.name||'').toLowerCase().includes(lq)||(c.displayName||'').toLowerCase().includes(lq)) : S.chains);
+}
+
+async function selectChain(id) {
+  const chain = S.chains.find(c=>c.id===id);
+  if (!chain) return;
+
+  const target = S.chainModalTarget;
+  if (target === 'origin') {
+    S.originChain = chain;
+    // Load tokens for that chain
+    await loadTokens(chain.id);
+    S.bridgeFromToken = S.tokens.find(t=>t.metadata?.isNative) || S.tokens[0];
+    updateTokenUI();
+  } else {
+    S.destChain = chain;
+    // Load dest chain tokens
+    const r = await fetch(`${RELAY}/currencies/v2`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({defaultList:true, chainIds:[chain.id], verified:true, limit:20})
+    });
+    const d = await r.json();
+    const destToks = Array.isArray(d) ? d : [];
+    S.bridgeToToken = destToks.find(t=>t.metadata?.isNative) || destToks[0] || S.bridgeToToken;
+    updateTokenUI();
+  }
+
+  updateChainUI();
+  document.getElementById('chain-overlay').classList.remove('open');
+
+  // Reset bridge quote
+  S.bridgeQuote = null;
+  document.getElementById('bridge-to-amt').value = '';
+  document.getElementById('bridge-quote-details').classList.remove('show');
+  document.getElementById('bridge-btn').textContent = 'Get Quote';
+}
+
+// ─── FLIP TOKENS ─────────────────────────────────────────────────
+
+function flipTokens() {
+  [S.fromToken, S.toToken] = [S.toToken, S.fromToken];
+  updateTokenUI();
+  document.getElementById('from-amt').value = document.getElementById('to-amt').value || '';
+  document.getElementById('to-amt').value = '';
+  document.getElementById('swap-quote-details').classList.remove('show');
+  S.swapQuote = null;
+  document.getElementById('swap-btn').textContent = 'Get Quote';
+  const v = document.getElementById('from-amt').value;
+  if (v && parseFloat(v) > 0) onAmountChange();
+}
+
+// ─── UI HELPERS ───────────────────────────────────────────────────
+
+function switchMode(mode, el) {
+  S.mode = mode;
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+mode).classList.add('active');
+}
+
+function setSlip(btn, val) {
+  document.querySelectorAll('.slip-opt').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  S.slippage = val;
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = '⚠ ' + msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 8000);
+}
+function hideErr(id) { document.getElementById(id).classList.remove('show'); }
+
+function stopBtnLoad(id, label) {
+  const btn = document.getElementById(id);
+  btn.classList.remove('loading');
+  btn.textContent = label;
+}
+
+function handleOverlayClick(e, id) {
+  if (e.target.id === id) {
+    document.getElementById(id).classList.remove('open');
+  }
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── STATUS MODAL ─────────────────────────────────────────────────
+
+function openStatusModal() {
+  const ov = document.getElementById('status-overlay');
+  ov.classList.add('open');
+  resetSteps();
+  document.getElementById('smod-icon').className = 'smod-icon processing spin';
+  document.getElementById('smod-icon').textContent = '⟳';
+  document.getElementById('smod-title').textContent = 'Preparing...';
+  document.getElementById('smod-desc').textContent = 'Connecting to Relay Protocol for the best route.';
+  document.getElementById('smod-hash').classList.remove('show');
+}
+
+function setStatusStep(n, label) {
+  for (let i=1; i<n; i++) {
+    const el = document.getElementById('sstep-'+i);
+    if (el) { el.className='smod-step done'; el.querySelector('.sd-dot').className='sd-dot done'; el.querySelector('.sd-dot').textContent='✓'; }
+  }
+  const active = document.getElementById('sstep-'+n);
+  if (active) {
+    active.className='smod-step act';
+    active.querySelector('.sd-dot').className='sd-dot act';
+  }
+  document.getElementById('smod-title').textContent = label || 'Processing...';
+}
+
+function showTxHash(hash) {
+  const el = document.getElementById('smod-hash');
+  el.textContent = 'Tx: ' + hash;
+  el.classList.add('show');
+}
+
+function setSuccess(title, desc) {
+  document.getElementById('smod-icon').className = 'smod-icon success';
+  document.getElementById('smod-icon').textContent = '✓';
+  document.getElementById('smod-title').textContent = title;
+  document.getElementById('smod-desc').textContent = desc || 'Your transaction was completed successfully.';
+  [1,2,3,4].forEach(i=>{
+    const el = document.getElementById('sstep-'+i);
+    if(el){el.className='smod-step done'; el.querySelector('.sd-dot').className='sd-dot done'; el.querySelector('.sd-dot').textContent='✓';}
+  });
+}
+
+function setError(msg) {
+  document.getElementById('smod-icon').className = 'smod-icon error';
+  document.getElementById('smod-icon').textContent = '✗';
+  document.getElementById('smod-title').textContent = 'Transaction Failed';
+  document.getElementById('smod-desc').textContent = msg;
+}
+
+function resetSteps() {
+  [1,2,3,4].forEach(i=>{
+    const el = document.getElementById('sstep-'+i);
+    if(!el) return;
+    el.className= i===1?'smod-step act':'smod-step';
+    const dot=el.querySelector('.sd-dot');
+    dot.className= i===1?'sd-dot act':'sd-dot';
+    dot.textContent=i;
+  });
+}
+
+function closeStatusModal() {
+  document.getElementById('status-overlay').classList.remove('open');
+}
+
+// ─── RECENT TX ────────────────────────────────────────────────────
+
+async function loadRecentTx() {
+  try {
+    const r = await fetch(`${RELAY}/requests/v2?limit=5&source=penguin-dex`);
+    const d = await r.json();
+    const txs = d.requests || [];
+    if (!txs.length) return;
+    const list = document.getElementById('tx-list');
+    list.innerHTML = txs.map(tx => {
+      const isBridge = tx.data?.originChainId !== tx.data?.destinationChainId;
+      const sym = tx.data?.currency?.symbol || 'ETH';
+      const amt = tx.data?.requestedAmount || '?';
+      const fromC = tx.data?.originChainId || '';
+      const toC   = tx.data?.destinationChainId || '';
+      const statusMap = { success:'ok', pending:'wait', failure:'fail', waiting:'wait', submitted:'wait' };
+      const dot = statusMap[tx.status] || 'ok';
+      const timeAgo = tx.createdAt ? relTime(tx.createdAt) : '';
+      return `
+        <div class="tx-item">
+          <div class="tx-badge ${isBridge?'br':'sw'}">${isBridge?'⟶':'⇄'}</div>
+          <div class="tx-info">
+            <div class="tx-main">${escHtml(sym)} ${isBridge?'Bridge':'Swap'}</div>
+            <div class="tx-sub">${isBridge?`Chain ${fromC} → ${toC}`:`Chain ${fromC}`}</div>
+          </div>
+          <div class="tx-right">
+            <div class="tx-amt">${escHtml(String(amt))} ${escHtml(sym)}</div>
+            <div class="tx-time">${timeAgo}</div>
+          </div>
+          <div class="tx-dot ${dot}"></div>
+        </div>`;
+    }).join('');
+  } catch {}
+}
+
+function relTime(ts) {
+  const diff = (Date.now() - new Date(ts).getTime()) / 1000;
+  if (diff < 60) return Math.floor(diff) + 's ago';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  return Math.floor(diff/3600) + 'h ago';
+}
+
+// ─── KICK OFF ────────────────────────────────────────────────────
+
+init();
+setTimeout(loadRecentTx, 2000);
+setInterval(loadRecentTx, 30000);
+</script>
+</body>
+</html>
