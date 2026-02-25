@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Tic-Tac-Toe</title>
+    <title>AI Tic-Tac-Toe</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -24,18 +24,29 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
 
-        .status-container {
-            margin-bottom: 2rem;
-            text-align: center;
+        /* Score Board */
+        .scoreboard {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            background: rgba(255,255,255,0.03);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
+
+        .score-item { text-align: center; }
+        .score-val { font-size: 1.5rem; font-weight: 800; display: block; }
+        .score-label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.6; }
 
         #status {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            height: 1.5rem;
         }
 
         .board {
@@ -44,66 +55,65 @@
             grid-template-rows: repeat(3, 100px);
             gap: 12px;
             background: rgba(255, 255, 255, 0.05);
-            padding: 12px;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            padding: 15px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         .cell {
             background: var(--card-bg);
-            border-radius: 8px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
             font-weight: 800;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
+            border: 1px solid transparent;
         }
 
-        .cell:hover {
+        .cell:hover:not(.taken) {
             background: #334155;
-            transform: translateY(-2px);
+            border-color: var(--accent-x);
+            transform: scale(1.05);
         }
 
-        .cell.x { color: var(--accent-x); }
-        .cell.o { color: var(--accent-o); }
+        .cell.x { color: var(--accent-x); text-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+        .cell.o { color: var(--accent-o); text-shadow: 0 0 15px rgba(251, 113, 133, 0.4); }
+        .cell.taken { cursor: default; }
 
-        .cell.taken {
-            cursor: not-allowed;
-            transform: none;
+        .winner {
+            background: #334155 !important;
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.1);
+            transform: scale(0.95);
         }
 
         .instructions {
             margin-top: 3rem;
-            max-width: 300px;
+            max-width: 280px;
             text-align: center;
-            opacity: 0.7;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 1rem;
-        }
-
-        /* Animation for winning cells */
-        @keyframes win-pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
-            100% { transform: scale(1); }
-        }
-
-        .winner {
-            animation: win-pulse 0.5s ease infinite;
-            background: #334155 !important;
+            opacity: 0.5;
+            font-size: 0.85rem;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
 
-    <div class="status-container">
-        <div id="status">Player X's Turn</div>
+    <div class="scoreboard">
+        <div class="score-item">
+            <span class="score-label">You (X)</span>
+            <span class="score-val" id="scoreX">0</span>
+        </div>
+        <div class="score-item">
+            <span class="score-label">AI (O)</span>
+            <span class="score-val" id="scoreO">0</span>
+        </div>
     </div>
+
+    <div id="status">Your Turn</div>
 
     <div class="board" id="board">
         <div class="cell" data-index="0"></div>
@@ -118,89 +128,108 @@
     </div>
 
     <div class="instructions">
-        <strong>How to play:</strong> Click any square to place your mark. First to get three in a row wins. The board resets automatically 2 seconds after a match ends!
+        AI opponent is active. Game resets automatically after every round.
     </div>
 
     <script>
-        const boardElement = document.getElementById('board');
         const cells = document.querySelectorAll('.cell');
         const statusText = document.getElementById('status');
+        const scoreXText = document.getElementById('scoreX');
+        const scoreOText = document.getElementById('scoreO');
         
-        let currentPlayer = "X";
         let gameState = ["", "", "", "", "", "", "", "", ""];
         let gameActive = true;
+        let scores = { X: 0, O: 0 };
 
-        const winningConditions = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Cols
-            [0, 4, 8], [2, 4, 6]             // Diagonals
+        const winConditions = [
+            [0,1,2], [3,4,5], [6,7,8], [0,3,6], 
+            [1,4,7], [2,5,8], [0,4,8], [2,4,6]
         ];
 
         function handleCellClick(e) {
-            const clickedCell = e.target;
-            const clickedIndex = parseInt(clickedCell.getAttribute('data-index'));
+            const idx = e.target.getAttribute('data-index');
+            if (gameState[idx] !== "" || !gameActive) return;
 
-            if (gameState[clickedIndex] !== "" || !gameActive) return;
+            makeMove(idx, "X");
+            
+            if (gameActive) {
+                statusText.innerText = "AI is thinking...";
+                setTimeout(computerMove, 600);
+            }
+        }
 
-            updateCell(clickedCell, clickedIndex);
+        function makeMove(idx, player) {
+            gameState[idx] = player;
+            cells[idx].innerText = player;
+            cells[idx].classList.add(player.toLowerCase(), 'taken');
             checkResult();
         }
 
-        function updateCell(cell, index) {
-            gameState[index] = currentPlayer;
-            cell.innerText = currentPlayer;
-            cell.classList.add(currentPlayer.toLowerCase(), 'taken');
+        function computerMove() {
+            if (!gameActive) return;
+
+            // Simple AI: Prioritize winning, then blocking, then random
+            let move = findBestMove("O") || findBestMove("X") || getRandomMove();
+            
+            if (move !== null) {
+                makeMove(move, "O");
+                if (gameActive) statusText.innerText = "Your Turn";
+            }
+        }
+
+        function findBestMove(player) {
+            for (let condition of winConditions) {
+                const values = condition.map(i => gameState[i]);
+                if (values.filter(v => v === player).length === 2 && values.filter(v => v === "").length === 1) {
+                    return condition[values.indexOf("")];
+                }
+            }
+            return null;
+        }
+
+        function getRandomMove() {
+            const available = gameState.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+            return available.length > 0 ? available[Math.floor(Math.random() * available.length)] : null;
         }
 
         function checkResult() {
             let roundWon = false;
-            let winningLine = [];
+            let winner = null;
 
-            for (let condition of winningConditions) {
-                let a = gameState[condition[0]];
-                let b = gameState[condition[1]];
-                let c = gameState[condition[2]];
-
-                if (a === '' || b === '' || c === '') continue;
-                if (a === b && b === c) {
+            for (let condition of winConditions) {
+                if (gameState[condition[0]] && gameState[condition[0]] === gameState[condition[1]] && gameState[condition[0]] === gameState[condition[2]]) {
                     roundWon = true;
-                    winningLine = condition;
+                    condition.forEach(i => cells[i].classList.add('winner'));
+                    winner = gameState[condition[0]];
                     break;
                 }
             }
 
             if (roundWon) {
-                statusText.innerText = `Player ${currentPlayer} Wins!`;
-                statusText.style.color = currentPlayer === 'X' ? 'var(--accent-x)' : 'var(--accent-o)';
-                highlightWinner(winningLine);
-                gameActive = false;
-                setTimeout(resetGame, 2000);
-                return;
+                statusText.innerText = winner === "X" ? "You Won! 🎉" : "AI Won! 🤖";
+                scores[winner]++;
+                updateScores();
+                endRound();
+            } else if (!gameState.includes("")) {
+                statusText.innerText = "Draw! 🤝";
+                endRound();
             }
-
-            if (!gameState.includes("")) {
-                statusText.innerText = "It's a Draw!";
-                gameActive = false;
-                setTimeout(resetGame, 2000);
-                return;
-            }
-
-            currentPlayer = currentPlayer === "X" ? "O" : "X";
-            statusText.innerText = `Player ${currentPlayer}'s Turn`;
         }
 
-        function highlightWinner(line) {
-            line.forEach(index => {
-                cells[index].classList.add('winner');
-            });
+        function updateScores() {
+            scoreXText.innerText = scores.X;
+            scoreOText.innerText = scores.O;
         }
 
-        function resetGame() {
-            currentPlayer = "X";
+        function endRound() {
+            gameActive = false;
+            setTimeout(resetBoard, 2000);
+        }
+
+        function resetBoard() {
             gameState = ["", "", "", "", "", "", "", "", ""];
             gameActive = true;
-            statusText.innerText = "Player X's Turn";
-            statusText.style.color = 'var(--text)';
+            statusText.innerText = "Your Turn";
             cells.forEach(cell => {
                 cell.innerText = "";
                 cell.className = 'cell';
