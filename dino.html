@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Dino Runner</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --text: #f8fafc;
+            --accent: #38bdf8;
+            --dino-color: #4ade80; /* Neon Green Dino */
+            --cactus-color: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            user-select: none;
+        }
+
+        .game-wrapper {
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas {
+            display: block;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .score-board {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+        }
+
+        .instructions {
+            margin-top: 2rem;
+            text-align: center;
+            opacity: 0.5;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-wrapper">
+        <div class="score-board">HI <span id="highScore">00000</span> <span id="currentScore">00000</span></div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div class="instructions">
+        Press [Space] to Jump • Auto-Resets
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('currentScore');
+        const highScoreEl = document.getElementById('highScore');
+
+        canvas.width = 700;
+        canvas.height = 200;
+
+        // Pixel Data for Dino (Simple Grid)
+        const DINO_SHAPE = [
+            [0,0,0,0,1,1,1,1],
+            [0,0,0,0,1,1,0,1],
+            [0,0,0,0,1,1,1,1],
+            [1,1,1,1,1,1,0,0],
+            [1,1,1,1,1,1,1,1],
+            [0,1,1,1,1,1,1,0],
+            [0,0,1,0,0,1,0,0],
+            [0,0,1,1,0,1,1,0]
+        ];
+
+        const CACTUS_SHAPE = [
+            [0,0,1,1,0,0],
+            [1,0,1,1,0,1],
+            [1,1,1,1,1,1],
+            [0,0,1,1,0,0],
+            [0,0,1,1,0,0]
+        ];
+
+        let score = 0;
+        let highScore = 0;
+        let gameActive = true;
+        let gameSpeed = 6;
+        let frameCount = 0;
+
+        const dino = {
+            x: 50,
+            y: 150,
+            w: 40,
+            h: 40,
+            dy: 0,
+            jumpForce: -12,
+            gravity: 0.6,
+            grounded: false
+        };
+
+        let obstacles = [];
+
+        function drawPixelShape(shape, x, y, size, color) {
+            ctx.fillStyle = color;
+            const pxW = size / shape[0].length;
+            const pxH = size / shape.length;
+            
+            shape.forEach((row, rowIndex) => {
+                row.forEach((pixel, colIndex) => {
+                    if (pixel) {
+                        ctx.fillRect(x + colIndex * pxW, y + rowIndex * pxH, pxW + 0.5, pxH + 0.5);
+                    }
+                });
+            });
+        }
+
+        function update() {
+            if (!gameActive) return;
+
+            // Physics
+            dino.dy += dino.gravity;
+            dino.y += dino.dy;
+
+            if (dino.y > 150) {
+                dino.y = 150;
+                dino.dy = 0;
+                dino.grounded = true;
+            }
+
+            // Move Obstacles
+            obstacles.forEach((obs, i) => {
+                obs.x -= gameSpeed;
+
+                // Hitbox Collision
+                if (dino.x < obs.x + obs.w && dino.x + dino.w > obs.x &&
+                    dino.y < obs.y + obs.h && dino.y + dino.h > obs.y) {
+                    gameOver();
+                }
+
+                if (obs.x + obs.w < 0) obstacles.splice(i, 1);
+            });
+
+            score += 0.15;
+            gameSpeed += 0.001;
+            scoreEl.innerText = Math.floor(score).toString().padStart(5, '0');
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Ground line
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.beginPath();
+            ctx.moveTo(0, 190);
+            ctx.lineTo(canvas.width, 190);
+            ctx.stroke();
+
+            // Draw Dino
+            const legOffset = (Math.floor(frameCount / 10) % 2 === 0 && dino.grounded) ? 2 : 0;
+            drawPixelShape(DINO_SHAPE, dino.x, dino.y - legOffset, dino.w, '#4ade80');
+
+            // Draw Obstacles
+            obstacles.forEach(obs => {
+                drawPixelShape(CACTUS_SHAPE, obs.x, obs.y, obs.w, '#94a3b8');
+            });
+        }
+
+        function gameOver() {
+            gameActive = false;
+            if (score > highScore) {
+                highScore = Math.floor(score);
+                highScoreEl.innerText = highScore.toString().padStart(5, '0');
+            }
+            setTimeout(reset, 1500);
+        }
+
+        function reset() {
+            score = 0;
+            gameSpeed = 6;
+            obstacles = [];
+            dino.y = 150;
+            gameActive = true;
+            loop();
+        }
+
+        function spawn() {
+            if (!gameActive) return;
+            const size = 30 + Math.random() * 20;
+            obstacles.push({ x: canvas.width, y: 190 - size, w: size * 0.8, h: size });
+            
+            let nextSpawn = Math.random() * 1500 + (1000 / (gameSpeed/6));
+            setTimeout(spawn, nextSpawn);
+        }
+
+        function loop() {
+            if (!gameActive) return;
+            frameCount++;
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        window.addEventListener('keydown', e => {
+            if (e.code === 'Space' && dino.grounded) {
+                dino.dy = dino.jumpForce;
+                dino.grounded = false;
+            }
+        });
+
+        spawn();
+        loop();
+    </script>
+</body>
+</html>
