@@ -321,7 +321,7 @@ void main(){
     const geometry = new Triangle(gl);
     if (geometry.attributes.uv) delete geometry.attributes.uv;
 
-    let initColors = THEMES[localStorage.getItem('shifat-theme')] || THEMES.arctic;
+    let initColors = THEMES[localStorage.getItem('shifat-theme')] || THEMES.ember;
 
     const program = new Program(gl, {
       vertex: VERT, fragment: FRAG,
