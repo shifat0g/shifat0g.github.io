@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,68 +11,50 @@
 </head>
 <body>
 
-<!-- Sidebar -->
-  <div class="sidebar-tab" id="sidebarTab">&#8250;</div>
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-inner">
+  <!-- Aurora Canvas Background -->
+  <canvas id="aurora-canvas"></canvas>
 
-      <div class="sidebar-section">
-        <p class="sidebar-label">Navigate</p>
-        <nav class="sidebar-nav">
-          <a href="#about" class="sidebar-link" onclick="closeSidebar()">About</a>
-          <a href="#connect" class="sidebar-link" onclick="closeSidebar()">Connect</a>
-          <a href="#community" class="sidebar-link" onclick="closeSidebar()">Join my Community</a>
-        </nav>
-      </div>
-
-      <div class="sidebar-section">
-        <p class="sidebar-label">Some Random Stuffs</p>
-        <nav class="sidebar-nav">
-         
-          
-         <a href="/tictactoe" class="sidebar-link sidebar-social">
-            <span>Tic Tac Toe</span><span class="s-arrow">↗</span>
-          </a>
-          <a href="/2048" class="sidebar-link sidebar-social">
-            <span>2048 🧩</span><span class="s-arrow">↗</span>
-          </a>
-          <a href="/quote" class="sidebar-link sidebar-social">
-            <span>Quotes for You 🤗</span><span class="s-arrow">↗</span>
-          </a>
-          <a href="#" class="sidebar-link sidebar-social">
-            <span>Loading⏳</span><span class="s-arrow">↗</span>
-          </a>
-          <a href="#" class="sidebar-link sidebar-social">
-            <span>Loading⏳</span><span class="s-arrow">↗</span>
-          </a>
-          <a href="#" class="sidebar-link sidebar-social">
-            <span>Loading⏳</span><span class="s-arrow">↗</span>
-          </a>
-           <a href="penguin-dex.html" class="sidebar-link sidebar-social">
-  <span>Testing Dex (Not Real)</span><span class="s-arrow">↗</span>
-</a>
-          <a href="penguin-price.html" class="sidebar-link sidebar-social">
-  <span>Testing Price Tracker</span><span class="s-arrow">↗</span>
-          </a>
-        </nav>
-      </div>
-
+  <!-- Top Navbar -->
+  <nav class="topnav" id="topnav">
+    <div class="topnav-logo">
+      <span class="logo-dot"></span>
+      <span class="logo-name">Shifat</span>
     </div>
-  </aside>
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-  
-  <!-- Theme Toggle -->
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-    <span class="toggle-track">
-      <span class="toggle-icon sun">☀</span>
-      <span class="toggle-icon moon">☽</span>
-      <span class="toggle-thumb"></span>
-    </span>
-  </button>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+      <span class="menu-bar"></span>
+      <span class="menu-bar"></span>
+      <span class="menu-bar"></span>
+    </button>
+  </nav>
 
-  <!-- Background decorative elements -->
-  <div class="bg-ornament top-left"></div>
-  <div class="bg-ornament bottom-right"></div>
+  <!-- Full-screen Menu Overlay -->
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-overlay-bg"></div>
+    <div class="menu-content">
+      <div class="menu-col menu-col-nav">
+        <p class="menu-label">Navigate</p>
+        <nav class="menu-nav">
+          <a href="#about"     class="menu-link" data-idx="0" onclick="closeMenu()"><span class="menu-num">01</span>About</a>
+          <a href="#connect"   class="menu-link" data-idx="1" onclick="closeMenu()"><span class="menu-num">02</span>Connect</a>
+          <a href="#community" class="menu-link" data-idx="2" onclick="closeMenu()"><span class="menu-num">03</span>Community</a>
+          <a href="#projects"  class="menu-link" data-idx="3" onclick="closeMenu()"><span class="menu-num">04</span>Projects</a>
+        </nav>
+      </div>
+      <div class="menu-col menu-col-extras">
+        <p class="menu-label">Some Random Stuffs</p>
+        <nav class="menu-extras">
+          <a href="/tictactoe"      class="menu-extra-link" data-idx="0"><span>Tic Tac Toe</span><span class="ext-arrow">↗</span></a>
+          <a href="/2048"           class="menu-extra-link" data-idx="1"><span>2048 🧩</span><span class="ext-arrow">↗</span></a>
+          <a href="/quote"          class="menu-extra-link" data-idx="2"><span>Quotes for You 🤗</span><span class="ext-arrow">↗</span></a>
+          <a href="#"               class="menu-extra-link" data-idx="3"><span>Loading⏳</span><span class="ext-arrow">↗</span></a>
+          <a href="#"               class="menu-extra-link" data-idx="4"><span>Loading⏳</span><span class="ext-arrow">↗</span></a>
+          <a href="penguin-dex.html" class="menu-extra-link" data-idx="5"><span>Testing Dex (Not Real)</span><span class="ext-arrow">↗</span></a>
+          <a href="penguin-price.html" class="menu-extra-link" data-idx="6"><span>Testing Price Tracker</span><span class="ext-arrow">↗</span></a>
+        </nav>
+      </div>
+    </div>
+    <button class="menu-close" id="menuClose" aria-label="Close menu">✕</button>
+  </div>
 
   <main class="container">
 
@@ -88,8 +70,7 @@
     </header>
 
     <!-- About -->
-    <section class="section about-section">
-      <section class="section about-section" id="about">
+    <section class="section about-section" id="about">
       <span class="section-tag">01 — About</span>
       <div class="about-body">
         <p class="about-text">
@@ -99,11 +80,9 @@
     </section>
 
     <!-- Connect -->
-    <section class="section connect-section">
-      <section class="section connect-section" id="connect">
+    <section class="section connect-section" id="connect">
       <span class="section-tag">02 — Connect</span>
       <p class="connect-intro">Find me across the internet</p>
-
       <div class="links-grid">
 
         <a href="https://x.com/shifat0g" class="link-card" data-platform="x">
@@ -148,11 +127,13 @@
 
       </div>
     </section>
-          <section class="section community-section" id="community">
+
+    <!-- Community -->
+    <section class="section community-section" id="community">
       <span class="section-tag">03 — Community</span>
       <p class="connect-intro">Join Web3 Decoder Community</p>
-
       <div class="links-grid">
+
         <a href="https://t.me/web3decoder" class="link-card" data-platform="telegram">
           <div class="link-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
@@ -165,7 +146,7 @@
 
         <a href="https://t.me/w3dchat" class="link-card" data-platform="telegram">
           <div class="link-icon">
-             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
           </div>
           <div class="link-info">
             <span class="link-name">Community Group</span>
@@ -178,17 +159,18 @@
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           </div>
           <div class="link-info">
-            <span class="link-name">Web3 Decoder(X)</span>
+            <span class="link-name">Web3 Decoder (X)</span>
             <span class="link-arrow">↗</span>
           </div>
         </a>
+
       </div>
     </section>
 
+    <!-- Projects -->
     <section class="section projects-section" id="projects">
       <span class="section-tag">04 — Projects</span>
       <p class="connect-intro">Projects I worked on or currently working</p>
-      
       <div class="projects-list">
         <a href="https://moonbootslabs.com/" class="project-item">
           <div class="project-meta">
@@ -196,12 +178,10 @@
             <h3 class="project-title">Moonboots Labs</h3>
           </div>
           <p class="project-desc">Working as an Ambassador.</p>
-          <span class="https://moonbootslabs.com/">View Project ↗</span>
+          <span class="project-link-text">View Project ↗</span>
         </a>
-
-        </div>
+      </div>
     </section>
-      
 
     <!-- Footer -->
     <footer class="site-footer">
@@ -212,42 +192,131 @@
   </main>
 
   <script>
-    const toggle = document.getElementById('themeToggle');
-    const html = document.documentElement;
+    /* ── Aurora Canvas ── */
+    (function() {
+      const canvas = document.getElementById('aurora-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, t = 0;
 
-    // Load saved preference
-    const saved = localStorage.getItem('theme') || 'light';
-    html.setAttribute('data-theme', saved);
+      const C1 = { r: 83,  g: 110, b: 87  }; // #536e57 green
+      const C2 = { r: 90,  g: 127, b: 145 }; // #5a7f91 slate-blue
+      const C3 = { r: 47,  g: 186, b: 189 }; // #2fbabd teal
 
-    toggle.addEventListener('click', () => {
-      const current = html.getAttribute('data-theme');
-      const next = current === 'light' ? 'dark' : 'light';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function lerpColor(a, b, n) {
+        return {
+          r: a.r + (b.r - a.r) * n,
+          g: a.g + (b.g - a.g) * n,
+          b: a.b + (b.b - a.b) * n
+        };
+      }
+
+      function rgba(c, a) {
+        return `rgba(${Math.round(c.r)},${Math.round(c.g)},${Math.round(c.b)},${a})`;
+      }
+
+      function drawBlob(cx, cy, rx, ry, color, alpha) {
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(rx, ry));
+        grad.addColorStop(0,   rgba(color, alpha));
+        grad.addColorStop(0.5, rgba(color, alpha * 0.4));
+        grad.addColorStop(1,   rgba(color, 0));
+        ctx.save();
+        ctx.scale(rx / Math.max(rx, ry), ry / Math.max(rx, ry));
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx / (rx / Math.max(rx, ry)), cy / (ry / Math.max(rx, ry)), Math.max(rx, ry), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function frame() {
+        t += 0.003;
+        ctx.clearRect(0, 0, W, H);
+
+        // dark base
+        ctx.fillStyle = '#0a0e0b';
+        ctx.fillRect(0, 0, W, H);
+
+        // blob 1 — green, top-left drifting
+        const x1 = W * (0.15 + 0.12 * Math.sin(t * 0.7));
+        const y1 = H * (0.25 + 0.10 * Math.cos(t * 0.5));
+        drawBlob(x1, y1, W * 0.45, H * 0.4, C1, 0.28);
+
+        // blob 2 — teal, center-right
+        const x2 = W * (0.65 + 0.10 * Math.cos(t * 0.6));
+        const y2 = H * (0.40 + 0.12 * Math.sin(t * 0.8));
+        drawBlob(x2, y2, W * 0.5, H * 0.45, C3, 0.22);
+
+        // blob 3 — slate-blue, bottom
+        const x3 = W * (0.40 + 0.08 * Math.sin(t * 0.4 + 1));
+        const y3 = H * (0.70 + 0.08 * Math.cos(t * 0.6 + 2));
+        drawBlob(x3, y3, W * 0.55, H * 0.4, C2, 0.20);
+
+        // grain overlay (subtle noise)
+        const imageData = ctx.getImageData(0, 0, W, H);
+        const data = imageData.data;
+        for (let i = 0; i < data.length; i += 4 * 8) {
+          const noise = (Math.random() - 0.5) * 12;
+          data[i]     = Math.min(255, Math.max(0, data[i]     + noise));
+          data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + noise));
+          data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + noise));
+        }
+        ctx.putImageData(imageData, 0, 0);
+
+        requestAnimationFrame(frame);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      frame();
+    })();
+
+    /* ── Navbar scroll glass ── */
+    const topnav = document.getElementById('topnav');
+    window.addEventListener('scroll', () => {
+      topnav.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    /* ── Menu open / close ── */
+    const menuBtn     = document.getElementById('menuBtn');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const menuClose   = document.getElementById('menuClose');
+
+    function openMenu() {
+      menuOverlay.classList.add('open');
+      document.body.classList.add('menu-open');
+      menuBtn.classList.add('active');
+      // stagger items
+      document.querySelectorAll('.menu-link, .menu-extra-link').forEach((el, i) => {
+        el.style.transitionDelay = (0.06 + i * 0.05) + 's';
+      });
+    }
+
+    function closeMenu() {
+      menuOverlay.classList.remove('open');
+      document.body.classList.remove('menu-open');
+      menuBtn.classList.remove('active');
+    }
+
+    menuBtn.addEventListener('click', () => {
+      menuOverlay.classList.contains('open') ? closeMenu() : openMenu();
+    });
+    menuClose.addEventListener('click', closeMenu);
+
+    // close on backdrop click
+    menuOverlay.addEventListener('click', e => {
+      if (e.target === menuOverlay) closeMenu();
+    });
+
+    // Escape key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeMenu();
     });
   </script>
-<script>
-    const tab = document.getElementById('sidebarTab');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
 
-    tab.addEventListener('click', () => {
-      const isOpen = sidebar.classList.contains('open');
-      isOpen ? closeSidebar() : openSidebar();
-    });
-
-    function openSidebar() {
-      sidebar.classList.add('open');
-      overlay.classList.add('open');
-      tab.classList.add('open');
-    }
-
-    function closeSidebar() {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('open');
-      tab.classList.remove('open');
-    }
-</script>
-      
 </body>
-    </html>
+</html>
