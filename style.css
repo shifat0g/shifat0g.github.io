@@ -230,9 +230,9 @@ a{text-decoration:none;color:inherit;}
 
 .overlay-extra{
   display:flex;justify-content:space-between;align-items:center;
-  font-family:var(--font-m);font-size:0.73rem;
-  color:rgba(255,255,255,0.32);
-  padding:0.5rem 0.65rem;border-radius:7px;
+  font-family:var(--font-d);font-size:1.1rem;font-weight:500;
+  color:rgba(255,255,255,0.45);
+  padding:0.55rem 0.75rem;border-radius:7px;
   border:1px solid transparent;
   opacity:0;transform:translateX(16px);
   transition:background 0.2s,color 0.2s,border-color 0.2s,
