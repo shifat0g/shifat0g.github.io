@@ -438,8 +438,8 @@ void main(){
     });
 
     // Restore saved theme on load
-    const saved = localStorage.getItem('shifat-theme');
-    if (saved) applyTheme(saved);
+    const saved = localStorage.getItem('shifat-theme') || 'ember';
+applyTheme(saved);
   </script>
 
 </body>
