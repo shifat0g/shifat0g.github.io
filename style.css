@@ -354,7 +354,9 @@ a{text-decoration:none;color:inherit;}
 .link-card[data-platform="x"]:hover      {border-color:rgba(29,155,240,0.28);}
 .link-card[data-platform="telegram"]:hover{border-color:rgba(42,174,226,0.28);}
 .link-card[data-platform="discord"]:hover {border-color:rgba(88,101,242,0.28);}
-.link-card[data-platform="spotify"]:hover {border-color:rgba(30,215,96,0.28);}
+.link-card[data-platform="spotify"]:hover  {border-color:rgba(30,215,96,0.28);}
+.link-card[data-platform="github"]:hover   {border-color:rgba(255,255,255,0.28);}
+.link-card[data-platform="farcaster"]:hover{border-color:rgba(139,92,246,0.38);}
 
 .link-icon{
   flex-shrink:0;width:36px;height:36px;
