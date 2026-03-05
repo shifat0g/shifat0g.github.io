@@ -253,12 +253,35 @@
       <p class="section-intro">Different games I play</p>
       <div class="games-list">
         <div class="game-item">
-          <div class="game-icon">⚔️</div>
+          <div class="game-icon">
+            <svg width="34" height="34" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="gi-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%"   stop-color="#ffe680"/>
+                  <stop offset="45%"  stop-color="#f0a020"/>
+                  <stop offset="100%" stop-color="#c06010"/>
+                </linearGradient>
+              </defs>
+              <path d="M100 30 C70 45 38 70 42 105 C46 125 62 138 78 143 L100 100 Z" fill="url(#gi-gold)" opacity="0.92"/>
+              <path d="M100 30 C130 45 162 70 158 105 C154 125 138 138 122 143 L100 100 Z" fill="url(#gi-gold)" opacity="0.92"/>
+              <path d="M78 143 C68 158 72 175 100 172 L100 100 Z" fill="url(#gi-gold)" opacity="0.75"/>
+              <path d="M122 143 C132 158 128 175 100 172 L100 100 Z" fill="url(#gi-gold)" opacity="0.75"/>
+              <circle cx="100" cy="98" r="16" fill="url(#gi-gold)"/>
+              <circle cx="100" cy="98" r="9"  fill="#fff8e0" opacity="0.9"/>
+              <circle cx="95"  cy="93" r="3.5" fill="white" opacity="0.7"/>
+            </svg>
+          </div>
           <div class="game-info">
             <div class="game-name">Genshin Impact</div>
             <div class="game-uid-row">
               <span class="game-uid-label">UID</span>
-              <input class="game-uid-input" type="text" placeholder="⏳" maxlength="18" />
+              <span class="game-uid-display">YOUR_UID_HERE</span>
+              <button class="game-uid-copy" id="uidCopyBtn" aria-label="Copy UID">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -488,6 +511,19 @@ applyTheme(saved);
       revealEls.forEach(el => {
         const rect = el.getBoundingClientRect();
         if(rect.top < window.innerHeight) el.classList.add('revealed');
+      });
+    });
+  </script>
+  <script>
+    document.getElementById('uidCopyBtn').addEventListener('click', function() {
+      const uid = document.querySelector('.game-uid-display').textContent.trim();
+      navigator.clipboard.writeText(uid).then(() => {
+        this.classList.add('copied');
+        this.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+        setTimeout(() => {
+          this.classList.remove('copied');
+          this.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+        }, 1600);
       });
     });
   </script>

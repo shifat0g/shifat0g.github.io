@@ -421,15 +421,21 @@ a{text-decoration:none;color:inherit;}
 .game-name{font-family:var(--font-d);font-size:1.1rem;font-weight:600;color:var(--text-1);}
 .game-uid-row{display:flex;align-items:center;gap:0.6rem;margin-top:0.5rem;}
 .game-uid-label{font-family:var(--font-m);font-size:0.62rem;letter-spacing:0.12em;color:var(--text-3);text-transform:uppercase;}
-.game-uid-input{
-  font-family:var(--font-m);font-size:0.72rem;
-  background:rgba(255,255,255,0.06);border:1px solid var(--glass-b);
-  color:var(--text-2);border-radius:6px;padding:0.25rem 0.65rem;
-  outline:none;width:140px;
-  transition:border-color var(--t),background var(--t);
+.game-uid-display{
+  font-family:var(--font-m);font-size:0.75rem;letter-spacing:0.1em;
+  color:var(--text-1);
+  background:rgba(255,255,255,0.05);border:1px solid var(--glass-b);
+  border-radius:6px;padding:0.22rem 0.7rem;
 }
-.game-uid-input:focus{border-color:var(--accent-soft);background:rgba(47,186,189,0.06);}
-.game-uid-input::placeholder{color:var(--text-3);}
+.game-uid-copy{
+  width:26px;height:26px;border-radius:6px;flex-shrink:0;
+  background:rgba(255,255,255,0.05);border:1px solid var(--glass-b);
+  color:var(--text-3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background var(--t),color var(--t),border-color var(--t);
+}
+.game-uid-copy:hover{background:rgba(47,186,189,0.12);border-color:var(--accent-soft);color:var(--accent);}
+.game-uid-copy.copied{color:var(--accent);border-color:var(--accent-soft);}
 
 /* ── Footer ── */
 .site-footer{margin-top:3.5rem;}
