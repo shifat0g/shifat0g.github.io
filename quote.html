@@ -83,8 +83,9 @@ permalink: /quote
       position: relative; z-index: 1;
       height: 100vh;
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 70px 1.5rem 1rem;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 110px 1.5rem 1rem;
       gap: 0;
     }
 
@@ -115,7 +116,8 @@ permalink: /quote
 
     .quote-box {
       position: relative;
-      width: min(94%, 720px);
+      width: min(95%, 850px);
+      min-height: 320px;
       padding: clamp(1.5rem, 3vh, 2.5rem) clamp(1.2rem, 3vw, 2.5rem);
       background: var(--card);
       border-radius: 20px;
@@ -132,7 +134,7 @@ permalink: /quote
     .quote-box.visible { opacity: 1; transform: translateY(0); }
 
     .quote {
-      font-size: clamp(1.1rem, 3vw, 1.7rem);
+      font-size: clamp(1.3rem, 3vw, 2rem);
       font-weight: 400;
       line-height: 1.52;
       text-align: center;
@@ -240,6 +242,7 @@ permalink: /quote
 
     <div class="actions-row">
       <button class="btn" id="generateBtn">Generate 😇</button>
+      <button class="btn" id="saveBtn">Save 📷</button>
 
       <!-- X Share -->
       <button class="share-btn share-btn-x" id="shareX" title="Share on X">
@@ -437,6 +440,91 @@ document.getElementById('shareTg').addEventListener('click', () => {
     : `"${currentQuote.text}"`;
   window.open('https://t.me/share/url?url=&text=' + encodeURIComponent(txt), '_blank');
 });
+
+document.getElementById("saveBtn").addEventListener("click", () => {
+
+  const size = 1080;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  // Beautiful gradient backgrounds
+  const gradients = [
+    ["#667eea","#764ba2"],
+    ["#ff9966","#ff5e62"],
+    ["#56ccf2","#2f80ed"],
+    ["#11998e","#38ef7d"],
+    ["#c471f5","#fa71cd"],
+    ["#f7971e","#ffd200"]
+  ];
+
+  const g = gradients[Math.floor(Math.random()*gradients.length)];
+
+  const gradient = ctx.createLinearGradient(0,0,size,size);
+  gradient.addColorStop(0,g[0]);
+  gradient.addColorStop(1,g[1]);
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0,0,size,size);
+
+  const quote = document.getElementById("quoteText").textContent;
+  const author = document.getElementById("authorText").textContent;
+
+  ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "center";
+
+  ctx.font = "bold 60px Playfair Display, serif";
+
+  const maxWidth = 820;
+  const lineHeight = 72;
+
+  function wrapText(text){
+    const words = text.split(" ");
+    let line="";
+    const lines=[];
+
+    for(let n=0;n<words.length;n++){
+      const testLine=line+words[n]+" ";
+      const metrics=ctx.measureText(testLine);
+      const testWidth=metrics.width;
+
+      if(testWidth>maxWidth && n>0){
+        lines.push(line);
+        line=words[n]+" ";
+      }else{
+        line=testLine;
+      }
+    }
+    lines.push(line);
+    return lines;
+  }
+
+  const lines = wrapText(quote);
+
+  const totalTextHeight = lines.length * lineHeight + 100;
+  let y = (size - totalTextHeight) / 2;
+
+  lines.forEach(line=>{
+    ctx.fillText(line.trim(), size/2, y);
+    y += lineHeight;
+  });
+
+  ctx.font = "40px Plus Jakarta Sans, sans-serif";
+  ctx.globalAlpha = 0.9;
+
+  if(author){
+    ctx.fillText(author, size/2, y + 40);
+  }
+
+  
+  const link=document.createElement("a");
+  link.download="quote.png";
+  link.href=canvas.toDataURL("image/png");
+  link.click();
+
+});
+
 </script>
 </body>
 </html>
