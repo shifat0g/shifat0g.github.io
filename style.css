@@ -279,10 +279,20 @@ a{text-decoration:none;color:inherit;}
 .header-content{text-align:center;padding:2rem 0;}
 .htagline{
   font-family:var(--font-d);
-  font-size:clamp(2.2rem,8vw,4.2rem);
+  font-size:clamp(2.8rem,10vw,5.4rem);
   font-weight:600;line-height:1.1;letter-spacing:-0.02em;
   color:var(--text-1);
   text-shadow:0 0 60px rgba(47,186,189,0.2);
+}
+
+/* Persistent ambient animations on the heading */
+@keyframes headingFloat {
+  0%,100% { transform: translateY(0px); }
+  50%      { transform: translateY(-7px); }
+}
+@keyframes headingGlow {
+  0%,100% { text-shadow: 0 0 40px rgba(47,186,189,0.15), 0 0 80px rgba(47,186,189,0.08); }
+  50%      { text-shadow: 0 0 60px rgba(47,186,189,0.45), 0 0 120px rgba(47,186,189,0.22); }
 }
 
 /* Scroll/load reveal animation */
@@ -294,6 +304,9 @@ a{text-decoration:none;color:inherit;}
 .reveal-on-scroll.revealed{
   opacity:1;
   transform:translateY(0);
+  animation:
+    headingFloat 5s ease-in-out infinite,
+    headingGlow  4s ease-in-out infinite;
 }
 
 /* ── Sections ── */

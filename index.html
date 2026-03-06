@@ -84,7 +84,7 @@
             </button>
 
             <div class="theme-panel" id="themePanel">
-              <button class="tswatch active" data-theme="ember">
+              <button class="tswatch" data-theme="ember">
                 <span class="sdots">
                 <span class="sd" style="background:#6e1a1a"></span>
                 <span class="sd" style="background:#c44d26"></span>
@@ -100,7 +100,7 @@
                 </span>
                 <span class="slabel">Dusk</span>
               </button>
-              <button class="tswatch" data-theme="ocean">
+              <button class="tswatch active" data-theme="ocean">
                 <span class="sdots">
                   <span class="sd" style="background:#1a3a6e"></span>
                   <span class="sd" style="background:#2670c4"></span>
@@ -385,7 +385,7 @@ void main(){
     const geometry = new Triangle(gl);
     if (geometry.attributes.uv) delete geometry.attributes.uv;
 
-    let initColors = THEMES[localStorage.getItem('shifat-theme')] || THEMES.ember;
+    let initColors = THEMES[localStorage.getItem('shifat-theme')] || THEMES.ocean;
 
     const program = new Program(gl, {
       vertex: VERT, fragment: FRAG,
@@ -502,7 +502,7 @@ void main(){
     });
 
     // Restore saved theme on load
-    const saved = localStorage.getItem('shifat-theme') || 'ember';
+    const saved = localStorage.getItem('shifat-theme') || 'ocean';
 applyTheme(saved);
   </script>
 
