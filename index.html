@@ -159,7 +159,7 @@
     <header class="site-header">
       <div class="hline"></div>
       <div class="header-content">
-        <h1 class="htagline">Welcome Here!</h1>
+        <h1 class="htagline" id="siteHeading">Welcome Here!</h1>
       </div>
       <div class="hline"></div>
     </header>
@@ -507,18 +507,22 @@ applyTheme(saved);
   </script>
 
   <script>
-    /* ── Typewriter for heading ── */
-    window.addEventListener('load', () => {
-      const heading = document.querySelector('.htagline');
-      if (heading) {
-        setTimeout(() => heading.classList.add('typing'), 200);
+    /* ── Heading: fade+rise on load/scroll ── */
+    (function() {
+      var heading = document.getElementById('siteHeading');
+      if (!heading) return;
+      function revealHeading() {
+        var rect = heading.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.92) {
+          heading.classList.add('revealed');
+          window.removeEventListener('scroll', revealHeading);
+        }
       }
-      /* Fade reveal for other elements */
-      document.querySelectorAll('.reveal-on-scroll:not(.htagline)').forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight) el.classList.add('revealed');
+      window.addEventListener('load', function() {
+        setTimeout(revealHeading, 80);
       });
-    });
+      window.addEventListener('scroll', revealHeading, { passive: true });
+    })();
   </script>
   <script>
     document.getElementById('uidCopyBtn').addEventListener('click', function() {

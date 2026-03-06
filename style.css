@@ -1,7 +1,6 @@
 /* =============================================
    Shifat — Personal Website
    Style: Aurora Glass / Dark Luxury
-   Fonts: Cormorant Garamond + DM Mono
    ============================================= */
 
 :root {
@@ -33,6 +32,7 @@ body{
   overflow-x:hidden;
 }
 a{text-decoration:none;color:inherit;}
+img{max-width:100%;display:block;}
 ::selection{background:var(--accent);color:#fff;}
 
 /* ── Scrollbar ── */
@@ -277,46 +277,23 @@ a{text-decoration:none;color:inherit;}
   margin:1.4rem 0;
 }
 .header-content{text-align:center;padding:2rem 0;}
-/* Typewriter heading */
-@keyframes typewriter {
-  from { width: 0; }
-  to   { width: 14ch; }
-}
-@keyframes cursorBlink {
-  0%,100% { border-color: rgba(47,186,189,0.7); }
-  50%     { border-color: transparent; }
-}
-@keyframes cursorFade {
-  to { border-color: transparent; }
-}
 
+/* ── Welcome heading — fade+rise on load, no continuous animation ── */
 .htagline{
   font-family:var(--font-d);
-  font-size:clamp(2.8rem,10vw,5.4rem);
-  font-weight:600;line-height:1.1;letter-spacing:-0.02em;
+  font-size:clamp(2.6rem,9vw,4.8rem);
+  font-weight:600;
+  line-height:1.15;
+  letter-spacing:-0.02em;
   color:var(--text-1);
-  text-shadow:0 0 60px rgba(47,186,189,0.2);
-  overflow:hidden;
-  white-space:nowrap;
-  width:0;
-  border-right:3px solid transparent;
-  display:inline-block;
-  opacity:1 !important;
-}
-.htagline.typing {
-  animation:
-    typewriter  1.8s steps(13, end) forwards,
-    cursorBlink 0.65s step-end 1.8s 5,
-    cursorFade  0.3s ease forwards 5s;
-}
-
-/* Scroll/load reveal — fade only for other elements */
-.reveal-on-scroll{
+  text-shadow:0 0 60px rgba(47,186,189,0.25);
   opacity:0;
-  transition:opacity 0.9s var(--ease);
+  transform:translateY(24px);
+  transition:opacity 1s var(--ease), transform 1s var(--ease);
 }
-.reveal-on-scroll.revealed{
+.htagline.revealed{
   opacity:1;
+  transform:translateY(0);
 }
 
 /* ── Sections ── */
@@ -390,9 +367,9 @@ a{text-decoration:none;color:inherit;}
 }
 .link-card:hover .link-icon{color:var(--accent);border-color:var(--accent-soft);}
 
-.link-info{display:flex;align-items:center;justify-content:space-between;flex:1;gap:0.5rem;}
-.link-name{font-family:var(--font-m);font-size:0.7rem;letter-spacing:0.05em;color:var(--text-1);}
-.link-arrow{font-size:0.82rem;color:var(--text-3);transition:color var(--t),transform var(--t);}
+.link-info{display:flex;align-items:center;justify-content:space-between;flex:1;gap:0.5rem;min-width:0;}
+.link-name{font-family:var(--font-m);font-size:0.7rem;letter-spacing:0.05em;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.link-arrow{font-size:0.82rem;color:var(--text-3);transition:color var(--t),transform var(--t);flex-shrink:0;}
 .link-card:hover .link-arrow{color:var(--accent);transform:translate(2px,-2px);}
 
 /* ── Projects ── */
@@ -411,7 +388,7 @@ a{text-decoration:none;color:inherit;}
   transform:translateX(4px);
   box-shadow:0 8px 32px rgba(47,186,189,0.09);
 }
-.project-meta{display:flex;align-items:baseline;gap:1rem;margin-bottom:0.4rem;}
+.project-meta{display:flex;align-items:baseline;gap:1rem;margin-bottom:0.4rem;flex-wrap:wrap;}
 .project-year{font-family:var(--font-m);font-size:0.63rem;color:var(--accent);}
 .project-title{font-family:var(--font-d);font-size:1.3rem;font-weight:600;color:var(--text-1);}
 .project-desc{font-family:var(--font-d);font-size:0.95rem;font-weight:400;color:var(--text-2);margin-bottom:0.9rem;}
@@ -441,10 +418,11 @@ a{text-decoration:none;color:inherit;}
   font-size:1.8rem;flex-shrink:0;
   width:44px;height:44px;display:flex;align-items:center;justify-content:center;
   background:rgba(255,255,255,0.05);border-radius:10px;border:1px solid var(--glass-b);
+  overflow:hidden;
 }
-.game-info{flex:1;}
+.game-info{flex:1;min-width:0;}
 .game-name{font-family:var(--font-d);font-size:1.1rem;font-weight:600;color:var(--text-1);}
-.game-uid-row{display:flex;align-items:center;gap:0.6rem;margin-top:0.5rem;}
+.game-uid-row{display:flex;align-items:center;gap:0.6rem;margin-top:0.5rem;flex-wrap:wrap;}
 .game-uid-label{font-family:var(--font-m);font-size:0.62rem;letter-spacing:0.12em;color:var(--text-3);text-transform:uppercase;}
 .game-uid-display{
   font-family:var(--font-m);font-size:0.75rem;letter-spacing:0.1em;
@@ -470,14 +448,40 @@ a{text-decoration:none;color:inherit;}
   text-align:center;text-transform:uppercase;
 }
 
-/* ── Mobile ── */
+/* ════════════════════════════════════════
+   RESPONSIVE — Tablet
+════════════════════════════════════════ */
+@media(max-width:768px){
+  .container{padding:100px 1.5rem 4rem;}
+  .link-card{width:60vw;max-width:340px;}
+}
+
+/* ════════════════════════════════════════
+   RESPONSIVE — Mobile
+════════════════════════════════════════ */
 @media(max-width:600px){
   .pill-nav{top:14px;width:calc(100% - 1.75rem);}
-  .container{padding:90px 1.25rem 4rem;}
-  .link-card{width:min(90%, 340px);}
+  .container{padding:88px 1.1rem 4rem;}
+
+  /* Cards take up ~3/5 of screen */
+  .link-card{width:60vw;max-width:none;}
+
   .overlay-cols{flex-direction:column;gap:2.5rem;}
   .overlay-link{font-size:clamp(1.7rem,7vw,2.3rem);}
   .theme-panel{grid-template-columns:1fr 1fr;}
   .nav-overlay-inner{padding:5rem 1.5rem 2.5rem;align-items:flex-start;}
   .overlay-cols{max-width:100%;}
+
+  .project-title{font-size:1.1rem;}
+  .game-item{padding:0.9rem 1rem;}
+  .game-uid-display{font-size:0.68rem;padding:0.18rem 0.5rem;}
+  .htagline{font-size:clamp(2.2rem,8vw,3.2rem);}
+}
+
+/* ════════════════════════════════════════
+   RESPONSIVE — Small mobile (≤380px)
+════════════════════════════════════════ */
+@media(max-width:380px){
+  .link-card{width:62vw;}
+  .container{padding:84px 1rem 3rem;}
 }
