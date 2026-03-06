@@ -372,6 +372,55 @@ img{max-width:100%;display:block;}
 .link-arrow{font-size:0.82rem;color:var(--text-3);transition:color var(--t),transform var(--t);flex-shrink:0;}
 .link-card:hover .link-arrow{color:var(--accent);transform:translate(2px,-2px);}
 
+/* ── Tools & Games section ── */
+.tg-subsection{margin-bottom:2rem;}
+.tg-label{
+  font-family:var(--font-m);font-size:0.58rem;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:rgba(47,186,189,0.7);margin-bottom:0.55rem;
+}
+.tg-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:0.7rem;
+}
+.tg-card{
+  display:flex;align-items:center;gap:0.9rem;
+  padding:0.85rem 1.1rem;
+  background:var(--glass);border:1px solid var(--glass-b);
+  border-radius:14px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:background var(--t),border-color var(--t),transform var(--t),box-shadow var(--t);
+  text-decoration:none;
+}
+.tg-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--accent) 0%,transparent 60%);
+  opacity:0;transition:opacity var(--t);
+}
+.tg-card:hover{
+  background:var(--glass-hover);
+  border-color:var(--accent-soft);
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px rgba(47,186,189,0.11);
+}
+.tg-card:hover::before{opacity:0.05;}
+.tg-card--wide{grid-column:1/-1;}
+.tg-card-icon{
+  font-size:1.4rem;flex-shrink:0;
+  width:40px;height:40px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--glass-b);border-radius:10px;
+  transition:border-color var(--t);
+}
+.tg-card:hover .tg-card-icon{border-color:var(--accent-soft);}
+.tg-card-body{display:flex;align-items:center;justify-content:space-between;flex:1;gap:0.4rem;min-width:0;}
+.tg-card-name{font-family:var(--font-m);font-size:0.7rem;letter-spacing:0.04em;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tg-card-arrow{font-size:0.8rem;color:var(--text-3);flex-shrink:0;transition:color var(--t),transform var(--t);}
+.tg-card:hover .tg-card-arrow{color:var(--accent);transform:translate(2px,-2px);}
+
 /* ── Projects ── */
 .projects-list{display:flex;flex-direction:column;gap:1.5rem;}
 .project-item{
@@ -453,7 +502,8 @@ img{max-width:100%;display:block;}
 ════════════════════════════════════════ */
 @media(max-width:768px){
   .container{padding:100px 1.5rem 4rem;}
-  .link-card{width:60vw;max-width:340px;}
+  .link-card{width:66vw;max-width:340px;}
+  .tg-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
 }
 
 /* ════════════════════════════════════════
@@ -463,8 +513,14 @@ img{max-width:100%;display:block;}
   .pill-nav{top:14px;width:calc(100% - 1.75rem);}
   .container{padding:88px 1.1rem 4rem;}
 
-  /* Cards take up ~3/5 of screen */
-  .link-card{width:60vw;max-width:none;}
+  /* Cards take up ~2/3 of screen */
+  .link-card{width:66vw;max-width:none;}
+
+  /* tg-grid: 2 per row on mobile too, but constrained */
+  .tg-grid{grid-template-columns:repeat(2, minmax(0, 1fr));gap:0.55rem;}
+  .tg-card{padding:0.7rem 0.85rem;}
+  .tg-card-icon{width:34px;height:34px;font-size:1.15rem;}
+  .tg-card-name{font-size:0.65rem;}
 
   .overlay-cols{flex-direction:column;gap:2.5rem;}
   .overlay-link{font-size:clamp(1.7rem,7vw,2.3rem);}
@@ -482,6 +538,8 @@ img{max-width:100%;display:block;}
    RESPONSIVE — Small mobile (≤380px)
 ════════════════════════════════════════ */
 @media(max-width:380px){
-  .link-card{width:62vw;}
+  .link-card{width:67vw;}
   .container{padding:84px 1rem 3rem;}
+  .tg-grid{gap:0.45rem;}
+  .tg-card-name{font-size:0.6rem;}
 }
