@@ -391,10 +391,10 @@ void main(){
       vertex: VERT, fragment: FRAG,
       uniforms: {
         uTime:       { value: 0 },
-        uAmplitude:  { value: 1.0 },
+        uAmplitude:  { value: 0.72 },
         uColorStops: { value: initColors.map(toRGB) },
         uResolution: { value: [window.innerWidth, window.innerHeight] },
-        uBlend:      { value: 0.5 },
+        uBlend:      { value: 0.38 },
       }
     });
     const mesh = new Mesh(gl, { geometry, program });
@@ -507,17 +507,16 @@ applyTheme(saved);
   </script>
 
   <script>
-    /* ── Scroll Reveal for Welcome heading ── */
-    const revealEls = document.querySelectorAll('.reveal-on-scroll');
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('revealed'); } });
-    }, { threshold: 0.15 });
-    revealEls.forEach(el => revealObserver.observe(el));
-    // Also trigger on load for elements already in view
+    /* ── Typewriter for heading ── */
     window.addEventListener('load', () => {
-      revealEls.forEach(el => {
+      const heading = document.querySelector('.htagline');
+      if (heading) {
+        setTimeout(() => heading.classList.add('typing'), 200);
+      }
+      /* Fade reveal for other elements */
+      document.querySelectorAll('.reveal-on-scroll:not(.htagline)').forEach(el => {
         const rect = el.getBoundingClientRect();
-        if(rect.top < window.innerHeight) el.classList.add('revealed');
+        if (rect.top < window.innerHeight) el.classList.add('revealed');
       });
     });
   </script>
