@@ -10,32 +10,28 @@ permalink: /quote
   <title>Quotes • Daily Motivation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg: #0a0015;
+      --bg: #0a0a14;
+      --bg2: #131327;
       --text: #e6d9ff;
       --text-muted: #b399ff;
       --accent: #c084fc;
       --accent-dark: #5a3ee0;
-      --card: rgba(30, 10, 60, 0.4);
+      --card: rgba(30, 10, 60, 0.45);
       --glow: rgba(123, 94, 255, 0.18);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
-      min-height: 100vh;
-    padding-top: 80px;
+    html, body {
+      height: 100%;
+      overflow: hidden;
       background: linear-gradient(135deg, #0a0a14 0%, #131327 100%);
       color: var(--text);
-      font-family: 'Inter', system-ui, sans-serif;
-      overflow-x: hidden;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
 
     .stars {
@@ -45,149 +41,173 @@ permalink: /quote
       background: 
         radial-gradient(circle at 15% 30%, rgba(180,160,255,0.07) 0%, transparent 25%),
         radial-gradient(circle at 80% 70%, rgba(100,200,255,0.05) 0%, transparent 35%);
+      z-index: 0;
     }
 
+    /* Navbar */
+    .site-pill-nav {
+      position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+      z-index: 9999; width: calc(100% - 2.5rem); max-width: 680px;
+    }
+    .site-pill-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 48px; padding: 0 1rem;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(22px) saturate(1.5);
+      -webkit-backdrop-filter: blur(22px) saturate(1.5);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+    }
+    .site-pill-logo {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: 'Cinzel Decorative', serif; font-size: 0.9rem; font-weight: 900;
+      color: rgba(255,255,255,0.95); text-decoration: none;
+      letter-spacing: 0.04em; text-shadow: 0 0 18px rgba(47,186,189,0.45);
+      transition: opacity 0.2s;
+    }
+    .site-pill-logo:hover { opacity: 0.7; }
+    .site-back-btn {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-family: 'DM Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.08em; color: rgba(255,255,255,0.5);
+      text-decoration: none; padding: 0.35rem 0.8rem;
+      border-radius: 100px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      transition: background 0.2s, color 0.2s;
+    }
+    .site-back-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9); }
+
+    /* Main layout — true 100vh, no scroll */
     .container {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      gap: 3.5rem;
+      position: relative; z-index: 1;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 70px 1.5rem 1rem;
+      gap: 0;
+    }
+
+    .header-block {
+      text-align: center;
+      margin-bottom: clamp(0.8rem, 2vh, 1.5rem);
+      flex-shrink: 0;
     }
 
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(3.2rem, 9vw, 6.8rem);
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
       font-weight: 700;
       background: linear-gradient(90deg, #c0b7ff, #a78aff, #7b5eff);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      text-align: center;
-      letter-spacing: -1px;
-      line-height: 0.92;
-      margin-bottom: 0.8rem;
-      text-shadow: 0 0 40px rgba(123,94,255,0.35);
+      letter-spacing: -0.5px;
+      line-height: 1;
+      margin-bottom: 0.4rem;
     }
 
     .subtitle {
-      font-size: clamp(1.1rem, 3.5vw, 1.45rem);
+      font-size: clamp(0.8rem, 2vw, 0.95rem);
       color: var(--text-muted);
-      text-align: center;
-      max-width: 580px;
-      line-height: 1.5;
-      opacity: 0.9;
+      opacity: 0.85;
     }
 
     .quote-box {
       position: relative;
-      width: min(92%, 780px);
-      min-height: 220px;
-      padding: 3.5rem 3rem;
+      width: min(94%, 720px);
+      padding: clamp(1.5rem, 3vh, 2.5rem) clamp(1.2rem, 3vw, 2.5rem);
       background: var(--card);
-      border-radius: 24px;
+      border-radius: 20px;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(120,100,255,0.12);
-      box-shadow: 
-        0 25px 60px -15px rgba(0,0,0,0.6),
-        0 0 0 1px rgba(123,94,255,0.08) inset;
-      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      box-shadow: 0 20px 50px -15px rgba(0,0,0,0.55), 0 0 0 1px rgba(123,94,255,0.08) inset;
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
       opacity: 0;
-      transform: translateY(40px);
+      transform: translateY(30px);
+      flex-shrink: 0;
+      margin-bottom: clamp(0.7rem, 1.5vh, 1.2rem);
     }
-
-    .quote-box.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .quote-box.visible { opacity: 1; transform: translateY(0); }
 
     .quote {
-      font-size: clamp(1.5rem, 4.2vw, 2.2rem);
+      font-size: clamp(1.1rem, 3vw, 1.7rem);
       font-weight: 400;
-      line-height: 1.48;
+      line-height: 1.52;
       text-align: center;
-      letter-spacing: -0.2px;
-      margin-bottom: 2rem;
+      letter-spacing: -0.1px;
+      margin-bottom: 1rem;
+      font-family: 'Playfair Display', serif;
     }
-
     .author {
       text-align: center;
-      font-size: 1.1rem;
+      font-size: clamp(0.75rem, 1.5vw, 0.95rem);
       font-weight: 500;
       color: var(--accent);
       opacity: 0.9;
     }
 
+    /* Actions row */
+    .actions-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
+    }
+
     .btn {
-      position: relative;
-      padding: 1rem 2.4rem;
-      font-size: 1.15rem;
+      padding: 0.7rem 1.8rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: white;
       background: linear-gradient(135deg, var(--accent), var(--accent-dark));
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-      box-shadow: 0 10px 30px rgba(90, 62, 224, 0.35);
-      overflow: hidden;
-      z-index: 1;
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      box-shadow: 0 8px 24px rgba(90, 62, 224, 0.3);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(90,62,224,0.45); }
+    .btn:active { transform: translateY(0) scale(0.97); }
+
+    /* Share buttons */
+    .share-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+    .share-btn:hover { transform: translateY(-2px); }
+    .share-btn-x:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); color: white; }
+    .share-btn-tg:hover { background: rgba(42,174,226,0.15); border-color: rgba(42,174,226,0.35); color: #40b3e0; }
+
+    @media (max-width: 480px) {
+      .quote-box { padding: 1.4rem 1.1rem; }
+      h1 { font-size: clamp(2rem, 9vw, 3rem); }
+      .btn { padding: 0.65rem 1.4rem; font-size: 0.82rem; }
     }
 
-    .btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, #9b7fff, #6d4aff);
-      transform: translateX(-100%);
-      transition: transform 0.5s ease;
-      z-index: -1;
+    @media (max-height: 600px) {
+      .header-block { display: none; }
+      .container { gap: 0.5rem; }
     }
-
-    .btn:hover::before {
-      transform: translateX(0);
-    }
-
-    .btn:hover {
-      transform: translateY(-4px) scale(1.04);
-      box-shadow: 0 18px 50px rgba(90, 62, 224, 0.5);
-    }
-
-    .btn:active {
-      transform: translateY(-1px) scale(0.98);
-    }
-
-    @media (max-width: 640px) {
-      .quote-box {
-        padding: 2.8rem 1.8rem;
-      }
-      h1 {
-        font-size: clamp(3rem, 11vw, 5rem);
-      }
-    }
-  </style>
-  <!-- ── Shared Navbar ── -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet" />
-  <style>
-    .site-pill-nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 2.5rem);max-width:680px;pointer-events:all;}
-    .site-pill-inner{display:flex;align-items:center;justify-content:space-between;height:54px;padding:0 1.25rem;border-radius:100px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);box-shadow:0 4px 30px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.07);}
-    .site-pill-logo{display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel Decorative',serif;font-size:0.95rem;font-weight:900;color:rgba(255,255,255,0.95);text-decoration:none;letter-spacing:0.04em;transition:opacity 0.2s;text-shadow:0 0 18px rgba(47,186,189,0.45);}
-    .site-pill-logo:hover{opacity:0.7;}
-    .site-back-btn{display:flex;align-items:center;gap:0.4rem;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;color:rgba(255,255,255,0.5);text-decoration:none;padding:0.4rem 0.85rem;border-radius:100px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.11);transition:background 0.2s,color 0.2s;}
-    .site-back-btn:hover{background:rgba(255,255,255,0.13);color:rgba(255,255,255,0.9);}
   </style>
 </head>
 <body>
+
+  <div class="stars"></div>
+
   <div class="site-pill-nav">
     <div class="site-pill-inner">
       <a href="/" class="site-pill-logo">
-        <svg width="22" height="22" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="20" height="20" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
           <ellipse cx="18" cy="21" rx="10" ry="12" fill="#1a1a2e"/>
           <ellipse cx="18" cy="22" rx="6" ry="8" fill="rgba(255,255,255,0.88)"/>
           <ellipse cx="18" cy="10" rx="7.5" ry="7" fill="#1a1a2e"/>
@@ -207,51 +227,60 @@ permalink: /quote
     </div>
   </div>
 
+  <div class="container">
+    <div class="header-block">
+      <h1>Quotes</h1>
+      <div class="subtitle">One powerful thought can change your whole day.</div>
+    </div>
 
+    <div class="quote-box" id="quoteBox">
+      <div class="quote" id="quoteText">Click the button below to fuel your mindset…</div>
+      <div class="author" id="authorText"></div>
+    </div>
 
-<div class="stars"></div>
+    <div class="actions-row">
+      <button class="btn" id="generateBtn">Generate 😇</button>
 
-<div class="container">
-  <div>
-    <h1>Quotes</h1>
-    <div class="subtitle">One powerful thought can change the trajectory of your whole day.</div>
+      <!-- X Share -->
+      <button class="share-btn share-btn-x" id="shareX" title="Share on X">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      </button>
+
+      <!-- Telegram Share -->
+      <button class="share-btn share-btn-tg" id="shareTg" title="Share on Telegram">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+        </svg>
+      </button>
+    </div>
   </div>
-
-  <div class="quote-box" id="quoteBox">
-    <div class="quote" id="quoteText">Click the button below to fuel your mindset…</div>
-    <div class="author" id="authorText"></div>
-  </div>
-
-  <button class="btn" id="generateBtn">Generate 😇</button>
-</div>
 
 <script>
-// === 220+ hand-picked short & punchy motivational entries ===
-// Feel free to add more — the more the better!
 const quotes = [
   { text: "The pain of discipline is temporary. The pain of regret lasts forever.", author: "Unknown" },
-  { text: "You don’t find willpower. You build it one small decision at a time.", author: null },
+  { text: "You don't find willpower. You build it one small decision at a time.", author: null },
   { text: "Most people overestimate what they can do in one year and underestimate what they can do in ten.", author: "Bill Gates" },
   { text: "Comfort is the killer of greatness.", author: null },
   { text: "If it was easy, everyone would do it.", author: null },
   { text: "Your mind will quit a thousand times before your body does.", author: null },
-  { text: "Don’t wait for motivation. Create it with action.", author: null },
+  { text: "Don't wait for motivation. Create it with action.", author: null },
   { text: "Small steps every day beat big intentions once a year.", author: null },
   { text: "The version of you that wins is the one who shows up when it sucks.", author: null },
   { text: "You become what you repeatedly do.", author: "Aristotle (paraphrased)" },
-  { text: "Stop waiting for the perfect moment. It doesn’t exist.", author: null },
+  { text: "Stop waiting for the perfect moment. It doesn't exist.", author: null },
   { text: "What you do today can improve all your tomorrows.", author: "Ralph Marston" },
   { text: "Fall in love with consistency, not intensity.", author: null },
   { text: "You are one habit away from a completely different life.", author: null },
-  { text: "The strongest version of you is already inside. Stop hiding her/him.", author: null },
   { text: "Growth and comfort do not coexist.", author: "Ginni Rometty" },
-  { text: "You didn’t come this far just to come this far.", author: null },
+  { text: "You didn't come this far just to come this far.", author: null },
   { text: "Do something today that your future self will thank you for.", author: null },
   { text: "The moment you accept total responsibility is the moment you claim total power.", author: null },
-  { text: "Your life changes the day you decide it’s no longer acceptable.", author: null },
+  { text: "Your life changes the day you decide it's no longer acceptable.", author: null },
   { text: "Energy flows where focus goes.", author: null },
   { text: "You become unstoppable the day you stop caring who approves.", author: null },
-  { text: "Don’t fear failure. Fear being in the same place next year.", author: null },
+  { text: "Don't fear failure. Fear being in the same place next year.", author: null },
   { text: "Champions train when nobody is watching.", author: null },
   { text: "The pain you feel today is the strength you feel tomorrow.", author: null },
   { text: "Everything is hard before it becomes easy.", author: null },
@@ -259,277 +288,108 @@ const quotes = [
   { text: "You are allowed to be both a masterpiece and a work in progress.", author: null },
   { text: "Your only limit is the one you accept.", author: null },
   { text: "Discipline turns dreams into habits, and habits into identity.", author: null },
-  // ... I’ll add more below to reach \~200+
   { text: "Stop scrolling. Start building.", author: null },
-  { text: "You’re not tired, you’re uninspired.", author: null },
+  { text: "You're not tired, you're uninspired.", author: null },
   { text: "The future belongs to the disciplined, not the talented.", author: null },
   { text: "Every master was once a disaster.", author: null },
   { text: "Make your comeback story legendary.", author: null },
   { text: "Your excuses are louder than your goals.", author: null },
-  { text: "Progress is progress even if it’s slow.", author: null },
-  { text: "Don’t downgrade your dream to match your reality. Upgrade your mindset.", author: null },
-  { text: "You’re closer than you were yesterday.", author: null },
+  { text: "Progress is progress even if it's slow.", author: null },
+  { text: "Don't downgrade your dream to match your reality. Upgrade your mindset.", author: null },
+  { text: "You're closer than you were yesterday.", author: null },
   { text: "Become obsessed or stay average.", author: null },
   { text: "The comeback is always stronger than the setback.", author: null },
-  { text: "You don’t drown by falling in water. You drown by staying there.", author: null },
+  { text: "You don't drown by falling in water. You drown by staying there.", author: null },
   { text: "Effort is the raw material of greatness.", author: null },
   { text: "What you feed grows. Starve doubt, feed courage.", author: null },
-  { text: "Your vibe attracts your tribe — raise your standards.", author: null },
   { text: "Great things never come from comfort zones.", author: null },
   { text: "Be the energy you want to attract.", author: null },
-  { text: "You’re not stuck. You’re just committed to a version of yourself that no longer serves you.", author: null },
   { text: "One year of focused effort beats ten years of scattered interest.", author: null },
   { text: "Your future self is watching you right now through memories.", author: null },
-  { text: "The pain of discipline is temporary. The pain of regret lasts forever.", author: null },
-  { text: "You don’t find willpower — you build it one uncomfortable choice at a time.", author: null },
-  { text: "Most people overestimate what they can do in 1 year and underestimate what they can do in 10.", author: "Bill Gates" },
-  { text: "Comfort is the biggest dream killer.", author: null },
-  { text: "If it was easy, everyone would do it.", author: null },
-  { text: "Your mind will quit 1000 times before your body does. Keep going.", author: null },
-  { text: "Don’t wait to feel motivated. Action creates motivation.", author: null },
-  { text: "Small daily improvements > big sporadic efforts.", author: null },
-  { text: "The version of you that wins shows up when it sucks.", author: null },
-  { text: "You become what you repeatedly do.", author: null },
-  { text: "Stop waiting for the perfect moment. It doesn’t exist.", author: null },
-  { text: "What you do today can improve all your tomorrows.", author: null },
-  { text: "Fall in love with showing up consistently.", author: null },
-  { text: "You are one tiny habit away from a radically different life.", author: null },
-  { text: "Growth and comfort never live in the same house.", author: null },
-  { text: "You didn’t come this far just to come this far.", author: null },
-  { text: "Do something today your future self will thank you for.", author: null },
-  { text: "The day you take full responsibility is the day you take back your power.", author: null },
-  { text: "Your life changes the moment “good enough” is no longer acceptable.", author: null },
-  { text: "Energy flows where focus goes.", author: null },
-  { text: "You become unstoppable the day you stop asking for permission.", author: null },
-  { text: "Don’t fear failure. Fear being in the same place next year.", author: null },
-  { text: "Champions are made when no one is watching.", author: null },
-  { text: "The pain you feel today becomes the strength you feel tomorrow.", author: null },
-  { text: "Everything is hard before it is easy.", author: null },
-  { text: "Build in silence. Let success make the noise.", author: null },
-  { text: "You’re allowed to be both a masterpiece and a work in progress.", author: null },
-  { text: "Your only real limit is the one you accept.", author: null },
-  { text: "Discipline turns dreams into habits. Habits turn into identity.", author: null },
-  { text: "Stop scrolling. Start building.", author: null },
-  { text: "You’re not tired — you’re uninspired.", author: null },
-  { text: "The future belongs to the people who show up every day.", author: null },
-  { text: "Every master was once a disaster.", author: null },
-  { text: "Make your comeback story legendary.", author: null },
-  { text: "Your excuses are currently louder than your goals.", author: null },
-  { text: "Progress is progress — even when it’s painfully slow.", author: null },
-  { text: "Don’t shrink your dreams to match your current reality. Grow.", author: null },
-  { text: "You’re closer to the finish line than you were yesterday.", author: null },
-  { text: "Become obsessed or stay average.", author: null },
-  { text: "The comeback is always stronger than the setback.", author: null },
-  { text: "You don’t drown by falling into water. You drown by staying there.", author: null },
-  { text: "Effort is the raw material greatness is made from.", author: null },
-  { text: "What you feed grows. Starve doubt. Feed courage.", author: null },
-  { text: "Raise your standards — your vibe attracts your tribe.", author: null },
-  { text: "Great things never came from comfort zones.", author: null },
-  { text: "Be the energy you want to attract.", author: null },
-  { text: "You’re not stuck. You’re just loyal to an outdated version of yourself.", author: null },
-  { text: "One year of focused effort beats ten years of scattered interest.", author: null },
-  { text: "Your future self is watching through memories right now.", author: null },
   { text: "Consistency compounds. So does neglect.", author: null },
-  { text: "The person who wins is usually just the one who didn’t quit.", author: null },
-  { text: "You’re not behind — you’re just getting started.", author: null },
+  { text: "The person who wins is usually just the one who didn't quit.", author: null },
+  { text: "You're not behind — you're just getting started.", author: null },
   { text: "What would the most disciplined version of you do right now?", author: null },
-  { text: "Dreams don’t have deadlines. But discipline does.", author: null },
   { text: "Small wins stack into big transformations.", author: null },
-  { text: "You don’t rise to the level of your goals. You fall to the level of your systems.", author: null },
   { text: "Keep the promises you make to yourself.", author: null },
   { text: "The hardest part is usually just starting.", author: null },
-  { text: "You’re one decision away from a completely different life.", author: null },
-  { text: "Do it ugly. Just don’t skip it.", author: null },
-  { text: "Your potential is scary. Stop running from it.", author: null },
+  { text: "You're one decision away from a completely different life.", author: null },
   { text: "Motivation is a guest. Discipline is the landlord.", author: null },
-  { text: "The life you want is on the other side of the version of you that’s scared.", author: null },
-  { text: "Nobody is coming to save you. That’s good news.", author: null },
-  { text: "You’re allowed to outgrow people who don’t cheer for your growth.", author: null },
+  { text: "Nobody is coming to save you. That's good news.", author: null },
   { text: "Every time you choose comfort you vote against your future.", author: null },
   { text: "Your habits are voting for your future every single day.", author: null },
-  { text: "Be ruthless with distractions. Be kind to progress.", author: null },
-  { text: "The strongest people aren’t the ones who never fall. They’re the ones who get back up fastest.", author: null },
-  { text: "You don’t need more time. You need more focus.", author: null },
-  { text: "Average effort gives average results. That’s not you.", author: null },
-  { text: "Your next level requires your next level of commitment.", author: null },
-  { text: "Stop romanticizing the struggle. Start romanticizing the results.", author: null },
-  { text: "You’re not lazy. You’re just not hungry enough yet.", author: null },
-  { text: "The version of you that wins already exists. Act like them.", author: null },
+  { text: "You don't need more time. You need more focus.", author: null },
+  { text: "Average effort gives average results. That's not you.", author: null },
   { text: "What you tolerate becomes your standard.", author: null },
-  { text: "You’re not tired — you’re bored with easy.", author: null },
-  { text: "The glow-up happens in private.", author: null },
-  { text: "Don’t confuse movement with progress.", author: null },
   { text: "Your future is created by what you do today — not tomorrow.", author: null },
   { text: "Discipline looks like punishment until it looks like freedom.", author: null },
-  { text: "You’re not stuck. You’re comfortable.", author: null },
-  { text: "The bridge between who you are and who you want to be is daily action.", author: null },
-  { text: "Stay low-key while you level up.", author: null },
-  { text: "You become dangerous when you stop caring what they think.", author: null },
   { text: "Your biggest competition is who you were yesterday.", author: null },
-  { text: "Keep showing up — even when it feels like nothing is happening.", author: null },
   { text: "The moment you stop chasing approval is the moment you start winning.", author: null },
-  { text: "You’re not late. You’re exactly on time for your own story.", author: null },
-  { text: "Protect your peace like it pays the bills.", author: null },
-  { text: "You don’t find time for what matters — you make time.", author: null },
+  { text: "You're not late. You're exactly on time for your own story.", author: null },
   { text: "Your energy is currency. Spend it wisely.", author: null },
-  { text: "What you do when no one’s watching determines what everyone sees later.", author: null },
   { text: "Level up quietly. Let success scream.", author: null },
   { text: "Your breakthrough is hidden in the habits you're avoiding.", author: null },
   { text: "Stop trying to be perfect. Start trying to be consistent.", author: null },
-  { text: "The life you want costs the version of you that you're currently being.", author: null },
   { text: "Most people die at 25 and are buried at 75.", author: "Benjamin Franklin (paraphrased)" },
-  { text: "Your calendar reveals your priorities more honestly than your mouth does.", author: null },
   { text: "Self-doubt is a liar with very good marketing.", author: null },
-  { text: "The strongest people build themselves in silence.", author: null },
-  { text: "You’re not procrastinating because you’re lazy. You’re procrastinating because it matters.", author: null },
   { text: "Clarity comes from engagement, not thought.", author: null },
-  { text: "Your nervous system can’t tell the difference between real danger and imagined fear.", author: null },
   { text: "Become someone who keeps promises to themselves.", author: null },
   { text: "The pain of growth is always less expensive than the cost of regret.", author: null },
-  { text: "You teach people how to treat you by what you allow.", author: null },
   { text: "Your standards are your future.", author: null },
-  { text: "Stop performing for people who aren’t even in the audience.", author: null },
-  { text: "Mental toughness is doing what you said you would do — even when you don’t feel like it.", author: null },
-  { text: "You don’t lack motivation. You lack clarity.", author: null },
-  { text: "The moment you stop needing validation is the moment you become powerful.", author: null },
+  { text: "Mental toughness is doing what you said you would do — even when you don't feel like it.", author: null },
+  { text: "You don't lack motivation. You lack clarity.", author: null },
   { text: "Your environment is shaping you faster than your goals are.", author: null },
   { text: "Small promises kept build massive self-trust.", author: null },
-  { text: "Comparison is just someone else’s highlight reel playing on your insecurities.", author: null },
-  { text: "You’re allowed to outgrow versions of people — including yourself.", author: null },
-  { text: "Real confidence isn’t loud. It’s quiet certainty.", author: null },
-  { text: "Your next chapter doesn’t need their permission.", author: null },
-  { text: "Healing doesn’t mean the damage never existed. It means it no longer controls you.", author: null },
-  { text: "The life you want is waiting on the other side of the conversation you’re avoiding.", author: null },
+  { text: "Real confidence isn't loud. It's quiet certainty.", author: null },
+  { text: "Your next chapter doesn't need their permission.", author: null },
   { text: "Stop waiting to feel ready. You get ready by starting.", author: null },
-  { text: "Your worth is not negotiable.", author: null },
-  { text: "Protect your attention like it’s your most valuable asset — because it is.", author: null },
-  { text: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln (paraphrased)" },
-  { text: "You don’t need more time. You need fewer excuses.", author: null },
+  { text: "Protect your attention like it's your most valuable asset — because it is.", author: null },
   { text: "The version of you 5 years from now is begging you to start today.", author: null },
-  { text: "Boundaries are the highest form of self-love.", author: null },
-  { text: "You’re not behind. You’re on your own timeline.", author: null },
-  { text: "What you admire in others is usually what’s asleep in you.", author: null },
-  { text: "Stop saying “I’ll try”. Either do it or don’t.", author: null },
-  { text: "Your nervous system heals in safety — create more of it.", author: null },
+  { text: "What you admire in others is usually what's asleep in you.", author: null },
   { text: "The quietest progress makes the loudest results.", author: null },
   { text: "You become what you believe — not just what you achieve.", author: null },
-  { text: "Self-respect is non-negotiable. Act accordingly.", author: null },
-  { text: "Your energy introduces you before you speak.", author: null },
   { text: "Stop apologizing for wanting more.", author: null },
-  { text: "You’re not broken. You’re becoming.", author: null },
+  { text: "You're not broken. You're becoming.", author: null },
   { text: "The best revenge is unmatched consistency.", author: null },
-  { text: "You don’t find peace. You remove everything that disturbs it.", author: null },
-  { text: "Your future is built from today’s micro-choices.", author: null },
   { text: "Stop collecting information. Start applying it.", author: null },
-  { text: "You’re not lazy. You just haven’t found your obsession yet.", author: null },
-  { text: "The strongest glow-ups happen offline.", author: null },
-  { text: "You teach the world how valuable you are by how you treat yourself.", author: null },
   { text: "Comfort is a slow killer of potential.", author: null },
-  { text: "Your story isn’t over just because this chapter hurts.", author: null },
-  { text: "Stop waiting for someone to believe in you. Believe harder.", author: null },
-  { text: "You’re not stuck — you’re just scared to choose.", author: null },
-  { text: "Peace is sexy. Chaos is exhausting.", author: null },
-  { text: "Your trauma is not your personality.", author: null },
-  { text: "The life you want is built one boring Tuesday at a time.", author: null },
-  { text: "Stop romanticizing potential. Start respecting execution.", author: null },
-  { text: "You don’t owe anyone an explanation for your growth.", author: null },
-  { text: "Your capacity for discomfort determines your ceiling.", author: null },
-  { text: "Become addicted to your own progress.", author: null },
-  { text: "You’re not failing. You’re collecting data.", author: null },
-  { text: "Self-love looks like discipline when no one is clapping.", author: null },
-  { text: "The loudest transformation is silent.", author: null },
-  { text: "Stop asking for permission to take up space.", author: null },
-  { text: "Your vibe is your resume now.", author: null },
-  { text: "You’re allowed to walk away from anything that poisons your peace.", author: null },
-  { text: "The strongest people rebuild themselves quietly.", author: null },
-  { text: "You don’t need to be understood. You need to be free.", author: null },
-  { text: "Your habits are louder than your dreams.", author: null },
-  { text: "Stop performing. Start becoming.", author: null },
-  { text: "The best version of you doesn’t need applause to exist.", author: null },
-  { text: "You’re not late to the game. You’re just early to your own.", author: null },
-  { text: "Healing is boring until it’s beautiful.", author: null },
-  { text: "Your boundaries are your love language to yourself.", author: null },
-  { text: "Stop waiting to feel brave. Courage follows action.", author: null },
-  { text: "You’re not too much. The world is just too small sometimes.", author: null },
-  { text: "The person who wins is the one still standing after the motivation fades.", author: null },
-  { text: "Your identity is shaped more by what you do than what you say.", author: null },
-  { text: "Stop outsourcing your happiness.", author: null },
-  { text: "You’re becoming someone your younger self would be proud of.", author: null },
+  { text: "Your story isn't over just because this chapter hurts.", author: null },
   { text: "Peace over people-pleasing. Always.", author: null },
-  { text: "Your next level requires your next level of honesty.", author: null },
-  { text: "You don’t need more inspiration. You need better habits.", author: null },
-  { text: "The version of you that’s scared is protecting an outdated identity.", author: null },
-  { text: "Stop collecting motivational quotes. Start collecting wins.", author: null },
+  { text: "You don't need more inspiration. You need better habits.", author: null },
   { text: "Your energy is finite. Guard it ruthlessly.", author: null },
-  { text: "You’re not weak for resting. You’re wise for recharging.", author: null },
-  { text: "The glow-up nobody sees is the most powerful one.", author: null },
-  { text: "You don’t rise to the occasion. You fall to your habits.", author: null },
-  { text: "Stop explaining yourself to people committed to misunderstanding you.", author: null },
+  { text: "You don't rise to the occasion. You fall to your habits.", author: null },
   { text: "Your future self already knows the answer. Listen.", author: null },
   { text: "Discipline today = freedom tomorrow.", author: null },
-  { text: "You’re not broken for feeling everything. You’re alive.", author: null },
-  { text: "The life you want is built in private.", author: null },
-  { text: "Stop waiting for the world to make space for you. Take it.", author: null },
   { text: "Your peace is non-negotiable.", author: null },
-  { text: "You’re allowed to want more — and go get it.", author: null },
   { text: "The quiet ones are usually the most dangerous when focused.", author: null },
-  { text: "You don’t need to prove anything to anyone who already decided you’re less.", author: null },
-  { text: "Your growth doesn’t need an audience.", author: null },
-  { text: "Stop apologizing for outgrowing what no longer fits.", author: null },
+  { text: "Your growth doesn't need an audience.", author: null },
   { text: "The strongest comeback stories start in silence.", author: null },
-  { text: "You’re not behind. You’re rewriting the timeline.", author: null },
-  { text: "Your standards determine your circle — choose wisely.", author: null },
   { text: "Peace is the new hustle.", author: null },
-  { text: "You become dangerous the moment you stop explaining yourself.", author: null },
-  { text: "Your healing doesn’t have to look pretty.", author: null },
-  { text: "Stop waiting to be chosen. Choose yourself.", author: null },
-  { text: "The life you want is one courageous no away.", author: null },
   { text: "Your potential is bored of your excuses.", author: null },
-  { text: "You’re not stuck. You’re scared of change.", author: null },
   { text: "Become the person who no longer needs the validation you once craved.", author: null },
-  { text: "Your next chapter doesn’t require their approval.", author: null },
-  { text: "Stop romanticizing the version of you that’s comfortable with less.", author: null },
-  { text: "You’re allowed to protect your energy like it’s oxygen.", author: null },
   { text: "The best revenge is becoming unrecognizable.", author: null },
-  { text: "You don’t need permission to evolve.", author: null },
+  { text: "You don't need permission to evolve.", author: null },
   { text: "Your worth was never up for debate.", author: null },
-  { text: "Stop shrinking to fit spaces that were never meant for you.", author: null },
   { text: "Your silence is strategy, not surrender.", author: null },
-  { text: "The version of you that wins doesn’t negotiate with fear.", author: null },
-  { text: "You’re not asking for too much. You’ve just accepted too little for too long.", author: null },
-  { text: "Peace looks good on you. Wear it daily.", author: null },
-  { text: "Your breakthrough lives in the habits you keep postponing.", author: null },
-  { text: "Stop waiting for the “right time”. Time is voting right now.", author: null },
-  { text: "You’re not late. You’re just on divine timing.", author: null },
-  { text: "The loudest glow-up is the quiet one.", author: null },
-  { text: "Your trauma ends with you. Break the cycle.", author: null },
-  { text: "You don’t need to be fixed. You need to be free.", author: null },
-  { text: "Stop collecting dreams. Start collecting receipts.", author: null },
-  { text: "Your energy is sacred. Stop giving it to ghosts.", author: null },
-  { text: "The person you become tomorrow depends on the promises you keep today.", author: null },
-  { text: "You’re allowed to disappear until you reappear better.", author: null },
-  { text: "Stop asking for a sign. You are the sign.", author: null },
-  { text: "Your peace is worth more than their understanding.", author: null },
-  { text: "You don’t rise by being loud. You rise by being consistent.", author: null },
-  { text: "The strongest people rebuild while the world thinks they’re broken.", author: null },
-  { text: "You’re not behind. You’re just selective with your energy now.", author: null },
-  { text: "Your next level doesn’t need applause. It needs action.", author: null },
-  { text: "Stop waiting to feel worthy. Worthiness is a decision.", author: null },
   { text: "The life you want costs courage, not perfection.", author: null },
-  { text: "You’re not too much. Some people are just used to too little.", author: null },
   { text: "Your healing is allowed to be messy.", author: null },
   { text: "Stop performing for an audience that left the theater years ago.", author: null },
   { text: "You become powerful the moment you stop explaining your worth.", author: null },
-  { text: "Your boundaries are love letters to your future self.", author: null },
+  { text: "The person you become tomorrow depends on the promises you keep today.", author: null },
+  { text: "Stop asking for a sign. You are the sign.", author: null },
+  { text: "You don't rise by being loud. You rise by being consistent.", author: null },
+  { text: "Your next level doesn't need applause. It needs action.", author: null },
   { text: "The glow-up nobody expected is the most satisfying one.", author: null },
-  { text: "You don’t need more motivation. You need non-negotiable standards.", author: null },
   { text: "Your peace is the ultimate flex.", author: null }
 ];
-  // Keep going… (I stopped at \~50 here, but you should expand to 150–300)
-  // You can copy-paste more from Goodreads, Reddit, Twitter motivation threads, etc.
+
+let currentQuote = null;
 
 function getRandomQuote() {
-  return quotes[Math.floor(Math.random() * quotes.length)];
+  let q;
+  do { q = quotes[Math.floor(Math.random() * quotes.length)]; }
+  while (q === currentQuote && quotes.length > 1);
+  return q;
 }
 
 const quoteBox = document.getElementById('quoteBox');
@@ -539,27 +399,43 @@ const generateBtn = document.getElementById('generateBtn');
 
 function showNewQuote() {
   const { text, author } = getRandomQuote();
+  currentQuote = { text, author };
   
   quoteBox.classList.remove('visible');
-  
   setTimeout(() => {
     quoteText.textContent = text;
     authorText.textContent = author ? `— ${author}` : '';
     quoteBox.classList.add('visible');
-  }, 400);
+  }, 320);
 }
 
 // First quote on load
-setTimeout(showNewQuote, 600);
-
+setTimeout(showNewQuote, 400);
 generateBtn.addEventListener('click', showNewQuote);
 
-// Optional: keyboard shortcut (spacebar or enter)
+// Keyboard shortcut
 window.addEventListener('keydown', (e) => {
   if (e.code === 'Space' || e.code === 'Enter') {
     e.preventDefault();
     showNewQuote();
   }
+});
+
+// Share — only the quote text, no links
+document.getElementById('shareX').addEventListener('click', () => {
+  if (!currentQuote) return;
+  const txt = currentQuote.author
+    ? `"${currentQuote.text}" — ${currentQuote.author}`
+    : `"${currentQuote.text}"`;
+  window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(txt), '_blank');
+});
+
+document.getElementById('shareTg').addEventListener('click', () => {
+  if (!currentQuote) return;
+  const txt = currentQuote.author
+    ? `"${currentQuote.text}"\n— ${currentQuote.author}`
+    : `"${currentQuote.text}"`;
+  window.open('https://t.me/share/url?url=&text=' + encodeURIComponent(txt), '_blank');
 });
 </script>
 </body>
