@@ -280,11 +280,14 @@ a{text-decoration:none;color:inherit;}
 /* Typewriter heading */
 @keyframes typewriter {
   from { width: 0; }
-  to   { width: 100%; }
+  to   { width: 14ch; }
 }
 @keyframes cursorBlink {
   0%,100% { border-color: rgba(47,186,189,0.7); }
   50%     { border-color: transparent; }
+}
+@keyframes cursorFade {
+  to { border-color: transparent; }
 }
 
 .htagline{
@@ -298,11 +301,13 @@ a{text-decoration:none;color:inherit;}
   width:0;
   border-right:3px solid transparent;
   display:inline-block;
+  opacity:1 !important;
 }
 .htagline.typing {
   animation:
     typewriter  1.8s steps(13, end) forwards,
-    cursorBlink 0.65s step-end 1.8s 5;
+    cursorBlink 0.65s step-end 1.8s 5,
+    cursorFade  0.3s ease forwards 5s;
 }
 
 /* Scroll/load reveal — fade only for other elements */
