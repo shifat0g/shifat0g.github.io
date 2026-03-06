@@ -603,6 +603,8 @@ img{max-width:100%;display:block;}
 }
 
 
+/* ════════════════════════════════════════
+   RESPONSIVE — Tablet
 ════════════════════════════════════════ */
 @media(max-width:768px){
   .container{padding:100px 1.5rem 4rem;}

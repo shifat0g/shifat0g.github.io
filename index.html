@@ -145,10 +145,11 @@
             <a href="https://shifat0g.github.io/calculator"     class="overlay-extra" data-delay="1"><span>Calculator</span><span class="earrow">↗</span></a>
             <a href="https://shifat0g.github.io/tools"         class="overlay-extra" data-delay="2"><span>Tools</span><span class="earrow">↗</span></a>
             <a href="https://shifat0g.github.io/Micro-expenses" class="overlay-extra" data-delay="3"><span>Micro Expenses</span><span class="earrow">↗</span></a>
-            <a href="/tictactoe"                                 class="overlay-extra" data-delay="4"><span>Tic Tac Toe</span><span class="earrow">↗</span></a>
-            <a href="/2048"                                      class="overlay-extra" data-delay="5"><span>2048</span><span class="earrow">↗</span></a>
-            <a href="https://shifat0g.github.io/shop/"          class="overlay-extra" data-delay="6"><span>Demo Shop</span><span class="earrow">↗</span></a>
-            <a href="/quote"                                      class="overlay-extra" data-delay="7"><span>Quotes for You</span><span class="earrow">↗</span></a>
+            <a href="https://shifat0g.github.io/coding"         class="overlay-extra" data-delay="4"><span>Coding</span><span class="earrow">↗</span></a>
+            <a href="/tictactoe"                                 class="overlay-extra" data-delay="5"><span>Tic Tac Toe</span><span class="earrow">↗</span></a>
+            <a href="/2048"                                      class="overlay-extra" data-delay="6"><span>2048</span><span class="earrow">↗</span></a>
+            <a href="https://shifat0g.github.io/shop/"          class="overlay-extra" data-delay="7"><span>Demo Shop</span><span class="earrow">↗</span></a>
+            <a href="/quote"                                      class="overlay-extra" data-delay="8"><span>Quotes for You</span><span class="earrow">↗</span></a>
           </nav>
         </div>
 
@@ -237,8 +238,22 @@
             </div>
           </a>
 
-          <a href="https://shifat0g.github.io/Micro-Expenses" class="tg-card" target="_blank" rel="noopener">
+          <a href="https://shifat0g.github.io/coding" class="tg-card" target="_blank" rel="noopener">
             <div class="tg-card-icon">
+              <!-- Terminal / coding icon -->
+              <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="16" rx="2.5" fill="rgba(255,255,255,0.04)" stroke="rgba(74,222,128,0.65)" stroke-width="1.4"/>
+                <path d="M6 8l3 3-3 3" stroke="rgba(74,222,128,0.9)" stroke-width="1.7"/>
+                <path d="M11 14h5" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="tg-card-body">
+              <span class="tg-card-name">Coding</span>
+              <span class="tg-card-arrow">↗</span>
+            </div>
+          </a>
+
+          <a href="https://shifat0g.github.io/Micro-Expenses" class="tg-card" target="_blank" rel="noopener">            <div class="tg-card-icon">
               <!-- Wallet / expenses -->
               <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="7" width="20" height="14" rx="2.5" fill="rgba(255,255,255,0.05)" stroke="rgba(251,191,36,0.75)" stroke-width="1.5"/>
@@ -644,10 +659,10 @@ void main(){
       vertex: VERT, fragment: FRAG,
       uniforms: {
         uTime:       { value: 0 },
-        uAmplitude:  { value: 0.72 },
+        uAmplitude:  { value: 0.45 },
         uColorStops: { value: initColors.map(toRGB) },
         uResolution: { value: [window.innerWidth, window.innerHeight] },
-        uBlend:      { value: 0.38 },
+        uBlend:      { value: 0.28 },
       }
     });
     const mesh = new Mesh(gl, { geometry, program });
@@ -663,7 +678,7 @@ void main(){
 
     const loop = t => {
       requestAnimationFrame(loop);
-      program.uniforms.uTime.value = t * 0.001;
+      program.uniforms.uTime.value = t * 0.0006;
       renderer.render({ scene: mesh });
     };
     requestAnimationFrame(loop);
