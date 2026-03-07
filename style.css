@@ -1142,21 +1142,29 @@ img{max-width:100%;display:block;}
 
 /* Mobile adjustments */
 @media(max-width:600px) {
-  .ai-trigger { right: 1.2rem; bottom: 9.5rem; width: 42px; height: 42px; }
+  /* Trigger: right side, clearly below navbar (~80px), not too low */
+  .ai-trigger {
+    right: 1.2rem;
+    bottom: auto;
+    top: 90px;
+    width: 44px;
+    height: 44px;
+  }
+  /* Panel: floating box just below navbar, not full-screen */
   .ai-panel {
     position: fixed;
-    top: 72px;          /* sits just below the pill navbar */
-    bottom: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
-    max-height: calc(100dvh - 72px);
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-    border-top: 1px solid rgba(47,186,189,0.22);
-    transform-origin: top center;
+    top: 80px;           /* just below the pill navbar */
+    bottom: auto;
+    right: 0.75rem;
+    left: 0.75rem;
+    width: auto;
+    height: min(520px, calc(100dvh - 96px));
+    max-height: calc(100dvh - 96px);
+    border-radius: 18px;
+    border: 1px solid rgba(47,186,189,0.22);
+    transform-origin: top right;
+    /* collapsed: slide up slightly */
+    transform: translateY(-12px) scale(0.96);
   }
   /* Override the open transform for mobile */
   .ai-panel.open {

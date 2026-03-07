@@ -1291,11 +1291,15 @@ Be warm, concise, and genuinely helpful. Format responses clearly — use line b
         try { data = await res.json(); } catch(e) { throw new Error('Bad JSON response'); }
 
         if (!res.ok) {
+          if (res.status === 429) {
+            throw new Error('Rate limit reached. Please wait a few seconds and try again.');
+          }
           const errMsg = data?.error?.message || data?.error || `HTTP ${res.status}`;
           throw new Error(errMsg);
         }
 
         const reply = data.result
+          || data.candidates?.[0]?.content?.parts?.[0]?.text
           || data.raw?.candidates?.[0]?.content?.parts?.[0]?.text
           || 'No response received. Please try again.';
 
@@ -1310,9 +1314,14 @@ Be warm, concise, and genuinely helpful. Format responses clearly — use line b
 
       } catch (err) {
         removeTyping();
-        const msg = err.message && err.message !== 'Failed to fetch'
-          ? `Error: ${err.message}`
-          : 'Could not reach the AI. Check your internet and try again.';
+        let msg;
+        if (err.message && err.message.includes('Rate limit')) {
+          msg = '⏳ Rate limit reached — the AI is busy. Please wait a moment and try again.';
+        } else if (err.message && err.message !== 'Failed to fetch') {
+          msg = `Error: ${err.message}`;
+        } else {
+          msg = 'Could not reach the AI. Check your internet and try again.';
+        }
         appendBotMessage(msg);
       }
 
