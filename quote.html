@@ -154,12 +154,18 @@ permalink: /quote
       opacity: 0.9;
     }
 
-    /* Actions row */
+    /* Actions rows */
+    .actions-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
+    }
     .actions-row {
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      flex-shrink: 0;
     }
 
     .btn {
@@ -193,6 +199,45 @@ permalink: /quote
     .share-btn:hover { transform: translateY(-2px); }
     .share-btn-x:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); color: white; }
     .share-btn-tg:hover { background: rgba(42,174,226,0.15); border-color: rgba(42,174,226,0.35); color: #40b3e0; }
+
+    /* Share format pill toggle */
+    .share-format-pill {
+      display: flex; align-items: center;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      overflow: hidden;
+      flex-shrink: 0;
+      height: 32px;
+    }
+    .share-format-pill button {
+      display: flex; align-items: center; gap: 0.3rem;
+      padding: 0 0.7rem;
+      height: 100%;
+      font-size: 0.62rem;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.06em;
+      font-weight: 400;
+      color: rgba(255,255,255,0.4);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .share-format-pill button.active {
+      background: rgba(192, 132, 252, 0.18);
+      color: var(--accent);
+    }
+    .share-format-pill button:hover:not(.active) {
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.65);
+    }
+    .share-format-pill .pill-divider {
+      width: 1px; height: 18px;
+      background: rgba(255,255,255,0.10);
+      flex-shrink: 0;
+    }
 
     @media (max-width: 480px) {
       .quote-box { padding: 1.4rem 1.1rem; }
@@ -244,23 +289,42 @@ permalink: /quote
       <div class="author" id="authorText"></div>
     </div>
 
-    <div class="actions-row">
-      <button class="btn" id="generateBtn">Generate 😇</button>
-      <button class="btn" id="saveBtn">Save 📷</button>
+    <div class="actions-wrapper">
+      <!-- Row 1: Generate + Save Image -->
+      <div class="actions-row">
+        <button class="btn" id="generateBtn">Generate 😇</button>
+        <button class="btn" id="saveBtn">Save Image 📷</button>
+      </div>
 
-      <!-- X Share -->
-      <button class="share-btn share-btn-x" id="shareX" title="Share on X">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-        </svg>
-      </button>
+      <!-- Row 2: Format pill + X + Telegram -->
+      <div class="actions-row">
+        <!-- Share format pill -->
+        <div class="share-format-pill">
+          <button id="fmtText" class="active" title="Share as text">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h12v2H3z"/></svg>
+            TXT
+          </button>
+          <div class="pill-divider"></div>
+          <button id="fmtImage" title="Share as image">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H3V5h18v14zm-8.5-5.5-3 3.5-2-2.5-3 4h14l-6-5z"/></svg>
+            IMG
+          </button>
+        </div>
 
-      <!-- Telegram Share -->
-      <button class="share-btn share-btn-tg" id="shareTg" title="Share on Telegram">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-        </svg>
-      </button>
+        <!-- X Share -->
+        <button class="share-btn share-btn-x" id="shareX" title="Share on X">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </button>
+
+        <!-- Telegram Share -->
+        <button class="share-btn share-btn-tg" id="shareTg" title="Share on Telegram">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -573,9 +637,10 @@ const quotes = [
 ];
 
 let currentIndex = -1;
+let currentQuote = null;
+let shareFormat = 'text'; // 'text' or 'image'
 
 function getRandomIndex() {
-  // Use crypto.getRandomValues for true randomness
   const arr = new Uint32Array(1);
   crypto.getRandomValues(arr);
   let idx;
@@ -586,7 +651,8 @@ function getRandomIndex() {
 
 function getRandomQuote() {
   currentIndex = getRandomIndex();
-  return quotes[currentIndex];
+  currentQuote = quotes[currentIndex];
+  return currentQuote;
 }
 
 const quoteBox = document.getElementById('quoteBox');
@@ -629,28 +695,20 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-
-
-// Share — only the quote text, no links
-document.getElementById('shareX').addEventListener('click', () => {
-  if (!currentQuote) return;
-  const txt = currentQuote.author
-    ? `"${currentQuote.text}" — ${currentQuote.author}`
-    : `"${currentQuote.text}"`;
-  window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(txt), '_blank');
+// Share format pill toggle
+document.getElementById('fmtText').addEventListener('click', () => {
+  shareFormat = 'text';
+  document.getElementById('fmtText').classList.add('active');
+  document.getElementById('fmtImage').classList.remove('active');
+});
+document.getElementById('fmtImage').addEventListener('click', () => {
+  shareFormat = 'image';
+  document.getElementById('fmtImage').classList.add('active');
+  document.getElementById('fmtText').classList.remove('active');
 });
 
-document.getElementById('shareTg').addEventListener('click', () => {
-  if (!currentQuote) return;
-  const txt = currentQuote.author
-    ? `"${currentQuote.text}"\n— ${currentQuote.author}`
-    : `"${currentQuote.text}"`;
-  window.open('https://t.me/share/url?url=&text=' + encodeURIComponent(txt), '_blank');
-});
-
-document.getElementById("saveBtn").addEventListener("click", async () => {
-
-  // Load elegant fonts via FontFace API
+// Build canvas image blob for sharing
+async function buildQuoteImage() {
   try {
     const fontQuote = new FontFace(
       'Cormorant Garamond',
@@ -668,11 +726,9 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
 
   const size = 1080;
   const canvas = document.createElement("canvas");
-  canvas.width = size;
-  canvas.height = size;
+  canvas.width = size; canvas.height = size;
   const ctx = canvas.getContext("2d");
 
-  // Single luxury dark background — deep midnight navy with subtle vignette
   const bg = ctx.createLinearGradient(0, 0, size, size);
   bg.addColorStop(0, "#0d0d1a");
   bg.addColorStop(0.5, "#12102b");
@@ -680,22 +736,16 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, size, size);
 
-  // Subtle radial vignette glow in center
   const vignette = ctx.createRadialGradient(size/2, size/2, 100, size/2, size/2, size*0.72);
   vignette.addColorStop(0, "rgba(90, 62, 224, 0.10)");
   vignette.addColorStop(1, "rgba(0, 0, 0, 0.45)");
   ctx.fillStyle = vignette;
   ctx.fillRect(0, 0, size, size);
 
-  // Thin decorative top line
   ctx.strokeStyle = "rgba(180, 150, 255, 0.25)";
   ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(size * 0.25, 120);
-  ctx.lineTo(size * 0.75, 120);
-  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(size * 0.25, 120); ctx.lineTo(size * 0.75, 120); ctx.stroke();
 
-  // Opening quotation mark
   ctx.fillStyle = "rgba(180, 150, 255, 0.20)";
   ctx.font = "italic 180px 'Cormorant Garamond', Georgia, serif";
   ctx.textAlign = "center";
@@ -704,49 +754,33 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   const quote = document.getElementById("quoteText").textContent;
   const author = document.getElementById("authorText").textContent;
 
-  // Quote text
-  ctx.fillStyle = "#f0eaff";
-  ctx.font = "500 58px 'Cormorant Garamond', Georgia, serif";
-  ctx.textAlign = "center";
-
   const maxWidth = 820;
   const lineHeight = 78;
+  const quoteFont = "500 58px 'Cormorant Garamond', Georgia, serif";
 
   function wrapText(text, font) {
     ctx.font = font;
     const words = text.split(" ");
-    let line = "";
-    const lines = [];
+    let line = "", lines = [];
     for (let n = 0; n < words.length; n++) {
       const testLine = line + words[n] + " ";
       if (ctx.measureText(testLine).width > maxWidth && n > 0) {
-        lines.push(line.trim());
-        line = words[n] + " ";
-      } else {
-        line = testLine;
-      }
+        lines.push(line.trim()); line = words[n] + " ";
+      } else { line = testLine; }
     }
     lines.push(line.trim());
     return lines;
   }
 
-  const quoteFont = "500 58px 'Cormorant Garamond', Georgia, serif";
   const lines = wrapText(quote, quoteFont);
-
-  // Calculate total block height to center everything
   const authorHeight = author ? 100 : 0;
   const totalHeight = lines.length * lineHeight + authorHeight;
   let y = (size - totalHeight) / 2 + lineHeight;
 
-  // Draw each line
   ctx.font = quoteFont;
   ctx.fillStyle = "#f0eaff";
-  lines.forEach(line => {
-    ctx.fillText(line, size / 2, y);
-    y += lineHeight;
-  });
+  lines.forEach(line => { ctx.fillText(line, size / 2, y); y += lineHeight; });
 
-  // Author line
   if (author) {
     y += 30;
     ctx.font = "italic 400 38px 'Cormorant Garamond', Georgia, serif";
@@ -754,18 +788,60 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
     ctx.fillText(author, size / 2, y);
   }
 
-  // Thin decorative bottom line
   ctx.strokeStyle = "rgba(180, 150, 255, 0.25)";
   ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(size * 0.25, size - 120);
-  ctx.lineTo(size * 0.75, size - 120);
-  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(size * 0.25, size - 120); ctx.lineTo(size * 0.75, size - 120); ctx.stroke();
 
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+}
+
+// Share helpers
+async function shareToX() {
+  if (!currentQuote) return;
+  if (shareFormat === 'text') {
+    const txt = currentQuote.author
+      ? `"${currentQuote.text}" — ${currentQuote.author}`
+      : `"${currentQuote.text}"`;
+    window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(txt), '_blank');
+  } else {
+    // Image mode: download the image (X doesn't support direct image share via URL intent)
+    const blob = await buildQuoteImage();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.download = 'quote.png'; a.href = url; a.click();
+    URL.revokeObjectURL(url);
+    // Then open X so user can attach the downloaded image
+    setTimeout(() => window.open('https://x.com/intent/tweet', '_blank'), 600);
+  }
+}
+
+async function shareToTelegram() {
+  if (!currentQuote) return;
+  if (shareFormat === 'text') {
+    const txt = currentQuote.author
+      ? `"${currentQuote.text}"\n— ${currentQuote.author}`
+      : `"${currentQuote.text}"`;
+    window.open('https://t.me/share/url?url=%20&text=' + encodeURIComponent(txt), '_blank');
+  } else {
+    // Image mode: download image, then open Telegram
+    const blob = await buildQuoteImage();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.download = 'quote.png'; a.href = url; a.click();
+    URL.revokeObjectURL(url);
+    setTimeout(() => window.open('https://t.me/', '_blank'), 600);
+  }
+}
+
+document.getElementById('shareX').addEventListener('click', shareToX);
+document.getElementById('shareTg').addEventListener('click', shareToTelegram);
+
+document.getElementById("saveBtn").addEventListener("click", async () => {
+  const blob = await buildQuoteImage();
+  const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.download = "quote.png";
-  link.href = canvas.toDataURL("image/png");
+  link.href = url;
   link.click();
+  URL.revokeObjectURL(url);
 });
 
 </script>
