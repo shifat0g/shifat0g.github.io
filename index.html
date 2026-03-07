@@ -997,5 +997,335 @@ applyTheme(saved);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   </script>
+
+  <!-- ── AI Assistant Widget ── -->
+  <!-- Trigger button -->
+  <button class="ai-trigger" id="aiTrigger" aria-label="Ask AI">
+    <span class="ai-trigger-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2a8 8 0 0 1 8 8c0 5-8 13-8 13S4 15 4 10a8 8 0 0 1 8-8z" opacity="0"/>
+        <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" opacity="0.15" fill="currentColor" stroke="none"/>
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+    </span>
+  </button>
+
+  <!-- Chat panel -->
+  <div class="ai-panel" id="aiPanel" role="dialog" aria-label="AI Assistant">
+
+    <!-- Header -->
+    <div class="ai-header">
+      <div class="ai-header-avatar">
+        <svg width="18" height="18" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="18" cy="21" rx="10" ry="12" fill="#1a1a2e"/>
+          <ellipse cx="18" cy="22" rx="6" ry="8" fill="rgba(255,255,255,0.88)"/>
+          <ellipse cx="18" cy="10" rx="7.5" ry="7" fill="#1a1a2e"/>
+          <circle cx="15.2" cy="9" r="1.7" fill="white"/>
+          <circle cx="20.8" cy="9" r="1.7" fill="white"/>
+          <circle cx="15.6" cy="9.2" r="0.9" fill="#0a0e0b"/>
+          <circle cx="21.2" cy="9.2" r="0.9" fill="#0a0e0b"/>
+          <path d="M16.2 12.5 Q18 14.5 19.8 12.5 Q18 11.5 16.2 12.5Z" fill="#f59e0b"/>
+          <ellipse cx="18" cy="22" rx="4" ry="5" fill="rgba(47,186,189,0.12)"/>
+        </svg>
+      </div>
+      <div class="ai-header-info">
+        <div class="ai-header-name">Shifat's Assistant</div>
+        <div class="ai-header-status">
+          <span class="ai-status-dot"></span>
+          <span>online · powered by Gemini</span>
+        </div>
+      </div>
+      <button class="ai-close" id="aiClose" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="ai-messages" id="aiMessages">
+      <!-- Welcome message injected by JS -->
+    </div>
+
+    <!-- Quick chips -->
+    <div class="ai-chips" id="aiChips">
+      <span class="ai-chips-label">Quick questions</span>
+      <button class="ai-chip" data-q="Who is Shifat?">Who is Shifat?</button>
+      <button class="ai-chip" data-q="What projects has Shifat built?">His projects</button>
+      <button class="ai-chip" data-q="How can I contact Shifat?">Contact</button>
+      <button class="ai-chip" data-q="What communities does Shifat run?">Communities</button>
+      <button class="ai-chip" data-q="What is the current time in UTC?">UTC time</button>
+      <button class="ai-chip" data-q="What are Shifat's social media links?">Social links</button>
+    </div>
+
+    <!-- Input -->
+    <div class="ai-input-row">
+      <textarea
+        class="ai-input"
+        id="aiInput"
+        placeholder="Ask anything…"
+        rows="1"
+        maxlength="800"
+        aria-label="Message"
+      ></textarea>
+      <button class="ai-send" id="aiSend" aria-label="Send" disabled>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    'use strict';
+
+    /* ── Config ── */
+    const WORKER_URL = 'https://gemini.shifat0g.workers.dev/api/chat';
+    const MY_INFO = `You are a highly capable AI assistant embedded on Shifat's personal website. You have two roles:
+
+1. PERSONAL ASSISTANT: You know everything about Shifat and can answer questions about him.
+2. GENERAL AI: You can answer anything a state-of-the-art AI assistant can — coding help, math, writing, translation, analysis, creative work, world knowledge, advice, explanations, summaries, and more. Never refuse a reasonable request.
+
+== ABOUT SHIFAT ==
+Name: Shifat
+GitHub: shifat0g
+Website: shifat0g.github.io
+Email: shifat0g@gmail.com
+Bio: Exploring Web3 and crypto since 2022. Worked as an Ambassador, created content for various projects, maintained communities, and organized campaigns. Knows coding — HTML, CSS, JavaScript, React basics.
+
+== TOOLS SHIFAT BUILT ==
+- Color Combination tool → https://shifat0g.github.io/colour
+- Calculator → https://shifat0g.github.io/calculator
+- Tools hub → https://shifat0g.github.io/tools
+- Coding playground → https://shifat0g.github.io/coding
+- Micro Expenses tracker → https://shifat0g.github.io/Micro-Expenses
+- Create Quiz → https://shifat0g.github.io/quiz/
+- Avatar Generator → https://shifat0g.github.io/avatar/
+
+== GAMES SHIFAT BUILT ==
+- Tic Tac Toe → https://shifat0g.github.io/tictactoe
+- 2048 → https://shifat0g.github.io/2048
+
+== DEMO PROJECTS ==
+- LUXE Demo Shopping Website → https://shifat0g.github.io/shop/
+- Quotes for You → https://shifat0g.github.io/quote
+
+== SHIFAT'S WORK ==
+- Ambassador at Moonboots Labs (since 2023) → https://moonbootslabs.com
+
+== SHIFAT'S SOCIALS ==
+- X (Twitter): https://x.com/shifat0g
+- Telegram: https://t.me/shifat0g
+- Discord: https://discord.gg/CwBRgm7R
+- GitHub: https://github.com/shifat0g
+- Farcaster: https://farcaster.xyz/shifat.eth
+- Spotify: https://open.spotify.com/user/31ekvjurmvqdmb32n43znyj7rq6u
+
+== COMMUNITY (Web3 Decoder) ==
+- Telegram Channel: https://t.me/web3decoder
+- Community Group: https://t.me/w3dchat
+- X: https://x.com/Web3DecoderX
+
+== GAMES SHIFAT PLAYS ==
+- Genshin Impact
+
+Be warm, concise, and genuinely helpful. Format responses clearly — use line breaks for lists. For code, wrap in backticks. Never say you "can't" do something a capable AI can do.`;
+
+    /* ── State ── */
+    const HISTORY_KEY = 'shifat_ai_history';
+    const MAX_HISTORY = 20; // pairs = 40 entries max
+
+    function loadHistory() {
+      try {
+        const raw = localStorage.getItem(HISTORY_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch { return []; }
+    }
+    function saveHistory(h) {
+      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch {}
+    }
+
+    const history = loadHistory();
+    let isTyping = false;
+
+    /* ── Elements ── */
+    const trigger  = document.getElementById('aiTrigger');
+    const panel    = document.getElementById('aiPanel');
+    const closeBtn = document.getElementById('aiClose');
+    const messages = document.getElementById('aiMessages');
+    const input    = document.getElementById('aiInput');
+    const sendBtn  = document.getElementById('aiSend');
+    const chips    = document.getElementById('aiChips');
+
+    /* ── Toggle ── */
+    function openPanel() {
+      panel.classList.add('open');
+      trigger.classList.add('open');
+      trigger.setAttribute('aria-expanded', 'true');
+      setTimeout(() => input.focus(), 320);
+      if (messages.children.length === 0) showWelcome();
+    }
+    function closePanel() {
+      panel.classList.remove('open');
+      trigger.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+    trigger.addEventListener('click', () =>
+      panel.classList.contains('open') ? closePanel() : openPanel()
+    );
+    closeBtn.addEventListener('click', closePanel);
+
+    /* Close on Escape */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
+    });
+
+    /* ── Welcome message ── */
+    function showWelcome() {
+      appendBotMessage("Hey there! 👋 I'm Shifat's assistant. Ask me anything about Shifat, or just anything in general — I'm here to help!");
+    }
+
+    /* ── Append messages ── */
+    function appendUserMessage(text) {
+      const wrap = document.createElement('div');
+      wrap.className = 'ai-msg user';
+      const bubble = document.createElement('div');
+      bubble.className = 'ai-bubble';
+      bubble.textContent = text;
+      wrap.appendChild(bubble);
+      messages.appendChild(wrap);
+      scrollBottom();
+    }
+
+    function appendBotMessage(text) {
+      const wrap = document.createElement('div');
+      wrap.className = 'ai-msg bot';
+      const bubble = document.createElement('div');
+      bubble.className = 'ai-bubble';
+      bubble.innerHTML = linkify(escapeHtml(text));
+      wrap.appendChild(bubble);
+      messages.appendChild(wrap);
+      scrollBottom();
+      return wrap;
+    }
+
+    function showTyping() {
+      const wrap = document.createElement('div');
+      wrap.className = 'ai-msg bot';
+      wrap.id = 'aiTypingWrap';
+      const dots = document.createElement('div');
+      dots.className = 'ai-typing';
+      dots.innerHTML = '<span></span><span></span><span></span>';
+      wrap.appendChild(dots);
+      messages.appendChild(wrap);
+      scrollBottom();
+    }
+
+    function removeTyping() {
+      const el = document.getElementById('aiTypingWrap');
+      if (el) el.remove();
+    }
+
+    function scrollBottom() {
+      requestAnimationFrame(() => {
+        messages.scrollTop = messages.scrollHeight;
+      });
+    }
+
+    /* ── Helpers ── */
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+    function linkify(str) {
+      return str.replace(/(https?:\/\/[^\s<>"]+)/g,
+        '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    }
+
+    /* ── Send message ── */
+    async function sendMessage(text) {
+      text = text.trim();
+      if (!text || isTyping) return;
+
+      /* Hide chips after first real send */
+      chips.style.display = 'none';
+
+      appendUserMessage(text);
+      input.value = '';
+      input.style.height = 'auto';
+      sendBtn.disabled = true;
+      isTyping = true;
+      showTyping();
+
+      /* Build UTC time context */
+      const nowUtc = new Date().toUTCString();
+      const contextText = MY_INFO + `\n\nCurrent UTC time (for reference): ${nowUtc}`;
+
+      /* Build messages array for Gemini */
+      const msgs = [
+        { role: 'user',  text: contextText },
+        { role: 'model', text: "Understood! I'm ready to help as Shifat's assistant." },
+        ...history,
+        { role: 'user',  text: text }
+      ];
+
+      try {
+        const res = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: msgs, model: 'gemini-2.0-flash' })
+        });
+        if (!res.ok) throw new Error('Network error');
+        const data = await res.json();
+        const reply = data.result || data.raw?.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I couldn\'t get a response. Try again!';
+
+        removeTyping();
+        appendBotMessage(reply);
+
+        /* Keep history for multi-turn, persist across sessions */
+        history.push({ role: 'user',  text: text });
+        history.push({ role: 'model', text: reply });
+
+        /* Keep last 20 exchanges (40 entries) */
+        while (history.length > MAX_HISTORY * 2) history.splice(0, 2);
+        saveHistory(history);
+
+      } catch (err) {
+        removeTyping();
+        appendBotMessage('Hmm, something went wrong. Check your connection and try again.');
+      }
+
+      isTyping = false;
+      sendBtn.disabled = input.value.trim().length === 0;
+    }
+
+    /* ── Input events ── */
+    input.addEventListener('input', function() {
+      /* Auto-grow */
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 110) + 'px';
+      sendBtn.disabled = this.value.trim().length === 0 || isTyping;
+    });
+
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (!sendBtn.disabled) sendMessage(input.value);
+      }
+    });
+
+    sendBtn.addEventListener('click', () => sendMessage(input.value));
+
+    /* ── Quick chips ── */
+    chips.querySelectorAll('.ai-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        sendMessage(chip.dataset.q);
+      });
+    });
+
+  })();
+  </script>
 </body>
 </html>
