@@ -1142,31 +1142,34 @@ img{max-width:100%;display:block;}
 
 /* Mobile adjustments */
 @media(max-width:600px) {
-  /* Trigger: right side, clearly below navbar (~80px), not too low */
+  /* Trigger: bottom-right corner, above the page content line */
   .ai-trigger {
-    right: 1.2rem;
-    bottom: auto;
-    top: 90px;
+    position: fixed;
+    right: 1.1rem;
+    bottom: 1.4rem;
+    top: auto;
     width: 44px;
     height: 44px;
   }
-  /* Panel: floating box just below navbar, not full-screen */
+
+  /* Panel: floating card anchored to TOP (below navbar), with a fixed max height
+     so it never reaches below the red line / input area.
+     Using dvh (dynamic viewport height) so it stays put when keyboard opens. */
   .ai-panel {
     position: fixed;
-    top: 80px;           /* just below the pill navbar */
+    top: 80px;
     bottom: auto;
     right: 0.75rem;
     left: 0.75rem;
     width: auto;
-    height: min(520px, calc(100dvh - 96px));
-    max-height: calc(100dvh - 96px);
+    /* 100dvh - navbar(80px) - bottom margin(80px) = safe zone above red line */
+    height: min(480px, calc(100dvh - 160px));
+    max-height: calc(100dvh - 160px);
     border-radius: 18px;
     border: 1px solid rgba(47,186,189,0.22);
     transform-origin: top right;
-    /* collapsed: slide up slightly */
     transform: translateY(-12px) scale(0.96);
   }
-  /* Override the open transform for mobile */
   .ai-panel.open {
     transform: translateY(0) scale(1);
   }
