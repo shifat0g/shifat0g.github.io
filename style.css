@@ -1142,7 +1142,7 @@ img{max-width:100%;display:block;}
 
 /* Mobile adjustments */
 @media(max-width:600px) {
-  /* Trigger: bottom-right corner, above the page content line */
+  /* Trigger: bottom-right corner */
   .ai-trigger {
     position: fixed;
     right: 1.1rem;
@@ -1152,19 +1152,18 @@ img{max-width:100%;display:block;}
     height: 44px;
   }
 
-  /* Panel: floating card anchored to TOP (below navbar), with a fixed max height
-     so it never reaches below the red line / input area.
-     Using dvh (dynamic viewport height) so it stays put when keyboard opens. */
+  /* Panel: compact floating card below navbar.
+     Fixed pixel height so keyboard opening NEVER moves or resizes it.
+     This matches the compact look in screenshot 2. */
   .ai-panel {
     position: fixed;
-    top: 80px;
+    top: 76px;
+    left: 0.6rem;
+    right: 0.6rem;
     bottom: auto;
-    right: 0.75rem;
-    left: 0.75rem;
     width: auto;
-    /* 100dvh - navbar(80px) - bottom margin(80px) = safe zone above red line */
-    height: min(480px, calc(100dvh - 160px));
-    max-height: calc(100dvh - 160px);
+    height: 420px;        /* fixed px — not dvh, so keyboard can't affect it */
+    max-height: 420px;
     border-radius: 18px;
     border: 1px solid rgba(47,186,189,0.22);
     transform-origin: top right;
