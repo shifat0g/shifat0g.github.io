@@ -629,12 +629,7 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-// Re-roll on focus (tab switch back) so the quote feels fresh
-window.addEventListener('focus', () => {
-  if (document.visibilityState === 'visible' && quoteBox.classList.contains('visible')) {
-    showNewQuote();
-  }
-});
+
 
 // Share — only the quote text, no links
 document.getElementById('shareX').addEventListener('click', () => {
