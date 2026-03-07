@@ -532,8 +532,12 @@
 
       <script>
         (function() {
-          const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzctHhw5WTcvCih3t-DQ1TAegtGwBnAmPVFPc8J21rARegdMOItlje014Jln0kzjeXp/exec';
-          let selectedType = 'Feedback';
+          const SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbzctHhw5WTcvCih3t-DQ1TAegtGwBnAmPVFPc8J21rARegdMOItlje014Jln0kzjeXp/exec';
+          const VALID_TYPES = ['Feedback', 'Suggestion', 'Question'];
+          const COOLDOWN_MS = 30000; // 30 seconds between submissions
+          let selectedType  = 'Feedback';
+          let isSubmitting  = false;
+          let lastSubmitAt  = 0;
 
           // Type buttons
           document.querySelectorAll('.ftype-btn').forEach(btn => {
@@ -553,11 +557,14 @@
 
           // Submit
           document.getElementById('feedbackSubmit').addEventListener('click', async () => {
+            if (isSubmitting) return;
+
             const message = textarea.value.trim();
             const status  = document.getElementById('feedbackStatus');
             const btnText = document.getElementById('feedbackBtnText');
             const btn     = document.getElementById('feedbackSubmit');
 
+            // Validate message
             if (!message) {
               status.textContent = 'Please write something first.';
               status.className = 'feedback-status error';
@@ -569,6 +576,23 @@
               return;
             }
 
+            // Validate type
+            if (!VALID_TYPES.includes(selectedType)) {
+              status.textContent = 'Invalid type selected.';
+              status.className = 'feedback-status error';
+              return;
+            }
+
+            // Cooldown check
+            const now = Date.now();
+            if (now - lastSubmitAt < COOLDOWN_MS) {
+              const secsLeft = Math.ceil((COOLDOWN_MS - (now - lastSubmitAt)) / 1000);
+              status.textContent = `Please wait ${secsLeft}s before sending again.`;
+              status.className = 'feedback-status error';
+              return;
+            }
+
+            isSubmitting = true;
             btn.disabled = true;
             btnText.textContent = 'Sending...';
             status.textContent = '';
@@ -583,16 +607,18 @@
                 mode: 'no-cors',
                 body: form
               });
+              lastSubmitAt = Date.now();
               status.textContent = '✓ Sent! Thank you for your feedback.';
               status.className = 'feedback-status success';
               textarea.value = '';
               counter.textContent = '0';
               btnText.textContent = 'Send Anonymously';
-              btn.disabled = false;
             } catch (err) {
               status.textContent = 'Something went wrong. Please try again.';
               status.className = 'feedback-status error';
               btnText.textContent = 'Send Anonymously';
+            } finally {
+              isSubmitting = false;
               btn.disabled = false;
             }
           });
