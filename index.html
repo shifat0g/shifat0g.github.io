@@ -493,8 +493,8 @@
         <span>That's all for now</span>
       </div>
 
-      <!-- Feedback Form Box -->
-      <div class="feedback-box">
+      <!-- Feedback Box -->
+      <div class="feedback-box" id="feedback">
         <div class="feedback-box-header">
           <div class="feedback-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -506,19 +506,96 @@
             <p class="feedback-subtitle">Feedback · Suggestions · Questions — all anonymous ✨</p>
           </div>
         </div>
-        <div class="feedback-form-wrap">
-          <iframe
-            src="https://docs.google.com/forms/d/e/1FAIpQLScFISBxQNGJaquAzGCS-aIWI3iioN2EwF5LxfRVpNJAp5nxEA/viewform?embedded=true"
-            width="100%"
-            height="520"
-            frameborder="0"
-            marginheight="0"
-            marginwidth="0"
-            style="border:none; display:block;"
-            loading="lazy"
-          >Loading…</iframe>
+        <div class="feedback-body">
+          <div class="feedback-field">
+            <label class="feedback-label">Type</label>
+            <div class="feedback-type-btns">
+              <button type="button" class="ftype-btn active" data-type="Feedback">💬 Feedback</button>
+              <button type="button" class="ftype-btn" data-type="Suggestion">💡 Suggestion</button>
+              <button type="button" class="ftype-btn" data-type="Question">❓ Question</button>
+            </div>
+          </div>
+          <div class="feedback-field">
+            <label class="feedback-label" for="feedbackMsg">Message</label>
+            <textarea id="feedbackMsg" class="feedback-textarea" placeholder="Write anything... it's completely anonymous." maxlength="1000" rows="4"></textarea>
+            <span class="feedback-charcount"><span id="feedbackCount">0</span> / 1000</span>
+          </div>
+          <div class="feedback-actions">
+            <button type="button" class="feedback-submit" id="feedbackSubmit">
+              <span id="feedbackBtnText">Send Anonymously</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <div class="feedback-status" id="feedbackStatus"></div>
         </div>
       </div>
+
+      <script>
+        (function() {
+          const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzctHhw5WTcvCih3t-DQ1TAegtGwBnAmPVFPc8J21rARegdMOItlje014Jln0kzjeXp/exec';
+          let selectedType = 'Feedback';
+
+          // Type buttons
+          document.querySelectorAll('.ftype-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              document.querySelectorAll('.ftype-btn').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+              selectedType = btn.dataset.type;
+            });
+          });
+
+          // Char count
+          const textarea = document.getElementById('feedbackMsg');
+          const counter  = document.getElementById('feedbackCount');
+          textarea.addEventListener('input', () => {
+            counter.textContent = textarea.value.length;
+          });
+
+          // Submit
+          document.getElementById('feedbackSubmit').addEventListener('click', async () => {
+            const message = textarea.value.trim();
+            const status  = document.getElementById('feedbackStatus');
+            const btnText = document.getElementById('feedbackBtnText');
+            const btn     = document.getElementById('feedbackSubmit');
+
+            if (!message) {
+              status.textContent = 'Please write something first.';
+              status.className = 'feedback-status error';
+              return;
+            }
+            if (message.length > 1000) {
+              status.textContent = 'Message too long (max 1000 characters).';
+              status.className = 'feedback-status error';
+              return;
+            }
+
+            btn.disabled = true;
+            btnText.textContent = 'Sending...';
+            status.textContent = '';
+            status.className = 'feedback-status';
+
+            try {
+              await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: selectedType, message })
+              });
+              status.textContent = '✓ Sent! Thank you for your feedback.';
+              status.className = 'feedback-status success';
+              textarea.value = '';
+              counter.textContent = '0';
+              btnText.textContent = 'Send Anonymously';
+              btn.disabled = false;
+            } catch (err) {
+              status.textContent = 'Something went wrong. Please try again.';
+              status.className = 'feedback-status error';
+              btnText.textContent = 'Send Anonymously';
+              btn.disabled = false;
+            }
+          });
+        })();
+      </script>
 
       <div class="hline"></div>
 
