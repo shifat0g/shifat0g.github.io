@@ -575,11 +575,13 @@
             status.className = 'feedback-status';
 
             try {
+              const form = new FormData();
+              form.append('type', selectedType);
+              form.append('message', message);
               await fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type: selectedType, message })
+                body: form
               });
               status.textContent = '✓ Sent! Thank you for your feedback.';
               status.className = 'feedback-status success';
