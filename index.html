@@ -1259,42 +1259,61 @@ Be warm, concise, and genuinely helpful. Format responses clearly — use line b
       isTyping = true;
       showTyping();
 
-      /* Build UTC time context */
+      /* Current UTC time injected for time questions */
       const nowUtc = new Date().toUTCString();
-      const contextText = MY_INFO + `\n\nCurrent UTC time (for reference): ${nowUtc}`;
 
-      /* Build messages array for Gemini */
+      /* Build full conversation for Gemini
+         Format: strict alternating user/model turns */
+      const systemMsg = MY_INFO + `\n\nCurrent UTC time: ${nowUtc}`;
+
+      /* Flatten history into alternating pairs safely */
+      const safeHistory = [];
+      for (let i = 0; i + 1 < history.length; i += 2) {
+        safeHistory.push({ role: 'user',  text: history[i].text });
+        safeHistory.push({ role: 'model', text: history[i+1].text });
+      }
+
       const msgs = [
-        { role: 'user',  text: contextText },
-        { role: 'model', text: "Understood! I'm ready to help as Shifat's assistant." },
-        ...history,
+        { role: 'user',  text: systemMsg },
+        { role: 'model', text: 'Got it. Ready to help.' },
+        ...safeHistory,
         { role: 'user',  text: text }
       ];
 
       try {
-        const res = await fetch(WORKER_URL, {
+        const res = await fetch('https://gemini.shifat0g.workers.dev/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages: msgs, model: 'gemini-2.0-flash' })
         });
-        if (!res.ok) throw new Error('Network error');
-        const data = await res.json();
-        const reply = data.result || data.raw?.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I couldn\'t get a response. Try again!';
+
+        let data;
+        try { data = await res.json(); } catch(e) { throw new Error('Bad JSON response'); }
+
+        if (!res.ok) {
+          const errMsg = data?.error?.message || data?.error || `HTTP ${res.status}`;
+          throw new Error(errMsg);
+        }
+
+        const reply = data.result
+          || data.raw?.candidates?.[0]?.content?.parts?.[0]?.text
+          || 'No response received. Please try again.';
 
         removeTyping();
         appendBotMessage(reply);
 
-        /* Keep history for multi-turn, persist across sessions */
+        /* Save to history */
         history.push({ role: 'user',  text: text });
         history.push({ role: 'model', text: reply });
-
-        /* Keep last 20 exchanges (40 entries) */
         while (history.length > MAX_HISTORY * 2) history.splice(0, 2);
         saveHistory(history);
 
       } catch (err) {
         removeTyping();
-        appendBotMessage('Hmm, something went wrong. Check your connection and try again.');
+        const msg = err.message && err.message !== 'Failed to fetch'
+          ? `Error: ${err.message}`
+          : 'Could not reach the AI. Check your internet and try again.';
+        appendBotMessage(msg);
       }
 
       isTyping = false;
