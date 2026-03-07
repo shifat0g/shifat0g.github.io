@@ -130,6 +130,10 @@ permalink: /quote
       transform: translateY(30px);
       flex-shrink: 0;
       margin-bottom: clamp(0.7rem, 1.5vh, 1.2rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     .quote-box.visible { opacity: 1; transform: translateY(0); }
 
@@ -139,7 +143,7 @@ permalink: /quote
       line-height: 1.52;
       text-align: center;
       letter-spacing: -0.1px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       font-family: 'Playfair Display', serif;
     }
     .author {
@@ -568,13 +572,21 @@ const quotes = [
   { text: "Character is faith in motion.", author: null }
 ];
 
-let currentQuote = null;
+let currentIndex = -1;
+
+function getRandomIndex() {
+  // Use crypto.getRandomValues for true randomness
+  const arr = new Uint32Array(1);
+  crypto.getRandomValues(arr);
+  let idx;
+  do { idx = arr[0] % quotes.length; }
+  while (idx === currentIndex && quotes.length > 1);
+  return idx;
+}
 
 function getRandomQuote() {
-  let q;
-  do { q = quotes[Math.floor(Math.random() * quotes.length)]; }
-  while (q === currentQuote && quotes.length > 1);
-  return q;
+  currentIndex = getRandomIndex();
+  return quotes[currentIndex];
 }
 
 const quoteBox = document.getElementById('quoteBox');
@@ -582,10 +594,16 @@ const quoteText = document.getElementById('quoteText');
 const authorText = document.getElementById('authorText');
 const generateBtn = document.getElementById('generateBtn');
 
-function showNewQuote() {
+function showNewQuote(instant = false) {
   const { text, author } = getRandomQuote();
-  currentQuote = { text, author };
-  
+
+  if (instant) {
+    quoteText.textContent = text;
+    authorText.textContent = author ? `— ${author}` : '';
+    quoteBox.classList.add('visible');
+    return;
+  }
+
   quoteBox.classList.remove('visible');
   setTimeout(() => {
     quoteText.textContent = text;
@@ -595,13 +613,25 @@ function showNewQuote() {
 }
 
 // First quote on load
-setTimeout(showNewQuote, 400);
-generateBtn.addEventListener('click', showNewQuote);
+setTimeout(() => showNewQuote(), 400);
+generateBtn.addEventListener('click', () => showNewQuote());
+
+// Re-roll when user navigates back (bfcache restore)
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted) showNewQuote(true);
+});
 
 // Keyboard shortcut
 window.addEventListener('keydown', (e) => {
   if (e.code === 'Space' || e.code === 'Enter') {
     e.preventDefault();
+    showNewQuote();
+  }
+});
+
+// Re-roll on focus (tab switch back) so the quote feels fresh
+window.addEventListener('focus', () => {
+  if (document.visibilityState === 'visible' && quoteBox.classList.contains('visible')) {
     showNewQuote();
   }
 });
@@ -623,7 +653,23 @@ document.getElementById('shareTg').addEventListener('click', () => {
   window.open('https://t.me/share/url?url=&text=' + encodeURIComponent(txt), '_blank');
 });
 
-document.getElementById("saveBtn").addEventListener("click", () => {
+document.getElementById("saveBtn").addEventListener("click", async () => {
+
+  // Load elegant fonts via FontFace API
+  try {
+    const fontQuote = new FontFace(
+      'Cormorant Garamond',
+      'url(https://fonts.gstatic.com/s/cormorantgaramond/v22/co3YmX5slCNuHLi8bLeY9MK7whWMhyjYrEPjuw.woff2)'
+    );
+    const fontAuthor = new FontFace(
+      'Cormorant Garamond Italic',
+      'url(https://fonts.gstatic.com/s/cormorantgaramond/v22/co3WmX5slCNuHLi8bLeY9MK7whWMhyjQAllvuQ.woff2)',
+      { style: 'italic', weight: '500' }
+    );
+    await Promise.all([fontQuote.load(), fontAuthor.load()]);
+    document.fonts.add(fontQuote);
+    document.fonts.add(fontAuthor);
+  } catch(e) { /* fall back to serif */ }
 
   const size = 1080;
   const canvas = document.createElement("canvas");
@@ -631,80 +677,100 @@ document.getElementById("saveBtn").addEventListener("click", () => {
   canvas.height = size;
   const ctx = canvas.getContext("2d");
 
-  // Beautiful gradient backgrounds
-  const gradients = [
-    ["#667eea","#764ba2"],
-    ["#ff9966","#ff5e62"],
-    ["#56ccf2","#2f80ed"],
-    ["#11998e","#38ef7d"],
-    ["#c471f5","#fa71cd"],
-    ["#f7971e","#ffd200"]
-  ];
+  // Single luxury dark background — deep midnight navy with subtle vignette
+  const bg = ctx.createLinearGradient(0, 0, size, size);
+  bg.addColorStop(0, "#0d0d1a");
+  bg.addColorStop(0.5, "#12102b");
+  bg.addColorStop(1, "#0a0a18");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, size, size);
 
-  const g = gradients[Math.floor(Math.random()*gradients.length)];
+  // Subtle radial vignette glow in center
+  const vignette = ctx.createRadialGradient(size/2, size/2, 100, size/2, size/2, size*0.72);
+  vignette.addColorStop(0, "rgba(90, 62, 224, 0.10)");
+  vignette.addColorStop(1, "rgba(0, 0, 0, 0.45)");
+  ctx.fillStyle = vignette;
+  ctx.fillRect(0, 0, size, size);
 
-  const gradient = ctx.createLinearGradient(0,0,size,size);
-  gradient.addColorStop(0,g[0]);
-  gradient.addColorStop(1,g[1]);
+  // Thin decorative top line
+  ctx.strokeStyle = "rgba(180, 150, 255, 0.25)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(size * 0.25, 120);
+  ctx.lineTo(size * 0.75, 120);
+  ctx.stroke();
 
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0,0,size,size);
+  // Opening quotation mark
+  ctx.fillStyle = "rgba(180, 150, 255, 0.20)";
+  ctx.font = "italic 180px 'Cormorant Garamond', Georgia, serif";
+  ctx.textAlign = "center";
+  ctx.fillText("\u201C", size / 2, 280);
 
   const quote = document.getElementById("quoteText").textContent;
   const author = document.getElementById("authorText").textContent;
 
-  ctx.fillStyle = "#ffffff";
+  // Quote text
+  ctx.fillStyle = "#f0eaff";
+  ctx.font = "500 58px 'Cormorant Garamond', Georgia, serif";
   ctx.textAlign = "center";
 
-  ctx.font = "bold 60px Playfair Display, serif";
-
   const maxWidth = 820;
-  const lineHeight = 72;
+  const lineHeight = 78;
 
-  function wrapText(text){
+  function wrapText(text, font) {
+    ctx.font = font;
     const words = text.split(" ");
-    let line="";
-    const lines=[];
-
-    for(let n=0;n<words.length;n++){
-      const testLine=line+words[n]+" ";
-      const metrics=ctx.measureText(testLine);
-      const testWidth=metrics.width;
-
-      if(testWidth>maxWidth && n>0){
-        lines.push(line);
-        line=words[n]+" ";
-      }else{
-        line=testLine;
+    let line = "";
+    const lines = [];
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + " ";
+      if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+        lines.push(line.trim());
+        line = words[n] + " ";
+      } else {
+        line = testLine;
       }
     }
-    lines.push(line);
+    lines.push(line.trim());
     return lines;
   }
 
-  const lines = wrapText(quote);
+  const quoteFont = "500 58px 'Cormorant Garamond', Georgia, serif";
+  const lines = wrapText(quote, quoteFont);
 
-  const totalTextHeight = lines.length * lineHeight + 100;
-  let y = (size - totalTextHeight) / 2;
+  // Calculate total block height to center everything
+  const authorHeight = author ? 100 : 0;
+  const totalHeight = lines.length * lineHeight + authorHeight;
+  let y = (size - totalHeight) / 2 + lineHeight;
 
-  lines.forEach(line=>{
-    ctx.fillText(line.trim(), size/2, y);
+  // Draw each line
+  ctx.font = quoteFont;
+  ctx.fillStyle = "#f0eaff";
+  lines.forEach(line => {
+    ctx.fillText(line, size / 2, y);
     y += lineHeight;
   });
 
-  ctx.font = "40px Plus Jakarta Sans, sans-serif";
-  ctx.globalAlpha = 0.9;
-
-  if(author){
-    ctx.fillText(author, size/2, y + 40);
+  // Author line
+  if (author) {
+    y += 30;
+    ctx.font = "italic 400 38px 'Cormorant Garamond', Georgia, serif";
+    ctx.fillStyle = "rgba(192, 158, 255, 0.80)";
+    ctx.fillText(author, size / 2, y);
   }
 
-  
-  const link=document.createElement("a");
-  link.download="quote.png";
-  link.href=canvas.toDataURL("image/png");
-  link.click();
+  // Thin decorative bottom line
+  ctx.strokeStyle = "rgba(180, 150, 255, 0.25)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(size * 0.25, size - 120);
+  ctx.lineTo(size * 0.75, size - 120);
+  ctx.stroke();
 
+  const link = document.createElement("a");
+  link.download = "quote.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
 });
 
 </script>
