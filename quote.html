@@ -200,44 +200,7 @@ permalink: /quote
     .share-btn-x:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); color: white; }
     .share-btn-tg:hover { background: rgba(42,174,226,0.15); border-color: rgba(42,174,226,0.35); color: #40b3e0; }
 
-    /* Share format pill toggle */
-    .share-format-pill {
-      display: flex; align-items: center;
-      border-radius: 100px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-      overflow: hidden;
-      flex-shrink: 0;
-      height: 32px;
-    }
-    .share-format-pill button {
-      display: flex; align-items: center; gap: 0.3rem;
-      padding: 0 0.7rem;
-      height: 100%;
-      font-size: 0.62rem;
-      font-family: 'DM Mono', monospace;
-      letter-spacing: 0.06em;
-      font-weight: 400;
-      color: rgba(255,255,255,0.4);
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      white-space: nowrap;
-    }
-    .share-format-pill button.active {
-      background: rgba(192, 132, 252, 0.18);
-      color: var(--accent);
-    }
-    .share-format-pill button:hover:not(.active) {
-      background: rgba(255,255,255,0.07);
-      color: rgba(255,255,255,0.65);
-    }
-    .share-format-pill .pill-divider {
-      width: 1px; height: 18px;
-      background: rgba(255,255,255,0.10);
-      flex-shrink: 0;
-    }
+
 
     @media (max-width: 480px) {
       .quote-box { padding: 1.4rem 1.1rem; }
@@ -298,19 +261,6 @@ permalink: /quote
 
       <!-- Row 2: Format pill + X + Telegram -->
       <div class="actions-row">
-        <!-- Share format pill -->
-        <div class="share-format-pill">
-          <button id="fmtText" class="active" title="Share as text">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h12v2H3z"/></svg>
-            TXT
-          </button>
-          <div class="pill-divider"></div>
-          <button id="fmtImage" title="Share as image">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H3V5h18v14zm-8.5-5.5-3 3.5-2-2.5-3 4h14l-6-5z"/></svg>
-            IMG
-          </button>
-        </div>
-
         <!-- X Share -->
         <button class="share-btn share-btn-x" id="shareX" title="Share on X">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
@@ -638,7 +588,6 @@ const quotes = [
 
 let currentIndex = -1;
 let currentQuote = null;
-let shareFormat = 'text'; // 'text' or 'image'
 
 function getRandomIndex() {
   const arr = new Uint32Array(1);
@@ -693,18 +642,6 @@ window.addEventListener('keydown', (e) => {
     e.preventDefault();
     showNewQuote();
   }
-});
-
-// Share format pill toggle
-document.getElementById('fmtText').addEventListener('click', () => {
-  shareFormat = 'text';
-  document.getElementById('fmtText').classList.add('active');
-  document.getElementById('fmtImage').classList.remove('active');
-});
-document.getElementById('fmtImage').addEventListener('click', () => {
-  shareFormat = 'image';
-  document.getElementById('fmtImage').classList.add('active');
-  document.getElementById('fmtText').classList.remove('active');
 });
 
 // Build canvas image blob for sharing
@@ -795,40 +732,24 @@ async function buildQuoteImage() {
   return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 }
 
-// Share helpers
-async function shareToX() {
-  if (!currentQuote) return;
-  if (shareFormat === 'text') {
-    const txt = currentQuote.author
-      ? `"${currentQuote.text}" — ${currentQuote.author}`
-      : `"${currentQuote.text}"`;
-    window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(txt), '_blank');
-  } else {
-    // Image mode: download the image (X doesn't support direct image share via URL intent)
-    const blob = await buildQuoteImage();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.download = 'quote.png'; a.href = url; a.click();
-    URL.revokeObjectURL(url);
-    // Then open X so user can attach the downloaded image
-    setTimeout(() => window.open('https://x.com/intent/tweet', '_blank'), 600);
-  }
+// Share helpers — text only
+function getQuoteText() {
+  if (!currentQuote) return '';
+  return currentQuote.author
+    ? `"${currentQuote.text}" — ${currentQuote.author}`
+    : `"${currentQuote.text}"`;
 }
 
-async function shareToTelegram() {
-  if (!currentQuote) return;
-  if (shareFormat === 'text') {
-    const txt = currentQuote.author
-      ? `"${currentQuote.text}"\n— ${currentQuote.author}`
-      : `"${currentQuote.text}"`;
-    window.open('https://t.me/share/url?url=%20&text=' + encodeURIComponent(txt), '_blank');
-  } else {
-    // Image mode: download image, then open Telegram
-    const blob = await buildQuoteImage();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.download = 'quote.png'; a.href = url; a.click();
-    URL.revokeObjectURL(url);
-    setTimeout(() => window.open('https://t.me/', '_blank'), 600);
-  }
+function shareToX() {
+  const txt = getQuoteText();
+  if (!txt) return;
+  window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(txt), '_blank');
+}
+
+function shareToTelegram() {
+  const txt = getQuoteText();
+  if (!txt) return;
+  window.open('https://t.me/share/url?url=%20&text=' + encodeURIComponent(txt), '_blank');
 }
 
 document.getElementById('shareX').addEventListener('click', shareToX);
