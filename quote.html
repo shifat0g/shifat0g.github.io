@@ -1,7 +1,3 @@
----
-permalink: /quote
----
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,123 +73,6 @@ permalink: /quote
     }
     .site-back-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9); }
 
-    /* Source Selector Bar */
-    .source-bar {
-      position: relative;
-      z-index: 10;
-      width: min(95%, 850px);
-      margin: 0 auto;
-      flex-shrink: 0;
-    }
-
-    .source-pill {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(120,100,255,0.2);
-      border-radius: 100px;
-      padding: 0.3rem 0.4rem 0.3rem 0.9rem;
-      cursor: pointer;
-      transition: background 0.2s, border-color 0.2s;
-      user-select: none;
-    }
-    .source-pill:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(180,140,255,0.35);
-    }
-    .source-pill-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.06em;
-      color: rgba(255,255,255,0.4);
-      text-transform: uppercase;
-    }
-    .source-pill-name {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--accent);
-      flex: 1;
-    }
-    .source-pill-arrow {
-      display: flex; align-items: center; justify-content: center;
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      background: rgba(192,132,252,0.12);
-      color: var(--accent);
-      transition: transform 0.25s, background 0.2s;
-      flex-shrink: 0;
-    }
-    .source-pill.open .source-pill-arrow { transform: rotate(180deg); }
-
-    .source-dropdown {
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0; right: 0;
-      background: rgba(20, 12, 40, 0.97);
-      border: 1px solid rgba(120,100,255,0.2);
-      border-radius: 16px;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.55);
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.35s cubic-bezier(0.23,1,0.32,1), opacity 0.25s ease;
-      pointer-events: none;
-    }
-    .source-dropdown.open {
-      max-height: 400px;
-      opacity: 1;
-      pointer-events: all;
-    }
-    .source-option {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      padding: 0.9rem 1.1rem;
-      cursor: pointer;
-      transition: background 0.15s;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-    .source-option:last-child { border-bottom: none; }
-    .source-option:hover { background: rgba(192,132,252,0.08); }
-    .source-option.active { background: rgba(192,132,252,0.12); }
-    .source-option-icon {
-      width: 30px; height: 30px;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-      flex-shrink: 0;
-    }
-    .source-option-info { flex: 1; }
-    .source-option-name {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.92);
-    }
-    .source-option-desc {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.4);
-      margin-top: 0.15rem;
-      font-family: 'DM Mono', monospace;
-    }
-    .source-option-badge {
-      font-size: 0.65rem;
-      font-family: 'DM Mono', monospace;
-      padding: 0.2rem 0.55rem;
-      border-radius: 100px;
-      background: rgba(192,132,252,0.15);
-      color: var(--accent);
-      border: 1px solid rgba(192,132,252,0.25);
-      flex-shrink: 0;
-    }
-    .source-option-badge.green {
-      background: rgba(74,222,128,0.12);
-      color: #4ade80;
-      border-color: rgba(74,222,128,0.25);
-    }
-
     /* Main layout */
     .container {
       position: relative; z-index: 1;
@@ -228,15 +107,6 @@ permalink: /quote
       font-size: clamp(0.8rem, 2vw, 0.95rem);
       color: var(--text-muted);
       opacity: 0.85;
-    }
-
-    /* Source bar spacing */
-    .source-bar-wrapper {
-      width: min(95%, 850px);
-      margin-bottom: clamp(0.7rem, 1.5vh, 1.2rem);
-      flex-shrink: 0;
-      position: relative;
-      z-index: 100;
     }
 
     .quote-box {
@@ -433,71 +303,6 @@ permalink: /quote
       <div class="subtitle">Wisdom from the Quran & Sunnah.</div>
     </div>
 
-    <!-- Source Selector -->
-    <div class="source-bar-wrapper">
-      <div class="source-bar">
-        <div class="source-pill" id="sourcePill">
-          <span class="source-pill-label">Source</span>
-          <span class="source-pill-name" id="sourcePillName">Random</span>
-          <span class="source-pill-arrow">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </div>
-        <div class="source-dropdown" id="sourceDropdown">
-          <div class="source-option active" data-source="random">
-            <span class="source-option-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#a78bfa">
-                <path d="M16 3h5v5M4 20l16-16M21 16v5h-5M15 15l6 6M4 4l5 5"/>
-              </svg>
-            </span>
-            <div class="source-option-info">
-              <div class="source-option-name">Random</div>
-              <div class="source-option-desc">Mix from all sources</div>
-            </div>
-            <span class="source-option-badge green">all</span>
-          </div>
-          <div class="source-option" data-source="quran">
-            <span class="source-option-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#c084fc">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-              </svg>
-            </span>
-            <div class="source-option-info">
-              <div class="source-option-name">Quran</div>
-              <div class="source-option-desc">alquran.cloud · Arabic + English</div>
-            </div>
-            <span class="source-option-badge">API</span>
-          </div>
-          <div class="source-option" data-source="hadith">
-            <span class="source-option-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#f9a8d4">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-              </svg>
-            </span>
-            <div class="source-option-info">
-              <div class="source-option-name">Hadith</div>
-              <div class="source-option-desc">hadith-api · Bukhari & Muslim</div>
-            </div>
-            <span class="source-option-badge">API</span>
-          </div>
-          <div class="source-option" data-source="quranquotes">
-            <span class="source-option-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#fbbf24">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-            </span>
-            <div class="source-option-info">
-              <div class="source-option-name">Quran Quotes</div>
-              <div class="source-option-desc">quranquotes.vercel.app · English</div>
-            </div>
-            <span class="source-option-badge">API</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="quote-box" id="quoteBox">
       <div class="loading-spinner" id="loadingSpinner"></div>
       <div class="quote-content hidden" id="quoteContent">
@@ -544,103 +349,959 @@ permalink: /quote
   </div>
 
 <script>
+// ─── Quotes Data ─────────────────────────────────────────────────
+const QUOTES = [
+  // ─── QURAN VERSES ─────────────────────────────────────────────────────────
+  { arabic: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ", text: "And when My servants ask you concerning Me, indeed I am near.", author: "Surah Al-Baqarah (2:186)", source: "Quran" },
+  { arabic: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", text: "Allah — there is no deity except Him, the Ever-Living, the Sustainer of existence.", author: "Surah Al-Baqarah (2:255)", source: "Quran" },
+  { arabic: "وَعَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ", text: "But perhaps you hate a thing and it is good for you.", author: "Surah Al-Baqarah (2:216)", source: "Quran" },
+  { arabic: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", text: "For indeed, with hardship will be ease.", author: "Surah Ash-Sharh (94:5)", source: "Quran" },
+  { arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", text: "Indeed, with hardship will be ease.", author: "Surah Ash-Sharh (94:6)", source: "Quran" },
+  { arabic: "وَلَا تَيْأَسُوا مِن رَّوْحِ اللَّهِ", text: "And despair not of relief from Allah.", author: "Surah Yusuf (12:87)", source: "Quran" },
+  { arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ", text: "Sufficient for us is Allah, and He is the best Disposer of affairs.", author: "Surah Al-Imran (3:173)", source: "Quran" },
+  { arabic: "وَاللَّهُ يُحِبُّ الصَّابِرِينَ", text: "And Allah loves the patient.", author: "Surah Al-Imran (3:146)", source: "Quran" },
+  { arabic: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", text: "Indeed, Allah is with the patient.", author: "Surah Al-Baqarah (2:153)", source: "Quran" },
+  { arabic: "وَلَنَبْلُوَنَّكُم بِشَيْءٍ مِّنَ الْخَوْفِ وَالْجُوعِ", text: "And We will surely test you with something of fear and hunger and a loss of wealth and lives and fruits, but give good tidings to the patient.", author: "Surah Al-Baqarah (2:155)", source: "Quran" },
+  { arabic: "إِنَّ اللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ حَتَّىٰ يُغَيِّرُوا مَا بِأَنفُسِهِمْ", text: "Indeed, Allah will not change the condition of a people until they change what is in themselves.", author: "Surah Ar-Ra'd (13:11)", source: "Quran" },
+  { arabic: "وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ", text: "And He is with you wherever you are.", author: "Surah Al-Hadid (57:4)", source: "Quran" },
+  { arabic: "وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ", text: "And my success is not but through Allah.", author: "Surah Hud (11:88)", source: "Quran" },
+  { arabic: "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا", text: "Our Lord, let not our hearts deviate after You have guided us.", author: "Surah Al-Imran (3:8)", source: "Quran" },
+  { arabic: "وَاذْكُر رَّبَّكَ إِذَا نَسِيتَ", text: "And remember your Lord when you forget.", author: "Surah Al-Kahf (18:24)", source: "Quran" },
+  { arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ", text: "Verily, in the remembrance of Allah do hearts find rest.", author: "Surah Ar-Ra'd (13:28)", source: "Quran" },
+  { arabic: "وَقُل رَّبِّ زِدْنِي عِلْمًا", text: "And say: My Lord, increase me in knowledge.", author: "Surah Ta-Ha (20:114)", source: "Quran" },
+  { arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ", text: "So remember Me; I will remember you.", author: "Surah Al-Baqarah (2:152)", source: "Quran" },
+  { arabic: "وَشَاوِرْهُمْ فِي الْأَمْرِ", text: "And consult them in the matter.", author: "Surah Al-Imran (3:159)", source: "Quran" },
+  { arabic: "وَلَا تُفْسِدُوا فِي الْأَرْضِ بَعْدَ إِصْلَاحِهَا", text: "And do not cause corruption upon the earth after its reformation.", author: "Surah Al-A'raf (7:56)", source: "Quran" },
+  { arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ", text: "Say: He is Allah, the One.", author: "Surah Al-Ikhlas (112:1)", source: "Quran" },
+  { arabic: "وَتَعَاوَنُوا عَلَى الْبِرِّ وَالتَّقْوَىٰ", text: "And cooperate in righteousness and piety.", author: "Surah Al-Ma'idah (5:2)", source: "Quran" },
+  { arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ", text: "O you who have believed, seek help through patience and prayer.", author: "Surah Al-Baqarah (2:153)", source: "Quran" },
+  { arabic: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا", text: "And whoever fears Allah — He will make for him a way out.", author: "Surah At-Talaq (65:2)", source: "Quran" },
+  { arabic: "وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ", text: "And will provide for him from where he does not expect.", author: "Surah At-Talaq (65:3)", source: "Quran" },
+  { arabic: "إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ", text: "Indeed, Allah does not allow to be lost the reward of those who do good.", author: "Surah At-Tawbah (9:120)", source: "Quran" },
+  { arabic: "وَأَن لَّيْسَ لِلْإِنسَانِ إِلَّا مَا سَعَىٰ", text: "And that there is not for man except that for which he strives.", author: "Surah An-Najm (53:39)", source: "Quran" },
+  { arabic: "رَبِّ إِنِّي لِمَا أَنزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ", text: "My Lord, indeed I am in need of whatever good You would send down to me.", author: "Surah Al-Qasas (28:24)", source: "Quran" },
+  { arabic: "وَفَوْقَ كُلِّ ذِي عِلْمٍ عَلِيمٌ", text: "And above every possessor of knowledge is one more knowing.", author: "Surah Yusuf (12:76)", source: "Quran" },
+  { arabic: "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا", text: "Allah does not burden a soul beyond that it can bear.", author: "Surah Al-Baqarah (2:286)", source: "Quran" },
+  { arabic: "إِنَّهُ كَانَ بِعِبَادِهِ خَبِيرًا بَصِيرًا", text: "Indeed, He is ever, of His servants, Acquainted and Seeing.", author: "Surah Al-Isra (17:96)", source: "Quran" },
+  { arabic: "وَاللَّهُ غَالِبٌ عَلَىٰ أَمْرِهِ", text: "And Allah is predominant over His affair.", author: "Surah Yusuf (12:21)", source: "Quran" },
+  { arabic: "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ", text: "Indeed we belong to Allah, and indeed to Him we will return.", author: "Surah Al-Baqarah (2:156)", source: "Quran" },
+  { arabic: "وَلَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ", text: "And do not despair of the mercy of Allah.", author: "Surah Az-Zumar (39:53)", source: "Quran" },
+  { arabic: "إِنَّ اللَّهَ يُحِبُّ الْمُتَوَكِّلِينَ", text: "Indeed, Allah loves those who rely upon Him.", author: "Surah Al-Imran (3:159)", source: "Quran" },
+  { arabic: "وَمَا بِكُم مِّن نِّعْمَةٍ فَمِنَ اللَّهِ", text: "And whatever you have of favor — it is from Allah.", author: "Surah An-Nahl (16:53)", source: "Quran" },
+  { arabic: "لَئِن شَكَرْتُمْ لَأَزِيدَنَّكُمْ", text: "If you are grateful, I will surely increase you in favor.", author: "Surah Ibrahim (14:7)", source: "Quran" },
+  { arabic: "وَاللَّهُ خَيْرُ الرَّازِقِينَ", text: "And Allah is the best of providers.", author: "Surah Al-Jumu'ah (62:11)", source: "Quran" },
+  { arabic: "وَاللَّهُ خَيْرُ الْحَافِظِينَ", text: "And Allah is the best guardian.", author: "Surah Yusuf (12:64)", source: "Quran" },
+  { arabic: "إِنَّ الْأَرْضَ لِلَّهِ يُورِثُهَا مَن يَشَاءُ مِنْ عِبَادِهِ", text: "Indeed, the earth belongs to Allah. He causes to inherit it whom He wills of His servants.", author: "Surah Al-A'raf (7:128)", source: "Quran" },
+  { arabic: "وَعَلَى اللَّهِ فَلْيَتَوَكَّلِ الْمُؤْمِنُونَ", text: "And upon Allah let the believers rely.", author: "Surah Al-Imran (3:122)", source: "Quran" },
+  { arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً", text: "Our Lord, give us in this world that which is good and in the Hereafter that which is good.", author: "Surah Al-Baqarah (2:201)", source: "Quran" },
+  { arabic: "هُوَ الَّذِي يُصَلِّي عَلَيْكُمْ وَمَلَائِكَتُهُ", text: "It is He who confers blessing upon you, and His angels, that He may bring you out from darkness into the light.", author: "Surah Al-Ahzab (33:43)", source: "Quran" },
+  { arabic: "وَقُل رَّبِّ اغْفِرْ وَارْحَمْ وَأَنتَ خَيْرُ الرَّاحِمِينَ", text: "And say: My Lord, forgive and have mercy, and You are the best of the merciful.", author: "Surah Al-Mu'minun (23:118)", source: "Quran" },
+  { arabic: "إِنَّ رَبَّكَ لَبِالْمِرْصَادِ", text: "Indeed, your Lord is in observation.", author: "Surah Al-Fajr (89:14)", source: "Quran" },
+  { arabic: "وَاللَّهُ يَعْلَمُ وَأَنتُمْ لَا تَعْلَمُونَ", text: "And Allah knows and you do not know.", author: "Surah Al-Baqarah (2:216)", source: "Quran" },
+  { arabic: "يَعْلَمُ مَا فِي السَّمَاوَاتِ وَالْأَرْضِ", text: "He knows what is in the heavens and the earth.", author: "Surah Al-Mujadila (58:7)", source: "Quran" },
+  { arabic: "وَمَا تَدْرِي نَفْسٌ مَّاذَا تَكْسِبُ غَدًا", text: "And no soul perceives what it will earn tomorrow.", author: "Surah Luqman (31:34)", source: "Quran" },
+  { arabic: "كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ", text: "Every soul will taste death.", author: "Surah Al-Imran (3:185)", source: "Quran" },
+  { arabic: "وَمَا الْحَيَاةُ الدُّنْيَا إِلَّا مَتَاعُ الْغُرُورِ", text: "And what is the worldly life except the enjoyment of delusion.", author: "Surah Al-Imran (3:185)", source: "Quran" },
+  { arabic: "يَا أَيُّهَا النَّاسُ إِنَّ وَعْدَ اللَّهِ حَقٌّ", text: "O mankind, indeed the promise of Allah is truth.", author: "Surah Fatir (35:5)", source: "Quran" },
+  { arabic: "إِنَّ اللَّهَ يُحِبُّ الْمُحْسِنِينَ", text: "Indeed, Allah loves the doers of good.", author: "Surah Al-Baqarah (2:195)", source: "Quran" },
+  { arabic: "وَاللَّهُ يُحِبُّ الْمُطَّهِّرِينَ", text: "And Allah loves those who purify themselves.", author: "Surah At-Tawbah (9:108)", source: "Quran" },
+  { arabic: "وَلَذِكْرُ اللَّهِ أَكْبَرُ", text: "And the remembrance of Allah is greater.", author: "Surah Al-Ankabut (29:45)", source: "Quran" },
+  { arabic: "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ", text: "And whoever relies upon Allah — then He is sufficient for him.", author: "Surah At-Talaq (65:3)", source: "Quran" },
+  { arabic: "إِنَّ اللَّهَ يُحِبُّ التَّوَّابِينَ", text: "Indeed, Allah loves those who are constantly repentant.", author: "Surah Al-Baqarah (2:222)", source: "Quran" },
+  { arabic: "وَالْعَاقِبَةُ لِلْمُتَّقِينَ", text: "And the best outcome is for the righteous.", author: "Surah Al-A'raf (7:128)", source: "Quran" },
+  { arabic: "وَاللَّهُ سَمِيعٌ عَلِيمٌ", text: "And Allah is Hearing and Knowing.", author: "Surah Al-Baqarah (2:227)", source: "Quran" },
+  { arabic: "إِنَّمَا يُوَفَّى الصَّابِرُونَ أَجْرَهُم بِغَيْرِ حِسَابٍ", text: "Indeed, the patient will be given their reward without account.", author: "Surah Az-Zumar (39:10)", source: "Quran" },
+  { arabic: "وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ", text: "And We have not sent you except as a mercy to the worlds.", author: "Surah Al-Anbiya (21:107)", source: "Quran" },
+  { arabic: "قُلْ إِنَّ صَلَاتِي وَنُسُكِي وَمَحْيَايَ وَمَمَاتِي لِلَّهِ رَبِّ الْعَالَمِينَ", text: "Say: Indeed, my prayer, my rites of sacrifice, my living and my dying are for Allah, Lord of the worlds.", author: "Surah Al-An'am (6:162)", source: "Quran" },
+  { arabic: "فَأَيْنَمَا تُوَلُّوا فَثَمَّ وَجْهُ اللَّهِ", text: "So wherever you turn, there is the Face of Allah.", author: "Surah Al-Baqarah (2:115)", source: "Quran" },
+  { arabic: "وَهُوَ الْقَاهِرُ فَوْقَ عِبَادِهِ", text: "And He is the subjugator over His servants.", author: "Surah Al-An'am (6:18)", source: "Quran" },
+  { arabic: "وَمَن يُهِنِ اللَّهُ فَمَا لَهُ مِن مُّكْرِمٍ", text: "And whoever Allah humiliates — for him there is no bestower of honor.", author: "Surah Al-Hajj (22:18)", source: "Quran" },
+  { arabic: "يُرِيدُ اللَّهُ بِكُمُ الْيُسْرَ وَلَا يُرِيدُ بِكُمُ الْعُسْرَ", text: "Allah intends for you ease and does not intend for you hardship.", author: "Surah Al-Baqarah (2:185)", source: "Quran" },
+  { arabic: "وَأَحْسِن كَمَا أَحْسَنَ اللَّهُ إِلَيْكَ", text: "And do good as Allah has done good to you.", author: "Surah Al-Qasas (28:77)", source: "Quran" },
+  { arabic: "وَلَا تَنسَ نَصِيبَكَ مِنَ الدُّنْيَا", text: "And do not forget your share of the world.", author: "Surah Al-Qasas (28:77)", source: "Quran" },
+  { arabic: "وَبَشِّرِ الصَّابِرِينَ", text: "And give good tidings to the patient.", author: "Surah Al-Baqarah (2:155)", source: "Quran" },
+  { arabic: "الَّذِينَ إِذَا أَصَابَتْهُم مُّصِيبَةٌ قَالُوا إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ", text: "Who, when disaster strikes them, say: Indeed we belong to Allah, and indeed to Him we will return.", author: "Surah Al-Baqarah (2:156)", source: "Quran" },
+  { arabic: "ادْعُونِي أَسْتَجِبْ لَكُمْ", text: "Call upon Me; I will respond to you.", author: "Surah Ghafir (40:60)", source: "Quran" },
+  { arabic: "إِن تَنصُرُوا اللَّهَ يَنصُرْكُمْ", text: "If you support Allah, He will support you.", author: "Surah Muhammad (47:7)", source: "Quran" },
+  { arabic: "وَاللَّهُ أَعْلَمُ بِأَعْدَائِكُمْ", text: "And Allah is most knowing of your enemies.", author: "Surah An-Nisa (4:45)", source: "Quran" },
+  { arabic: "وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ", text: "And He is over all things competent.", author: "Surah Al-Hadid (57:2)", source: "Quran" },
+  { arabic: "سُبْحَانَ الَّذِي خَلَقَ الْأَزْوَاجَ كُلَّهَا", text: "Exalted is He who created all pairs.", author: "Surah Ya-Sin (36:36)", source: "Quran" },
+  { arabic: "وَمَا خَلَقْتُ الْجِنَّ وَالْإِنسَ إِلَّا لِيَعْبُدُونِ", text: "And I did not create the jinn and mankind except to worship Me.", author: "Surah Adh-Dhariyat (51:56)", source: "Quran" },
+  { arabic: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ", text: "All praise is due to Allah, Lord of the worlds.", author: "Surah Al-Fatihah (1:2)", source: "Quran" },
+  { arabic: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", text: "It is You we worship and You we ask for help.", author: "Surah Al-Fatihah (1:5)", source: "Quran" },
+  { arabic: "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ", text: "Guide us to the straight path.", author: "Surah Al-Fatihah (1:6)", source: "Quran" },
+  { arabic: "وَإِن تَعُدُّوا نِعْمَةَ اللَّهِ لَا تُحْصُوهَا", text: "And if you should count the favors of Allah, you could not enumerate them.", author: "Surah Ibrahim (14:34)", source: "Quran" },
+  { arabic: "أَفَلَا يَتَدَبَّرُونَ الْقُرْآنَ", text: "Then do they not reflect upon the Quran?", author: "Surah An-Nisa (4:82)", source: "Quran" },
+
+  // ─── HADITH ───────────────────────────────────────────────────────────────
+  { arabic: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ", text: "Actions are judged by intentions.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { arabic: "الدِّينُ النَّصِيحَةُ", text: "The religion is sincere advice.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", text: "The best of you are those who learn the Quran and teach it.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { arabic: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ", text: "A Muslim is one from whose tongue and hands other Muslims are safe.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { arabic: "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ", text: "None of you truly believes until he loves for his brother what he loves for himself.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { arabic: "طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ", text: "Seeking knowledge is an obligation upon every Muslim.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { arabic: "الصَّبْرُ نِصْفُ الْإِيمَانِ", text: "Patience is half of faith.", author: "Prophet Muhammad ﷺ", source: "Shu'ab al-Iman" },
+  { arabic: "الطَّهُورُ شَطْرُ الْإِيمَانِ", text: "Cleanliness is half of faith.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ", text: "Whoever believes in Allah and the Last Day, let him speak good or remain silent.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { arabic: "الْيَدُ الْعُلْيَا خَيْرٌ مِنَ الْيَدِ السُّفْلَى", text: "The upper hand is better than the lower hand. The upper hand is the one that gives, and the lower is the one that takes.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Be in this world as if you were a stranger or a traveler along a path.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Take advantage of five before five: your youth before your old age, your health before your illness, your wealth before your poverty, your free time before your preoccupation, and your life before your death.", author: "Prophet Muhammad ﷺ", source: "Shu'ab al-Iman" },
+  { text: "The strongest among you is the one who controls himself when he is angry.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Make things easy and do not make them difficult. Cheer people up and do not drive them away.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Verily, Allah does not look at your appearance or wealth, but rather He looks at your hearts and actions.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "No one of you truly believes until he loves for his brother what he loves for himself.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The best of people are those that bring most benefit to the rest of mankind.", author: "Prophet Muhammad ﷺ", source: "Daraqutni" },
+  { text: "Feed the hungry, visit the sick, and free the captive.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever removes a worldly hardship from a believer, Allah will remove one of the hardships of the Day of Resurrection from him.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "A good word is charity.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Smiling at your brother is charity.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The world is a prison for the believer and a paradise for the disbeliever.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Allah is gentle and loves gentleness in all matters.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The most beloved of deeds to Allah are those that are most consistent, even if they are small.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "When Allah loves a servant, He tests him.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "If Allah wants good for someone, He gives him understanding of the religion.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Do not belittle any good deed, even if it is meeting your brother with a cheerful face.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The greatest jihad is to battle your own soul, to fight the evil within yourself.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Whoever is not grateful to people is not grateful to Allah.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Every act of goodness is charity.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Avoid envy, for envy devours good deeds just as fire devours firewood.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Modesty is part of faith.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The believer does not defame, abuse, obscene talk, or use foul language.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Make your character good for the people.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "There is no disease that Allah has created, except that He also has created its remedy.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The best among you is the one who is best to his family.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Richness is not having many possessions, but richness is the richness of the soul.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Tie your camel first, then put your trust in Allah.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Convey from me, even if it is one verse.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Paradise is surrounded by hardships and the Hellfire is surrounded by desires.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The pen has been lifted and the pages have dried.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Verily, with every hardship comes ease.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The most perfect believer in faith is the one whose character is finest.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Whoever loves to meet Allah, Allah loves to meet him.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Speak the truth even if it is bitter.", author: "Prophet Muhammad ﷺ", source: "Ibn Hibban" },
+  { text: "There is no obedience to creation in disobedience to the Creator.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Your Lord is surprised by a young man who has no inclination toward desires.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Whoever conceals the faults of a Muslim, Allah will conceal his faults in this life and the next.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "None of you should wish for death because of a calamity that has befallen him.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Make things easy for people and do not make things difficult for them.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The Muslim who mixes with people and bears patiently their hurtful words is better than one who does not mix with people and does not endure their hurtful words.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The son of Adam does not fill any vessel worse than his stomach.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Every child is born in a state of fitrah (natural disposition toward Islam).", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "A man follows the religion of his close friend, so let one of you look at whom he befriends.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The signs of the hypocrite are three: when he speaks he lies, when he promises he breaks it, and when he is trusted he betrays.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Beware of the supplication of the oppressed, for there is no veil between it and Allah.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Leave that which makes you doubt for that which does not make you doubt.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The halal is clear and the haram is clear, and between them are matters that are doubtful.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Verily the hearts of the children of Adam are between two fingers of the fingers of the Most Merciful, as one heart, which He turns however He wills.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Fear Allah wherever you are, follow up a bad deed with a good deed and it will wipe it out, and behave well toward people.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The dua of a Muslim for his brother in his absence will be answered.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "He who is not grateful to people is not grateful to Allah.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Whoever builds a mosque for the sake of Allah, Allah will build for him a house in Paradise.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Do not waste water even if you are at a flowing river.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "None of you has faith until I am more beloved to him than his father, his children, and all of mankind.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever sees something evil should change it with his hand; if he cannot, then with his tongue; if he cannot, then with his heart — and that is the weakest of faith.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The most burdensome prayers for the hypocrites are Isha and Fajr, but if they only knew what was in them, they would come even if they had to crawl.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever guides someone to goodness will have a reward like the one who did it.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The Muslim has five rights over his fellow Muslim: to return his greeting, to visit him when he is sick, to attend his funeral, to accept his invitation, and to respond to him when he sneezes.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The best of you are those who learn the Quran and teach it.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Verily, knowledge is gained through learning.", author: "Prophet Muhammad ﷺ", source: "Al-Khatib" },
+  { text: "The seeking of knowledge is obligatory for every Muslim.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "Whoever treads a path in search of knowledge, Allah will make easy for him the path to paradise.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Part of the perfection of one's Islam is his leaving that which does not concern him.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Allah does not punish the individual for the sin of the community until they see evil being done right in front of them and are capable of stopping it, yet do not do so.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Verily, when a servant commits a sin, a black spot appears on his heart.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Two words are light on the tongue, heavy on the scale, beloved to the Most Merciful: SubhanAllahi wa bihamdihi, SubhanAllahil Azim.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "If you feel no shame, then do as you wish.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The best prayer after the obligatory prayers is the night prayer.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Repentance wipes out what was before it.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "The believer is a mirror to the believer.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Whoever relieves a Muslim of a burden from the burdens of the world, Allah will relieve him of a burden from the burdens on the Day of Judgement.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Allah has ninety-nine names. Whoever learns them will enter Paradise.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "He who has in his heart the weight of a mustard seed of pride shall not enter Paradise.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Truthfulness leads to righteousness and righteousness leads to Paradise.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Lying leads to wickedness and wickedness leads to the Hellfire.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The most hated of all people to Allah is the most quarrelsome.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Do not be envious of one another, do not inflate prices by overbidding against one another, do not hate one another, do not shun one another. Be slaves of Allah and brothers.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Whoever is kind, Allah will be kind to him; therefore be kind to man on earth and He Who is in heaven will show mercy on you.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Whoever of you wakes up in the morning secured in his dwelling, healthy in his body, having his food for the day — it is as if the whole world has been gathered for him.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "A believer does not allow himself to be stung twice from the same hole.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Give charity without delay, for it stands in the way of calamity.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The best of charity is that given by one who has little.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Charity does not decrease wealth.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The merciful are shown mercy by the All-Merciful. Show mercy to those on earth and the One in the heavens will have mercy upon you.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The best of people are those who are best in fulfilling their obligations.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "Whoever does not show mercy will not be shown mercy.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Indeed, Allah is Pure and He only accepts that which is pure.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "If you had relied on Allah with true reliance, He would have provided sustenance for you just as He provides for the birds: they go forth hungry in the morning and return with a full belly at dusk.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The first thing the slave will be asked about on the Day of Judgment is the prayer.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Whoever does not recite Al-Fatiha in his prayer, his prayer is invalid.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "When one of you makes dua, he should be firm in his supplication and should not say: 'O Allah, if You will, give me,' for none can compel Allah.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Your parents are your paradise or your hellfire.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "Righteousness is good character, and wrongdoing is that which wavers in your soul and which you dislike people finding out about.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The greatest sin is to associate partners with Allah, then to be undutiful to parents.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "A man's true wealth is the good he does in this world.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "The most complete of believers in faith are those with the best character.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Do not grieve. What has reached you was never going to miss you, and what has missed you was never going to reach you.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Verily, the most honored of you in the sight of Allah is the most righteous of you.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever among you sees an evil, let him change it with his hand. If he is unable, then with his tongue. If he is unable, then with his heart, and that is the weakest of faith.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Indeed Allah has forgiven my ummah for what their souls whisper to them, as long as they do not act on it or speak of it.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The one who is tested the most are the prophets, then the righteous, then those that follow in their footsteps.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+
+  // ─── ISLAMIC SCHOLARS & PERSONALITIES ────────────────────────────────────
+  { text: "If you want to focus more on Allah in your prayers, focus more on Him outside your prayers.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Whoever does not thank men does not thank Allah.", author: "Imam Ahmad ibn Hanbal", source: "Islamic Scholar" },
+  { text: "The heart will rest and feel relief if it is settled with Allah. And it will worry and be anxious if it sought after other than Him.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "The more knowledgeable you are, the more you realize how little you know.", author: "Imam Shafi'i", source: "Islamic Scholar" },
+  { text: "Be with Allah and don't worry about anything else.", author: "Ibn Ata'illah al-Iskandari", source: "Islamic Scholar" },
+  { text: "Whoever loves that Allah should answer his supplications in difficulty, let him increase his supplications in ease.", author: "Imam Tirmidhi", source: "Islamic Scholar" },
+  { text: "Whoever is offered an apology from a fellow Muslim should accept it whether it is genuine or not, for if he does not then he will not come to me at the Hawd.", author: "Ibn Umar", source: "Islamic Scholar" },
+  { text: "In the darkest of nights, the stars shine brightest. In your hardest of times, remember Allah is near.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Knowledge is not what is memorized; knowledge is what benefits.", author: "Imam Shafi'i", source: "Islamic Scholar" },
+  { text: "I never debated with anyone but I prayed that Allah guard him and keep him safe.", author: "Imam Shafi'i", source: "Islamic Scholar" },
+  { text: "Your cure is within you, but you do not sense it. Your sickness is from you, but you do not see it.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "The one who does not know his own worth will never know the worth of others.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Do not be a slave to others when Allah has created you free.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Live amongst people in such a manner that if you die they weep over you and if you are alive they crave for your company.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Speak only when your words are more beautiful than silence.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Do not use the sharpness of your speech on the mother who taught you how to speak.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Do not let your difficulties fill you with anxiety; after all, it is only in the darkest nights that stars shine more brightly.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "The strongest man is the one who, when he gets angry and his face reddens and his hackles rise, is able to defeat his anger.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Two things define you: your patience when you have nothing, and your attitude when you have everything.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "The eyes are the window to the soul; look after what you let enter through them.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Sit with those who love Allah, for that enlightens the mind and awakens the heart.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "The greatest sin is the one a person considers insignificant.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Sins cause harm and repentance removes it.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "The most beneficial cure is perpetual engagement with Allah's remembrance.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "When you feel that your heart has hardened, go to where the sick are, visit the graveyard, and remember death.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Be patient. Al-Sabr (patience) is a pillar of iman (faith). Verily, the reward of the patient is immense.", author: "Umar ibn al-Khattab", source: "Companion of the Prophet" },
+  { text: "Hold yourself accountable before you are held accountable.", author: "Umar ibn al-Khattab", source: "Companion of the Prophet" },
+  { text: "We were the most humiliated of people and Allah gave us honor through Islam. If we seek honor through anything other than Islam, Allah will humiliate us.", author: "Umar ibn al-Khattab", source: "Companion of the Prophet" },
+  { text: "Fear the prayer of the oppressed, for there is no veil between it and Allah.", author: "Umar ibn al-Khattab", source: "Companion of the Prophet" },
+  { text: "The best deed is that which a person does persistently, even if it is small.", author: "Aisha (RA)", source: "Companion of the Prophet" },
+  { text: "Leave what makes you doubt for what does not make you doubt.", author: "Abu Bakr as-Siddiq", source: "Companion of the Prophet" },
+  { text: "Patience is a pillar of faith.", author: "Abu Bakr as-Siddiq", source: "Companion of the Prophet" },
+  { text: "If you want to know your rank with Allah, look at where He has placed Allah in your heart.", author: "Ibn Ata'illah", source: "Islamic Scholar" },
+  { text: "Renounce the world and Allah will love you; renounce what others possess and people will love you.", author: "Imam Ahmad ibn Hanbal", source: "Islamic Scholar" },
+  { text: "The most difficult of all deeds is to be just.", author: "Imam al-Nawawi", source: "Islamic Scholar" },
+  { text: "Let not your tongue mention the shame of another, for you yourself are covered in shame, and all men have eyes.", author: "Imam Shafi'i", source: "Islamic Scholar" },
+  { text: "Whoever learns the Quran, great things are ahead of him.", author: "Imam Shafi'i", source: "Islamic Scholar" },
+  { text: "If you love good for yourself, give it to others first.", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "Son of Adam, you are nothing but a number of days. Whenever a day passes, a part of you has gone.", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "I looked at all friends, and did not find a better friend than safeguarding the tongue.", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "O son of Adam! Seek the next world and this world will come to you.", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "Beware of procrastination. It is the greatest of armies of Iblis against you.", author: "Ibn al-Jawzi", source: "Islamic Scholar" },
+  { text: "Modesty before Allah means that you protect your head and what it contains, protect your stomach and what it holds, remember death and the experience of annihilation.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "The slave of Allah who prays regularly at night, Allah will build for him a house in Jannah.", author: "Imam Ahmad ibn Hanbal", source: "Islamic Scholar" },
+  { text: "Three things cannot be recovered: The arrow launched from its bow, the word spoken in haste, and the missed opportunity.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Value the one who values you when they have other options.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Knowledge enlivens the soul.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "He who has a thousand friends has not a friend to spare, and he who has one enemy will meet him everywhere.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "A man who has no wealth should not despair; and he who has wealth should not be proud. Allah gives to whom He wills without measure.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "The real voyage of discovery consists not in seeking new landscapes, but in having new eyes — eyes that see everything as from Allah.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "Knowledge without action is wastefulness, and action without knowledge is foolishness.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "If you see that someone is being tested with a sin, do not look down on him. Look instead at what Allah has protected you from.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "Half of knowledge is saying I do not know.", author: "Imam Malik", source: "Islamic Scholar" },
+  { text: "Do not tell me how many you have memorized; tell me how much of it you act upon.", author: "Imam Malik", source: "Islamic Scholar" },
+  { text: "Whoever wants to purify his heart, let him prefer Allah over his desires.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "When the heart is not at rest, it seeks rest in everything and finds rest nowhere.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Patience has two parts: patience in worship and patience away from what Allah has forbidden.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "If dunia were worth a mosquito's wing to Allah, He would not have given the disbeliever a sip of water from it.", author: "Imam Tirmidhi", source: "Islamic Scholar" },
+  { text: "Thankfulness to Allah for favors is itself a favor in need of thankfulness.", author: "Ibn Ata'illah", source: "Islamic Scholar" },
+  { text: "Do not let the present moment pass without making the most of it for Allah.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "Whoever is silent about truth is a mute devil.", author: "Imam Shafi'i", source: "Islamic Scholar" },
+  { text: "Your ambition should not be to gain the pleasure of people; aim rather to gain the pleasure of Allah.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "A person's tongue can give you the taste of his heart.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "The more a person knows, the more aware he becomes of his own ignorance.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Protect your heart from attachment to anything other than Allah.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Do not be happy with praise that you do not deserve, and do not be sad with blame you do not deserve.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Do not despair of the mercy of Allah, for you cannot know what mercy lies ahead.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Trust in Allah, but tie your camel. That is the sunnah of your Prophet.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Every human being is after happiness. The difference is that the believer knows where happiness truly lies.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Indeed, the believer is stronger than mountains. Mountains cannot be moved from their place, but a believer's faith can move mountains.", author: "Bilal ibn Rabah", source: "Companion of the Prophet" },
+  { text: "Richness is not from an abundance of worldly goods, but richness is richness of the soul.", author: "Umar ibn al-Khattab", source: "Companion of the Prophet" },
+  { text: "People are enemies of what they do not know.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "The biggest gift you can give to someone is your time.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Your enemies will fear you more if they know that you will always tell the truth.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Generosity is to help a deserving person without his request.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Forgive others as quickly as you expect Allah to forgive you.", source: "Islamic Wisdom" },
+  { text: "Your deen (religion) is your identity. Don't lose yourself trying to fit into this world.", source: "Islamic Wisdom" },
+  { text: "The further you are from Allah, the longer every path seems. The nearer you are to Allah, every path becomes easy.", source: "Islamic Wisdom" },
+  { text: "Before you speak, ask yourself: Is it true? Is it necessary? Is it kind?", source: "Islamic Wisdom" },
+  { text: "Do not grieve over what has passed. What was decreed has been decreed, and what was not decreed will never come to pass.", source: "Islamic Wisdom" },
+  { text: "Prayer is the key to all good.", source: "Islamic Wisdom" },
+  { text: "The deen is easy. Ease your way into it gradually.", source: "Islamic Wisdom" },
+  { text: "The believer's shade on the Day of Resurrection will be his charity.", source: "Islamic Wisdom" },
+  { text: "If your heart is not moved by the Quran, ask yourself what has moved it.", source: "Islamic Wisdom" },
+  { text: "The best time to plant a tree was 20 years ago. The second best time is now. The best time to turn to Allah — is now.", source: "Islamic Wisdom" },
+  { text: "Whoever you cannot make happy, at least do not make them sad.", source: "Islamic Wisdom" },
+  { text: "Contentment is a treasure that never runs out.", source: "Islamic Wisdom" },
+  { text: "A heart free of envy is a heart at peace.", source: "Islamic Wisdom" },
+  { text: "What comes from the heart reaches the heart.", source: "Islamic Wisdom" },
+  { text: "Whatever is written for you will reach you, even if it is underneath two mountains. And whatever is not written for you, you will not get, even if it is between your two lips.", source: "Islamic Wisdom" },
+  { text: "Whoever knocks on the door of Allah, it will be opened. Whoever asks of Allah, He will give. Whoever relies upon Allah, He will suffice.", source: "Islamic Wisdom" },
+  { text: "The cure for ignorance is to ask.", source: "Islamic Wisdom" },
+  { text: "The real poverty is the poverty of the soul.", source: "Islamic Wisdom" },
+  { text: "A moment of patience in a moment of anger saves a thousand moments of regret.", source: "Islamic Wisdom" },
+  { text: "Be careful with your intentions. It is the unseen force that shapes your deeds.", source: "Islamic Wisdom" },
+  { text: "Do not look down upon any Muslim, for even the most insignificant in your eyes may be the greatest in the sight of Allah.", source: "Islamic Wisdom" },
+  { text: "The greatest distance between people is misunderstanding.", source: "Islamic Wisdom" },
+  { text: "Good character is the best gift you can give to those around you.", source: "Islamic Wisdom" },
+  { text: "The one who truly loves Allah will love all that Allah loves.", source: "Islamic Wisdom" },
+  { text: "Do not waste your time in waiting for tomorrow. Today is what you have.", source: "Islamic Wisdom" },
+  { text: "When we repair our relationship with Allah, He repairs everything else for us.", source: "Islamic Wisdom" },
+  { text: "The believer who recites the Quran is like a citron whose fragrance is sweet and whose taste is sweet.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Engage much in the remembrance of Allah to the point that people say you are mad.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Among the actions and good deeds for which a believer will continue to receive reward after his death are: knowledge which he taught and spread, a righteous son whom he left behind, a copy of the Quran which he left as a legacy, a mosque he built, a house he built for the traveler, a stream he caused to flow, or charity which he gave during his lifetime while he was in good health. These will continue to bring him reward after his death.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "When a man dies, his deeds come to an end except for three things: ongoing charity, beneficial knowledge, or a righteous son who prays for him.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The most beloved of places to Allah are the mosques, and the most hated of places to Allah are the markets.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Visit the sick, feed the hungry, and free the captives.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Verily, gentleness does not enter into anything except that it beautifies it, and it is not removed from anything except that it disgraces it.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Whoever memorizes ten ayahs from the beginning of Surah Al-Kahf will be protected from the Dajjal.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Allah is beautiful and He loves beauty.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "There is a piece of flesh in the body, if it becomes good, the whole body becomes good, and if it gets spoiled, the whole body gets spoiled — and that is the heart.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+
+  // ─── MOTIVATIONAL ISLAMIC QUOTES ─────────────────────────────────────────
+  { text: "Never underestimate the power of dua. You are asking the One who has power over all things.", source: "Islamic Reminder" },
+  { text: "Every hardship is a stepping stone to get closer to Allah. Do not let it stop you.", source: "Islamic Reminder" },
+  { text: "Allah is closer to you than your jugular vein. Never feel alone.", source: "Islamic Reminder" },
+  { text: "Your darkest night will produce your brightest dawn. Trust Allah's plan.", source: "Islamic Reminder" },
+  { text: "Pray as if everything depends on Allah. Work as if everything depends on you.", source: "Islamic Reminder" },
+  { text: "You were created with a purpose. Do not waste your life on things that do not matter.", source: "Islamic Reminder" },
+  { text: "The more you remember Allah, the more He remembers you. Fill your heart with His remembrance.", source: "Islamic Reminder" },
+  { text: "Islam does not promise a life without problems; it promises that you will never face them alone.", source: "Islamic Reminder" },
+  { text: "Your sins are not greater than Allah's mercy. Turn back to Him now.", source: "Islamic Reminder" },
+  { text: "The world was not built for you to settle in; it was built for you to pass through on your way to something eternal.", source: "Islamic Reminder" },
+  { text: "Never lose hope in Allah. He is Al-Wahhab — the one who gives without measure.", source: "Islamic Reminder" },
+  { text: "The test of faith is not whether you fall, but whether you get back up and return to Allah.", source: "Islamic Reminder" },
+  { text: "Every day you wake up is another chance to be better than yesterday.", source: "Islamic Reminder" },
+  { text: "Do not let the world distract you from the Hereafter. The Hereafter is where you will truly live.", source: "Islamic Reminder" },
+  { text: "Sometimes Allah breaks your spirit to save your soul. Sometimes He breaks your heart to make you whole.", source: "Islamic Reminder" },
+  { text: "Focus on fixing yourself, and Allah will fix what is around you.", source: "Islamic Reminder" },
+  { text: "Your tears in sujud are worth more than all the laughter this world can offer.", source: "Islamic Reminder" },
+  { text: "When you are down to nothing, Allah is up to something. Trust His plan.", source: "Islamic Reminder" },
+  { text: "The struggle you are in today is developing the strength you need for tomorrow.", source: "Islamic Reminder" },
+  { text: "Be kind, for everyone you meet is fighting a battle you know nothing about.", source: "Islamic Reminder" },
+  { text: "The best investment you can make is in your relationship with Allah.", source: "Islamic Reminder" },
+  { text: "Tawakkul is not inaction. It is taking action, then trusting Allah with the result.", source: "Islamic Reminder" },
+  { text: "When you wake up for Fajr, remember: the angels made dua for you last night.", source: "Islamic Reminder" },
+  { text: "Be the person that when you walk in a room, the room gets brighter — not with your looks but with your character.", source: "Islamic Reminder" },
+  { text: "Every time you resist temptation for Allah's sake, your faith grows stronger.", source: "Islamic Reminder" },
+  { text: "The greatest revolution a Muslim can make is the revolution within the self.", source: "Islamic Reminder" },
+  { text: "You cannot always control what happens to you, but you can always control how you respond — with patience and trust in Allah.", source: "Islamic Reminder" },
+  { text: "When everything feels hopeless, make dua. When everything feels perfect, make dua. Make dua in all states.", source: "Islamic Reminder" },
+  { text: "Teach yourself to be grateful before loss teaches you to appreciate what you had.", source: "Islamic Reminder" },
+  { text: "The strongest bridge to Allah is sincerity of heart.", source: "Islamic Reminder" },
+  { text: "You are never too broken to be fixed by Allah.", source: "Islamic Reminder" },
+  { text: "Turn your wounds into wisdom, your pain into patience, your trials into tawakkul.", source: "Islamic Reminder" },
+  { text: "Do not despair. Allah has not forgotten you. He is simply preparing you for what is ahead.", source: "Islamic Reminder" },
+  { text: "The closer you are to Allah, the easier your struggles become to bear.", source: "Islamic Reminder" },
+  { text: "Be soft with people. You never know what battles they are fighting behind closed doors.", source: "Islamic Reminder" },
+  { text: "The depth of your dua reflects the depth of your need for Allah.", source: "Islamic Reminder" },
+  { text: "Do not attach your happiness to things that can be taken away. Attach it to the One who never leaves.", source: "Islamic Reminder" },
+  { text: "Real success is not measured in wealth or status, but in the health of your relationship with Allah.", source: "Islamic Reminder" },
+  { text: "When you feel weak, make istighfar. When you feel strong, make shukr.", source: "Islamic Reminder" },
+  { text: "The believer is always hopeful — hopeful in Allah's mercy, hopeful of a better tomorrow.", source: "Islamic Reminder" },
+  { text: "Hardship is a reminder that we are not in control — and that the One who is, loves us.", source: "Islamic Reminder" },
+  { text: "You are not what happened to you. You are how you responded to it, with the help of Allah.", source: "Islamic Reminder" },
+  { text: "Never delay a good deed. The opportunity may not come again.", source: "Islamic Reminder" },
+  { text: "Make your heart a place where Allah is always welcomed.", source: "Islamic Reminder" },
+  { text: "The one who cries out of fear of Allah will be given shade on the Day when there is no shade but His.", source: "Islamic Reminder" },
+  { text: "Stop trying to find peace in the creation and start finding it in the Creator.", source: "Islamic Reminder" },
+  { text: "Your dua is your weapon. Use it.", source: "Islamic Reminder" },
+  { text: "Whatever you have given for the sake of Allah, it is saved for you in the most permanent of places.", source: "Islamic Reminder" },
+  { text: "Keep your eyes on the Hereafter and this world will arrange itself.", source: "Islamic Reminder" },
+  { text: "Every leaf that falls is by Allah's permission. Nothing in your life happens by accident.", source: "Islamic Reminder" },
+  { text: "Be patient with yourself. Spiritual growth takes time.", source: "Islamic Reminder" },
+  { text: "When the world closes all its doors on you, the door to Allah is always open.", source: "Islamic Reminder" },
+  { text: "Make space in your life for what matters: salah, family, kindness, and gratitude.", source: "Islamic Reminder" },
+  { text: "Do not compare your chapter 3 to someone else's chapter 20. Allah writes every story differently.", source: "Islamic Reminder" },
+  { text: "Seek forgiveness before you need it. Seek patience before trials arrive. Seek gratitude before blessings depart.", source: "Islamic Reminder" },
+  { text: "A believer's heart is at peace not because life is easy, but because his Lord is great.", source: "Islamic Reminder" },
+  { text: "The remembrance of Allah is food for the soul. A soul without it slowly starves.", source: "Islamic Reminder" },
+  { text: "You do not need the world to validate you. Allah already chose you when He guided you to Islam.", source: "Islamic Reminder" },
+  { text: "Return to Allah before returning to anything else.", source: "Islamic Reminder" },
+  { text: "Whoever gives up something for the sake of Allah, Allah replaces it with something better.", source: "Islamic Reminder" },
+  { text: "If you are breathing, you still have time to make it right with Allah.", source: "Islamic Reminder" },
+  { text: "The believer does not complain — he makes dua.", source: "Islamic Reminder" },
+  { text: "Let your character speak louder than your words.", source: "Islamic Reminder" },
+  { text: "Gratitude unlocks the fullness of life. The more you give thanks to Allah, the more He gives.", source: "Islamic Reminder" },
+  { text: "Whatever Allah has taken from you, He has taken it for your protection. Whatever He gave you, it was always meant for you.", source: "Islamic Reminder" },
+  { text: "The night you spend crying to Allah in sujud will be repaid in a morning you cannot yet imagine.", source: "Islamic Reminder" },
+  { text: "You are stronger than you think, because Allah is stronger than anything you face.", source: "Islamic Reminder" },
+  { text: "Be the change in your community that you wish to see in the ummah.", source: "Islamic Reminder" },
+  { text: "Sabr is not passive. It is active patience — continuing to strive while trusting Allah.", source: "Islamic Reminder" },
+  { text: "The greatest gift to your children is not wealth, but a strong relationship with Allah.", source: "Islamic Reminder" },
+  { text: "When something is taken from you, know that something better is on its way — if you remain patient.", source: "Islamic Reminder" },
+  { text: "Every time you lower yourself in humility before Allah, He raises your rank.", source: "Islamic Reminder" },
+  { text: "Do good deeds in private and Allah will announce your virtues in public.", source: "Islamic Reminder" },
+  { text: "Make tawbah before the sun sets on your sins. Allah's door of forgiveness is always open.", source: "Islamic Reminder" },
+  { text: "The ummah rises when its individuals return to Allah.", source: "Islamic Reminder" },
+  { text: "Your heart was designed to love Allah. Everything else is temporary.", source: "Islamic Reminder" },
+  { text: "Islam is not a burden — it is a liberation from everything that would weigh your soul down.", source: "Islamic Reminder" },
+  { text: "One sincere moment of dua can change the course of your entire life.", source: "Islamic Reminder" },
+  { text: "You are a masterpiece created by Allah. Do not let the world reduce you to anything less.", source: "Islamic Reminder" },
+  { text: "The one who reads the Quran fluently is with the noble and righteous scribes. The one who reads with difficulty has a double reward.", source: "Islamic Reminder" },
+  { text: "Honor your parents while they are still alive. Their dua for you is a treasure unlike any other.", source: "Islamic Reminder" },
+  { text: "Speak less. Pray more. Give more. Judge less. Love more. This is the way.", source: "Islamic Reminder" },
+  { text: "Real strength is when you have every reason to break down, but you choose to make sujud instead.", source: "Islamic Reminder" },
+  { text: "The quality of your worship reflects the quality of your connection with Allah.", source: "Islamic Reminder" },
+  { text: "When you feel empty, fill yourself with Quran.", source: "Islamic Reminder" },
+  { text: "A heart connected to Allah is never truly broken — it is always being built back up.", source: "Islamic Reminder" },
+  { text: "The longer the night of patience, the brighter the dawn of relief.", source: "Islamic Reminder" },
+  { text: "You cannot control what people think of you, but you can control what Allah thinks of you.", source: "Islamic Reminder" },
+  { text: "Make your intentions pure and watch how Allah opens doors you never even knocked on.", source: "Islamic Reminder" },
+  { text: "The smallest act of kindness has the power to change someone's world.", source: "Islamic Reminder" },
+  { text: "This life is a test. Stop trying to pass it with the wrong answers.", source: "Islamic Reminder" },
+  { text: "Do not let your heart grieve over what Allah has written for others. Be grateful for your own portion.", source: "Islamic Reminder" },
+
+  // ─── MORE HADITH ──────────────────────────────────────────────────────────
+  { text: "Whoever does not thank people, does not thank Allah.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "It is sufficient evil for a person to hold his brother Muslim in contempt.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The Hour will not be established until two large groups of Muslims fight one another with many casualties on both sides, and they both will be following the same religious doctrine.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Do not laugh too much, for excessive laughter kills the heart.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Hastiness is from Shaytan, and deliberateness is from Allah.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Lower your wing for your parents.", author: "Prophet Muhammad ﷺ", source: "Islamic Wisdom" },
+  { text: "Look at those who are lower than you, not at those who are higher than you, so that you will not undervalue the blessings of Allah upon you.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "There is no body of work more virtuous in the sight of Allah than knowledge that benefits people.", author: "Prophet Muhammad ﷺ", source: "Tabarani" },
+  { text: "Beware of this world, for it is sweet and tempting.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Allah does not remove knowledge by extracting it from the hearts of men, but rather He removes knowledge by taking away the scholars.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever prays the two cool prayers will enter Paradise.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The most virtuous jihad is a just word spoken before a tyrannical ruler.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "When you see a person who has been given more than you in money and beauty, look to those who have been given less.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The believer is not one who eats his fill when the neighbor beside him is hungry.", author: "Prophet Muhammad ﷺ", source: "Al-Adab Al-Mufrad" },
+  { text: "Protect the earth for it is your mother.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Do not cut down trees unnecessarily.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Whoever plants a tree and it gives fruit, as long as it continues to give fruit, it is charity for him.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "The most complete gift of Allah is a life based on good character.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "On the authority of your Lord: Whoever remembers Me in himself, I remember him in Myself. Whoever mentions Me in a gathering, I mention him in a better gathering.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "He who has wronged you should be forgiven, and he who has deprived you should be given.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Every day that the sun rises, charity is due from every joint of a person.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "To make peace between two people is charity.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Kind speech and forgiveness are better than charity followed by injury.", author: "Prophet Muhammad ﷺ", source: "Quran — Al-Baqarah 2:263" },
+  { text: "Whoever is pleased that Allah answers his prayers in difficult times, let him make many supplications in easy times.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Be content with what Allah has given you, and you will be among the richest of people.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Know that what has passed you by was not going to befall you; and that what has befallen you was not going to pass you by.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "The servant of Allah will continue to receive expansion in his chest and elevation in rank as long as he forgives.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Do not abuse the dead, for they have passed on to what they have sent forth.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Exchange gifts, for gifts remove rancor.", author: "Prophet Muhammad ﷺ", source: "Al-Adab Al-Mufrad" },
+  { text: "Help your brother, whether he is an oppressor or is oppressed. People asked: how do we help him if he is an oppressor? He said: by stopping him from oppressing others.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The best of you is the one who learns the Quran and teaches it to others.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "There is nothing heavier on the scale than good character.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The merciful will be shown mercy by the Merciful One. Be merciful to those on earth and the One in the heavens will be merciful to you.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Whoever reads a letter from the Book of Allah will have a reward for it, and that reward will be multiplied by ten.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The one who is most unjust is the one who oppresses after he has been forgiven.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Do not hate each other, do not envy each other, do not turn away from each other, and be brothers, O servants of Allah.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Every act of kindness is charity.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Allah loves that you be proficient in whatever you do.", author: "Prophet Muhammad ﷺ", source: "Tabarani" },
+  { text: "A believer is never pricked by a thorn except that Allah will expiate some of his sins because of it.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "When Allah intends good for someone, He afflicts him with trials.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever wakes up and his greatest concern is other than Allah, then he is not from Allah and Allah is not preoccupied with him.", author: "Prophet Muhammad ﷺ", source: "Hakim" },
+  { text: "No human being has ever filled a vessel worse than his own stomach. The son of Adam needs no more than a few morsels of food to keep up his strength.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Your smile for your brother is charity.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Silence is wisdom, and few are those who practice it.", author: "Prophet Muhammad ﷺ", source: "Shu'ab al-Iman" },
+  { text: "Whoever believes in Allah and the Last Day should honor his guest.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The one who gives in charity and the one who collects it are equal in reward.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Do good and you will be met with good.", author: "Prophet Muhammad ﷺ", source: "Islamic Wisdom" },
+  { text: "Whoever covers the fault of a Muslim, Allah will cover his faults on the Day of Judgment.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Fasting is a shield from the Hellfire.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Whoever fasts Ramadan with faith and seeking reward, his previous sins will be forgiven.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever prays qiyam on Laylat al-Qadr out of faith and seeking reward, his previous sins will be forgiven.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The dua of a fasting person is not rejected.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "Give the worker his wages before his sweat dries.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "Whosoever of you sees an evil action, let him change it with his hand; and if he is not able to do so, then with his tongue; and if he is not able to do so, then with his heart — and that is the weakest of faith.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+
+  // ─── MORE QURAN VERSES ────────────────────────────────────────────────────
+  { arabic: "وَنَحْنُ أَقْرَبُ إِلَيْهِ مِنْ حَبْلِ الْوَرِيدِ", text: "And We are closer to him than his jugular vein.", author: "Surah Qaf (50:16)", source: "Quran" },
+  { arabic: "إِنَّ الْإِنسَانَ لَفِي خُسْرٍ", text: "Indeed, mankind is in loss.", author: "Surah Al-Asr (103:2)", source: "Quran" },
+  { arabic: "إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ", text: "Except for those who have believed and done righteous deeds.", author: "Surah Al-Asr (103:3)", source: "Quran" },
+  { arabic: "وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ", text: "And advised each other to truth and advised each other to patience.", author: "Surah Al-Asr (103:3)", source: "Quran" },
+  { arabic: "فَلَا تَكُن فِي مِرْيَةٍ مِّنْهُ", text: "So be not in doubt about it.", author: "Surah Hud (11:17)", source: "Quran" },
+  { arabic: "إِنَّ الْحَسَنَاتِ يُذْهِبْنَ السَّيِّئَاتِ", text: "Indeed, good deeds do away with misdeeds.", author: "Surah Hud (11:114)", source: "Quran" },
+  { arabic: "وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُ", text: "And whoever does an atom's weight of good will see it.", author: "Surah Az-Zalzalah (99:7)", source: "Quran" },
+  { arabic: "وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُ", text: "And whoever does an atom's weight of evil will see it.", author: "Surah Az-Zalzalah (99:8)", source: "Quran" },
+  { arabic: "فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ", text: "So which of the favors of your Lord would you deny?", author: "Surah Ar-Rahman (55:13)", source: "Quran" },
+  { arabic: "الرَّحْمَٰنُ عَلَّمَ الْقُرْآنَ", text: "The Most Merciful — taught the Quran.", author: "Surah Ar-Rahman (55:1-2)", source: "Quran" },
+  { arabic: "وَاللَّيْلِ إِذَا يَغْشَىٰ", text: "By the night when it covers.", author: "Surah Al-Layl (92:1)", source: "Quran" },
+  { arabic: "وَالضُّحَىٰ وَاللَّيْلِ إِذَا سَجَىٰ", text: "By the morning brightness, and the night when it covers with darkness.", author: "Surah Ad-Duha (93:1-2)", source: "Quran" },
+  { arabic: "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ", text: "Your Lord has not taken leave of you, nor has He detested you.", author: "Surah Ad-Duha (93:3)", source: "Quran" },
+  { arabic: "وَلَلْآخِرَةُ خَيْرٌ لَّكَ مِنَ الْأُولَىٰ", text: "And the Hereafter is better for you than the first life.", author: "Surah Ad-Duha (93:4)", source: "Quran" },
+  { arabic: "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ", text: "And your Lord is going to give you, and you will be satisfied.", author: "Surah Ad-Duha (93:5)", source: "Quran" },
+  { arabic: "أَلَمْ يَجِدْكَ يَتِيمًا فَآوَىٰ", text: "Did He not find you an orphan and give shelter?", author: "Surah Ad-Duha (93:6)", source: "Quran" },
+  { arabic: "وَوَجَدَكَ ضَالًّا فَهَدَىٰ", text: "And He found you lost and guided you.", author: "Surah Ad-Duha (93:7)", source: "Quran" },
+  { arabic: "وَوَجَدَكَ عَائِلًا فَأَغْنَىٰ", text: "And He found you poor and made you self-sufficient.", author: "Surah Ad-Duha (93:8)", source: "Quran" },
+  { arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا لَا تُلْهِكُمْ أَمْوَالُكُمْ وَلَا أَوْلَادُكُمْ عَن ذِكْرِ اللَّهِ", text: "O you who have believed, let not your wealth and your children divert you from the remembrance of Allah.", author: "Surah Al-Munafiqun (63:9)", source: "Quran" },
+  { arabic: "إِنَّ اللَّهَ اشْتَرَىٰ مِنَ الْمُؤْمِنِينَ أَنفُسَهُمْ وَأَمْوَالَهُم", text: "Indeed, Allah has purchased from the believers their lives and their properties.", author: "Surah At-Tawbah (9:111)", source: "Quran" },
+  { arabic: "وَلَا تَهِنُوا وَلَا تَحْزَنُوا وَأَنتُمُ الْأَعْلَوْنَ", text: "Do not weaken and do not grieve, and you will be superior if you are true believers.", author: "Surah Al-Imran (3:139)", source: "Quran" },
+  { arabic: "وَاللَّهُ وَلِيُّ الْمُؤْمِنِينَ", text: "And Allah is the ally of the believers.", author: "Surah Al-Imran (3:68)", source: "Quran" },
+  { arabic: "وَتُوبُوا إِلَى اللَّهِ جَمِيعًا أَيُّهَ الْمُؤْمِنُونَ لَعَلَّكُمْ تُفْلِحُونَ", text: "And turn to Allah in repentance, all of you, O believers, that you might succeed.", author: "Surah An-Nur (24:31)", source: "Quran" },
+  { arabic: "وَيَدْعُ الْإِنسَانُ بِالشَّرِّ دُعَاءَهُ بِالْخَيْرِ", text: "And man supplicates for evil as he supplicates for good, and man is ever hasty.", author: "Surah Al-Isra (17:11)", source: "Quran" },
+  { arabic: "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا", text: "Indeed, prayer has been decreed upon the believers a decree of specified times.", author: "Surah An-Nisa (4:103)", source: "Quran" },
+  { arabic: "وَأَقِيمُوا الصَّلَاةَ وَآتُوا الزَّكَاةَ", text: "And establish prayer and give zakah.", author: "Surah Al-Baqarah (2:43)", source: "Quran" },
+  { arabic: "وَبِالْوَالِدَيْنِ إِحْسَانًا", text: "And to parents, good treatment.", author: "Surah An-Nisa (4:36)", source: "Quran" },
+  { arabic: "وَقَضَىٰ رَبُّكَ أَلَّا تَعْبُدُوا إِلَّا إِيَّاهُ وَبِالْوَالِدَيْنِ إِحْسَانًا", text: "And your Lord has decreed that you not worship except Him, and to parents, good treatment.", author: "Surah Al-Isra (17:23)", source: "Quran" },
+  { arabic: "فَلَا تَقُل لَّهُمَا أُفٍّ وَلَا تَنْهَرْهُمَا", text: "Say not to them even 'ugh', and do not repel them.", author: "Surah Al-Isra (17:23)", source: "Quran" },
+  { arabic: "وَقُل رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا", text: "And say: My Lord, have mercy upon them as they brought me up when I was small.", author: "Surah Al-Isra (17:24)", source: "Quran" },
+  { arabic: "إِنَّ أَكْرَمَكُمْ عِندَ اللَّهِ أَتْقَاكُمْ", text: "Indeed, the most noble of you in the sight of Allah is the most righteous of you.", author: "Surah Al-Hujurat (49:13)", source: "Quran" },
+  { arabic: "يَا أَيُّهَا النَّاسُ إِنَّا خَلَقْنَاكُم مِّن ذَكَرٍ وَأُنثَىٰ", text: "O mankind, indeed We have created you from male and female and made you peoples and tribes that you may know one another.", author: "Surah Al-Hujurat (49:13)", source: "Quran" },
+  { arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا اجْتَنِبُوا كَثِيرًا مِّنَ الظَّنِّ", text: "O you who have believed, avoid much negative assumption.", author: "Surah Al-Hujurat (49:12)", source: "Quran" },
+  { arabic: "وَلَا تَجَسَّسُوا وَلَا يَغْتَب بَّعْضُكُم بَعْضًا", text: "And do not spy or backbite each other.", author: "Surah Al-Hujurat (49:12)", source: "Quran" },
+  { arabic: "يُحِبُّهُمْ وَيُحِبُّونَهُ", text: "He loves them and they love Him.", author: "Surah Al-Ma'idah (5:54)", source: "Quran" },
+  { arabic: "إِنَّ اللَّهَ عَلِيمٌ خَبِيرٌ", text: "Indeed, Allah is Knowing and Aware.", author: "Surah Al-Hujurat (49:13)", source: "Quran" },
+
+  // ─── MORE SCHOLARS ────────────────────────────────────────────────────────
+  { text: "When you do not get what you want, remember that you got something better — you got to make dua to Allah.", author: "Ibn Taymiyyah", source: "Islamic Scholar" },
+  { text: "The heart is only purified through patience and gratitude.", author: "Ibn Taymiyyah", source: "Islamic Scholar" },
+  { text: "Whoever is not satisfied with a little will not be satisfied with a lot.", author: "Ibn Taymiyyah", source: "Islamic Scholar" },
+  { text: "What Allah wills is better than what we will for ourselves.", author: "Ibn Taymiyyah", source: "Islamic Scholar" },
+  { text: "The greatest punishment is a hardened heart.", author: "Ibn Taymiyyah", source: "Islamic Scholar" },
+  { text: "The one who recites the Quran is in constant conversation with Allah.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "To get what you love, you must first be patient with what you hate.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "Whoever knows himself knows his Lord.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "Four things support the world: the learning of the wise, the justice of the great, the prayers of the righteous, and the valor of the brave.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "If you see that someone is falling into sin, your first thought should be mercy, not contempt.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "The biggest barrier between you and Allah is yourself.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "Never let the fear of failure prevent you from trying. Put your trust in Allah.", author: "Imam al-Nawawi", source: "Islamic Scholar" },
+  { text: "Every difficulty is followed by ease. This is a promise from Allah Himself.", author: "Imam al-Nawawi", source: "Islamic Scholar" },
+  { text: "The one who is busy with the Quran is busy with the best of occupations.", author: "Imam al-Nawawi", source: "Islamic Scholar" },
+  { text: "Work for this world as if you will live forever, but work for the Hereafter as if you will die tomorrow.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "The greatest wealth is not gold and silver, but beneficial knowledge.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Man is a slave of his kindnesses.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Associate with noble people. You will become one of them.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Patience is of two kinds: patience over what pains you, and patience against what you covet.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "He who has a thousand friends has not a friend to spare, and he who has one enemy will meet him everywhere.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Honor is in taqwa (God-consciousness), not in lineage or status.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "The world is like a shadow. Run after it and you will never catch it. Turn your back to it and it has no choice but to follow you.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Never make a permanent decision because of a temporary emotion.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Time is the most precious thing you have. Yet it is the thing most wasted.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "The heart is torn between the love of the dunya and the love of the akhirah. Whichever you feed more will grow stronger.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Laziness and procrastination are among the greatest destroyers of a person.", author: "Ibn al-Jawzi", source: "Islamic Scholar" },
+  { text: "He who wastes his time will regret it when time runs out.", author: "Ibn al-Jawzi", source: "Islamic Scholar" },
+  { text: "Three things are from the foundations of wisdom: patience in times of trial, forgiveness in times of anger, and generosity in times of need.", author: "Sufyan al-Thawri", source: "Islamic Scholar" },
+  { text: "Feed the poor and you feed your own soul.", author: "Rabi'a al-Adawiyya", source: "Islamic Scholar" },
+  { text: "Love Allah, and do not grieve over any worldly thing He withholds from you.", author: "Rabi'a al-Adawiyya", source: "Islamic Scholar" },
+  { text: "My Lord, if I worship You for fear of Hell, burn me in Hell. If I worship You in hope of Paradise, exclude me from Paradise. But if I worship You for Your own sake, do not withhold from me Your everlasting beauty.", author: "Rabi'a al-Adawiyya", source: "Islamic Scholar" },
+  { text: "Leave people to their Lord. He knows them better than you do.", author: "Imam al-Shafi'i", source: "Islamic Scholar" },
+  { text: "If you find it difficult to wake up for Fajr, know that it is only your sins that weigh you down.", author: "Imam al-Shafi'i", source: "Islamic Scholar" },
+  { text: "Be like a flower that gives its fragrance even to the hand that crushes it.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "You will not truly know a person until you have seen them in three situations: in times of anger, in times of hardship, and in times of desire.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "The tongue is a beast; if it is let loose, it devours.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "A person's worth lies in what he strives for. Not what he possesses.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Do not be ashamed to give a little; to withhold is worse.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Glory is not in wealth and lineage; it is in knowledge, forbearance, and piety.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "The eyes of the heart see what the eyes of the head cannot.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "Silence is the best reply to a fool.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "You will not find the sweetness of worship until you put a wall between you and your desires.", author: "Imam Ahmad ibn Hanbal", source: "Islamic Scholar" },
+  { text: "Whoever is patient in his poverty, Allah will enrich his heart.", author: "Imam Ahmad ibn Hanbal", source: "Islamic Scholar" },
+  { text: "Verily, I have written knowledge, and in it there is no lie. So hold to it tightly.", author: "Imam Malik", source: "Islamic Scholar" },
+  { text: "Do not sit with people of innovation, for they will corrupt your heart.", author: "Imam Malik", source: "Islamic Scholar" },
+  { text: "The scholar who does not act upon his knowledge is like a lamp that gives light to others while burning itself.", author: "Imam Ahmad ibn Hanbal", source: "Islamic Scholar" },
+  { text: "When you lower yourself for the sake of Allah, know that Allah is raising your rank.", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "Whoever does not have a teacher, Shaytan will be his teacher.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "The one who fears Allah will fear nothing else. The one who does not fear Allah will fear everything.", author: "Umar ibn al-Khattab", source: "Companion of the Prophet" },
+  { text: "Do not let your sins stop you from making dua. Making dua despite your sins is itself a sign of hope in Allah.", source: "Islamic Wisdom" },
+  { text: "The deen is not just what you do in the masjid. It is what you do everywhere else.", source: "Islamic Wisdom" },
+  { text: "Your relationship with your Creator will determine every other relationship in your life.", source: "Islamic Wisdom" },
+  { text: "Islam is the deen of balance. Too much of any worldly thing will tip the scales of your heart.", source: "Islamic Wisdom" },
+  { text: "Be of service to people, and you will be in service of Allah.", source: "Islamic Wisdom" },
+  { text: "Do not rely on your own understanding when you have the Quran and Sunnah to guide you.", source: "Islamic Wisdom" },
+  { text: "Seek knowledge from the cradle to the grave.", source: "Islamic Wisdom" },
+  { text: "The one who starts the day without gratitude has already lost the day.", source: "Islamic Wisdom" },
+  { text: "When you are asked how you are doing, say: Alhamdulillah — and mean it.", source: "Islamic Wisdom" },
+  { text: "SubhanAllah for the morning. Alhamdulillah for the evening. There is no day that does not carry a gift from Allah.", source: "Islamic Wisdom" },
+];
+
+// ─── ADDITIONAL HADITH ────────────────────────────────────────────────────
+const EXTRA_QUOTES = [
+  { text: "The best Jihad is the one in which your horse is slain and your blood is spilled.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "A woman is 'awrah.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Verily, the most complete of believers in faith are those with the best character and who are most kind to their wives.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "When a man marries he has fulfilled half of his religion, so let him fear Allah regarding the remaining half.", author: "Prophet Muhammad ﷺ", source: "Bayhaqi" },
+  { text: "The world is green and beautiful, and Allah has appointed you as His stewards over it.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Whoever is slow in doing deeds will not be hastened forward by his lineage.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Verily, you do not return to a people from me except that you return well-disposed toward them.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Allah wrote down the decrees of creation fifty thousand years before He created the heavens and the earth.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The most virtuous person is the one who is most beneficial to people.", author: "Prophet Muhammad ﷺ", source: "Tabarani" },
+  { text: "Give the worker his wages before his sweat has dried.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "The first thing people will be judged for on the Day of Judgment is their prayer.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The contract of marriage is the most sacred of contracts.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "A Muslim owes six things to another Muslim: greet him, accept his invitation, give him sincere advice, say yarhamukallah when he sneezes, visit him when he is sick, and follow his funeral.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The best of the Muslims is the one from whose tongue and hand the Muslims are safe.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever controls his anger when he is able to act upon it, Allah will call him before all of creation on the Day of Resurrection and let him choose whichever of the wide-eyed houris he wishes.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Whoever wishes to be delivered from the fire and enter the garden should die with faith in Allah and the Last Day and should treat the people as he wishes to be treated by them.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The best charity is that which is given out of abundance.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Pray the two rak'ahs of Fajr even if you are being pursued by horsemen.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Verily your blood, your property, and your honor are sacred to one another.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever is grateful for good things, they will be increased for him. Whoever is patient in hardship, the hardship will be removed from him.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "There will come a time when holding on to your faith will be like holding on to a burning coal.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Do not be a yes-man. Do not say: I am with the people; if they do good, I do good; and if they do wrong, I do wrong. But rather make up your mind: if the people do good, you do good; and if they do evil, you do not do wrong.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Whoever performs Hajj and refrains from intimate relations and wickedness will return as the day his mother gave birth to him.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The reward of deeds depends upon the intentions, and every person will get the reward according to what he has intended.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever follows a path in search of knowledge, Allah will make the path to Jannah easy for him.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Angels do not enter a house in which there is a dog or pictures.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Do not let the people's praise distract you from your Lord.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Verily, among the best of your deeds is prayer, and none maintains the wudu except a believer.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "The parable of a good friend and a bad friend is that of a seller of musk and a blacksmith. The seller of musk might give you some, or you might buy some from him, or at least you enjoy a pleasant smell from him. The blacksmith might burn your clothes, or you get an unpleasant smell from him.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "A person will be raised in status in Paradise and will say: where did this come from? And it will be said: from your child's praying for forgiveness for you.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "The best house among the Muslims is one in which an orphan is treated well.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "I guarantee a house in Jannah for the one who gives up arguing even when he is right.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Whoever humbles himself for the sake of Allah, Allah will raise him in status.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The most frequent dua made by the Prophet ﷺ was: O Turner of Hearts, keep my heart firm upon Your religion.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Shall I not tell you about the people of Paradise? Every weak, oppressed person. And shall I not tell you about the people of the Fire? Every harsh, haughty, and arrogant person.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The most burdensome prayers are 'Isha and Fajr, but if you knew what they contained, you would come even if you had to crawl.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Protect yourself from the Fire, even with half a date.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever reads Ayat al-Kursi after each obligatory prayer, nothing will prevent him from entering Paradise except death.", author: "Prophet Muhammad ﷺ", source: "Nasai" },
+  { text: "The best rows for men are the first rows, and the worst are the last rows. The best rows for women are the last rows, and the worst are the first rows.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Whoever prays 40 days in congregation catching the first takbir, two freedoms will be written for him: freedom from the Fire and freedom from hypocrisy.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Never does a Muslim plant a tree or sow seeds, and then a bird, person, or animal eats from it, but it is regarded as a charitable gift for him.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The best of what a man leaves behind are three things: a righteous child who makes dua for him, ongoing charity whose reward continues to reach him, and knowledge that continues to be acted upon after him.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "Whoever builds a mosque for the sake of Allah, Allah will build him a similar one in Paradise.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Do not harm others and do not harm yourself.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "Remove harm from the road. It is charity.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever recites SubhanAllah 33 times, Alhamdulillah 33 times, and Allahu Akbar 34 times after each prayer — that is 100 in total — and says La ilaha illallah wahdahu la sharika lahu, his sins will be forgiven even if they are as much as the foam of the sea.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The two feet of the son of Adam will not move from near his Lord on the Day of Judgment until he is asked about five matters: about his life and how he spent it; about his youth and how he took care of it; about his wealth and how he earned it; about what he spent it on; and about how he acted on what he acquired of knowledge.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "This religion is easy, and no one will ever make it too difficult without it overcoming them. So do things properly, and if you can't, do something near to it.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Deliberation is from Allah and haste is from Shaytan.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The son of Adam grows old, but two things in him remain young: desire and hope.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever loves for the sake of Allah, hates for the sake of Allah, gives for the sake of Allah, and withholds for the sake of Allah — he has perfected his faith.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "The dua is the essence of worship.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "None of you should die except while having good expectations of Allah.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Make the most of five things before five others: life before death, health before sickness, free time before being busy, youth before old age, and wealth before poverty.", author: "Prophet Muhammad ﷺ", source: "Hakim" },
+  { text: "The worst of scholars are those who visit rulers, and the best of rulers are those who visit scholars.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "The worst of the people is the two-faced one who comes to one group with one face and to another group with another face.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "A man will follow the religion of his close friend, so each of you should consider whom he takes as a close friend.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Whoever recites La hawla wala quwwata illa billah, it is a remedy for 99 ailments, the least of which is worry.", author: "Prophet Muhammad ﷺ", source: "Tabarani" },
+  { text: "Whoever says in the morning SubhanAllah wa bihamdihi 100 times, and in the evening SubhanAllah wa bihamdihi 100 times, no one will come on the Day of Resurrection with something better.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The most weighty thing on the scale is beautiful character.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Be mindful of Allah and He will protect you.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Know that what befalls you was never going to miss you, and what misses you was never going to befall you.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Verily, my ummah will not unite on misguidance. So whenever you see them differing, keep to the greater group.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "The best thing a father can give his child is good character and good manners.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "No one gives a better gift than teaching someone useful knowledge.", author: "Prophet Muhammad ﷺ", source: "Ibn Abd al-Barr" },
+  { text: "Every innovation is going astray, and every going astray is in the Fire.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The faith of a servant is not upright until his heart is upright, and the heart is not upright until his tongue is upright.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Beware of the forbidden. Be the most worshipping of people.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Whoever has three daughters and is patient with them, provides for them, and clothes them from his wealth — they will be a shield for him from the Fire.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "The best of you are those who are best to their wives, and I am the best of you to my wives.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "A woman who prays her five prayers, fasts her month, guards her chastity, and obeys her husband — she will enter Paradise from whichever of its gates she wishes.", author: "Prophet Muhammad ﷺ", source: "Ibn Hibban" },
+  { text: "The most complete of believers in faith is the one with the best character.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Paradise is not for the proud, and it is not for those who are harsh or vulgar.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "A believer is the mirror of his fellow believer, and a believer is the brother of his fellow believer.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Feed the hungry, tend the sick and free the captive.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Every one of you is a shepherd, and every one of you is responsible for his flock.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "All mankind is from Adam and Eve. An Arab has no superiority over a non-Arab, nor does a non-Arab have any superiority over an Arab.", author: "Prophet Muhammad ﷺ", source: "Farewell Sermon" },
+  { text: "No one should harm his neighbor.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "He is not a believer who sleeps with his belly full when his neighbor is hungry beside him.", author: "Prophet Muhammad ﷺ", source: "Tabarani" },
+  { text: "The Muslim does not ridicule, curse, sin, or use obscene language.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "If you want to see a man's character, watch what he does with authority.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Speak the truth even if it is against yourself.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Do not wish to be like anyone except in two cases: a man whom Allah has given wealth and he spends it rightly, and a man whom Allah has given wisdom and he acts according to it.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "The one who has no mercy will not be shown mercy.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Paradise lies at the feet of your mother.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Being dutiful to parents is the best of good deeds.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Do not cause harm, and do not retaliate with harm.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "The believer is not bitten from the same hole twice.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Corruption has appeared on land and sea on account of what the hands of men have wrought.", author: "Allah's words in Quran — Ar-Rum (30:41)", source: "Quran" },
+  { text: "The example of a good companion is like that of the seller of musk.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever asks forgiveness for believing men and women, Allah will write for him a good deed for each believing man and woman.", author: "Prophet Muhammad ﷺ", source: "Tabarani" },
+  { text: "Seek medical treatment, O servants of Allah, for Allah has not made a disease without making a cure for it.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Sitting with the scholars is worship.", author: "Prophet Muhammad ﷺ", source: "Tabarani" },
+  { text: "Looking at the face of a scholar is worship.", author: "Prophet Muhammad ﷺ", source: "Tabarani" },
+  { text: "Among the rights of an older brother is that he is respected like a father.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Whoever enters his home with salam, the angels accompany him.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "The best of days is Friday — the day of gathering. Guard your supplications in its last hour.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Whoever reads Surah Al-Kahf on Friday, a light will shine for him from under his feet to the clouds.", author: "Prophet Muhammad ﷺ", source: "Hakim" },
+  { text: "Every matter of importance that is not begun with Bismillah is cut off from blessing.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+  { text: "Verily, Allah will aid the one who aids his brother in his absence.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "When a servant of Allah says SubhanAllah, a palm tree is planted for him in Paradise.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "He who repents from a sin is like him who has no sin.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "Good deeds protect against bad ends.", author: "Prophet Muhammad ﷺ", source: "Tabarani" },
+  { text: "The most complete of houses is one in which the orphan is treated well.", author: "Prophet Muhammad ﷺ", source: "Ibn Majah" },
+  { text: "Whoever performs the funeral prayer, he will have a qirat of reward. Whoever follows it until burial will have two qirats. The smaller qirat is like Mount Uhud.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Every son of Adam makes mistakes, and the best of those who make mistakes are those who repent.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "Whoever calls to guidance will have a reward like the rewards of those who follow him, without that detracting from their rewards in any way.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "Whoever calls to misguidance will have a burden of sin like the burdens of those who follow him.", author: "Prophet Muhammad ﷺ", source: "Sahih Muslim" },
+  { text: "The best of you is the one who does not harm others with his tongue or his hand.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Make dua to Allah while being certain of a response.", author: "Prophet Muhammad ﷺ", source: "Tirmidhi" },
+  { text: "The dua of a father for his son is like the dua of a prophet for his nation.", author: "Prophet Muhammad ﷺ", source: "Tabarani" },
+  { text: "Whoever wakes his wife at night and they both pray two rak'ahs together, they will be recorded among those who remember Allah much.", author: "Prophet Muhammad ﷺ", source: "Abu Dawud" },
+  { text: "Whoever begins the day and his concerns are other than Allah, Allah will not care in which valley he perishes.", author: "Prophet Muhammad ﷺ", source: "Hakim" },
+  { text: "Do not let your day pass without prayer, without dhikr, and without giving something in charity.", author: "Prophet Muhammad ﷺ", source: "Ahmad" },
+
+  // ─── ADDITIONAL ISLAMIC WISDOM & SCHOLARS ────────────────────────────────
+  { text: "If you see a brother sinning, hold out your hand to him — not to condemn, but to help.", source: "Islamic Wisdom" },
+  { text: "The one who truly loves this world has not tasted the sweetness of the akhirah.", source: "Islamic Wisdom" },
+  { text: "Ibadah is not only salah and fasting. It is everything you do for the sake of Allah.", source: "Islamic Wisdom" },
+  { text: "Time that has passed will never return. Use what remains wisely.", source: "Islamic Wisdom" },
+  { text: "Consistency in small deeds is worth more than a single great deed performed rarely.", source: "Islamic Wisdom" },
+  { text: "Your relationship with Quran is a reflection of your relationship with Allah.", source: "Islamic Wisdom" },
+  { text: "Real beauty is in the character of a person, not their appearance.", source: "Islamic Wisdom" },
+  { text: "A home where the Quran is recited is a home that is alive.", source: "Islamic Wisdom" },
+  { text: "Whoever makes Allah his goal, Allah will make the world serve him.", source: "Islamic Wisdom" },
+  { text: "Give sadaqah today. You do not know which good deed will tip your scale.", source: "Islamic Wisdom" },
+  { text: "The best version of you is the version closest to Allah.", source: "Islamic Wisdom" },
+  { text: "We were created to worship Allah, not to please people. Keep that straight.", source: "Islamic Wisdom" },
+  { text: "Do not let what you cannot do prevent you from doing what you can.", source: "Islamic Wisdom" },
+  { text: "The deen of Islam is built on five things: testimony of faith, prayer, zakat, fasting, and pilgrimage.", source: "Islamic Wisdom" },
+  { text: "Before you act, think: Is this for Allah? If not, reconsider.", source: "Islamic Wisdom" },
+  { text: "The most loved speech to Allah is: SubhanAllahi wa bihamdihi.", source: "Islamic Wisdom" },
+  { text: "Whoever increases in knowledge but not in guidance increases only in distance from Allah.", source: "Islamic Wisdom" },
+  { text: "Guard your prayer and you will guard your whole life.", source: "Islamic Wisdom" },
+  { text: "If your prayer does not prevent you from bad deeds, then check the state of your heart.", source: "Islamic Wisdom" },
+  { text: "A person who wakes up for tahajjud is speaking privately with his Lord. What greater honor is there?", source: "Islamic Wisdom" },
+  { text: "The believer plans his actions, but submits his outcomes to Allah.", source: "Islamic Wisdom" },
+  { text: "You will never truly love people until you love them for the sake of Allah.", source: "Islamic Wisdom" },
+  { text: "The Quran is the greatest miracle. It is a miracle you can recite in your home every single day.", source: "Islamic Wisdom" },
+  { text: "The masjid is the house of Allah. The one who frequents it, Allah considers as his guest.", source: "Islamic Wisdom" },
+  { text: "No matter how dark your past, Allah's light can still reach you. Turn toward it.", source: "Islamic Wisdom" },
+  { text: "Your sins do not define you. Your repentance does.", source: "Islamic Wisdom" },
+  { text: "If the dunya is in your hand but not in your heart, it cannot harm you.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "What is with you will vanish, and what is with Allah will remain.", source: "Quran — An-Nahl 16:96" },
+  { text: "Tawbah is not just saying sorry; it is changing your direction.", source: "Islamic Wisdom" },
+  { text: "The one who is patient in worship will find that worship becomes his greatest joy.", source: "Islamic Wisdom" },
+  { text: "True wealth is to have a heart that is satisfied with what Allah has provided.", source: "Islamic Wisdom" },
+  { text: "The angels are making dua for you every second you are in a state of purity.", source: "Islamic Wisdom" },
+  { text: "There is a special mercy for those who wake up before Fajr and seek their Lord in the darkness.", source: "Islamic Wisdom" },
+  { text: "Do not be impressed by someone's worship alone; be impressed by their character.", source: "Islamic Wisdom" },
+  { text: "A day will come when you will wish you had used every moment for Allah.", source: "Islamic Wisdom" },
+  { text: "Make your character a proof of your faith.", source: "Islamic Wisdom" },
+  { text: "The one who fears Allah will speak carefully, eat carefully, and live carefully.", source: "Islamic Wisdom" },
+  { text: "Whatever you pour into the vessel of your heart will eventually overflow through your actions and words.", source: "Islamic Wisdom" },
+  { text: "Whoever controls his eyes, his tongue, and his private parts has earned Paradise.", source: "Islamic Wisdom" },
+  { text: "Our Lord descends to the lowest heaven in the last third of every night. Ask of Him then.", source: "Islamic Wisdom" },
+  { text: "The sweetness of iman is felt most by those who have tasted the bitterness of sin and turned back.", source: "Islamic Wisdom" },
+  { text: "Your body has a right over you. Your soul has a right over you. Your family has a right over you. Balance is worship.", source: "Islamic Wisdom" },
+  { text: "The one who wastes Ramadan has truly lost. The one who gains from it will gain for a lifetime.", source: "Islamic Wisdom" },
+  { text: "Islam does not require perfection. It requires sincerity and continuous effort.", source: "Islamic Wisdom" },
+  { text: "The most powerful weapon of the believer is a heart fully attached to Allah.", source: "Islamic Wisdom" },
+  { text: "Do not let a single day pass without one act purely for Allah.", source: "Islamic Wisdom" },
+  { text: "SubhanAllah — every breath you take is a gift. Do not waste a single one.", source: "Islamic Wisdom" },
+  { text: "We return to Allah not because we are worthy, but because He is merciful.", source: "Islamic Wisdom" },
+  { text: "Those who remember Allah most are the most alive.", source: "Islamic Wisdom" },
+  { text: "The ummah of Muhammad ﷺ is one body. If one part suffers, the whole body feels it.", source: "Islamic Wisdom" },
+  { text: "The one who spreads salam spreads peace. That is a form of da'wah.", source: "Islamic Wisdom" },
+  { text: "Iman increases with obedience and decreases with disobedience. Guard it carefully.", source: "Islamic Wisdom" },
+  { text: "The day you decide to change for the sake of Allah is the day your whole life begins to change.", source: "Islamic Wisdom" },
+  { text: "Never look at the size of a sin, but look at the greatness of the One you disobeyed.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "The greatest tragedy is not death but a life lived without purpose or connection to Allah.", source: "Islamic Wisdom" },
+  { text: "Discipline your nafs (self) before it disciplines you.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Success in the deen begins with knowing your weaknesses.", source: "Islamic Wisdom" },
+  { text: "Anger is a fire lit by shaytan. Extinguish it with wudu.", source: "Islamic Wisdom" },
+  { text: "The one who rushes to do good, good rushes back to him.", source: "Islamic Wisdom" },
+  { text: "Do not become a burden on people. Work hard, rely on Allah, and give generously.", source: "Islamic Wisdom" },
+  { text: "Islam came to free people, not to chain them. It is slavery to Allah alone that frees you from all other slavery.", source: "Islamic Wisdom" },
+  { text: "Whoever builds their deen on knowledge will stand firm. Whoever builds it on emotion alone will collapse with their emotions.", source: "Islamic Wisdom" },
+  { text: "Every hardship is a question from Allah: Do you still trust Me?", source: "Islamic Wisdom" },
+  { text: "The only competition worth having is the race to goodness.", source: "Islamic Wisdom" },
+  { text: "Put your heart into your dua and your dua will be put into your heart.", source: "Islamic Wisdom" },
+  { text: "Your Lord is not unaware of what you do. Every act of goodness is seen.", source: "Islamic Wisdom" },
+  { text: "Say Alhamdulillah in every condition. This is the highest form of gratitude.", source: "Islamic Wisdom" },
+  { text: "Whoever guards his heart, Allah will guard his life.", source: "Islamic Wisdom" },
+  { text: "The Quran is your companion in life and your intercessor after death.", source: "Islamic Wisdom" },
+  { text: "Do not grieve too long. Pick yourself up and return to Allah.", source: "Islamic Wisdom" },
+  { text: "The measure of a person is what they do in private.", source: "Islamic Wisdom" },
+  { text: "Consistency in dhikr keeps shaytan away and keeps the heart alive.", source: "Islamic Wisdom" },
+  { text: "Your Lord calls out every night: Is there anyone asking so I may give them?", source: "Islamic Wisdom" },
+  { text: "When you make sujud, you are in the closest position to your Lord. Speak to Him.", source: "Islamic Wisdom" },
+  { text: "Raise your children to love Allah before they love anything else.", source: "Islamic Wisdom" },
+  { text: "The rights of parents are so great that Allah placed obedience to them right after tawheed.", source: "Islamic Wisdom" },
+  { text: "Whoever honors the scholar honors the knowledge, and whoever honors the knowledge honors the deen.", source: "Islamic Wisdom" },
+  { text: "To lose sleep for the sake of Allah in ibadah is to gain rest for eternity.", source: "Islamic Wisdom" },
+  { text: "The true meaning of freedom is being free from everything except Allah.", source: "Islamic Wisdom" },
+  { text: "This life is your field. What you plant here you will harvest there.", source: "Islamic Wisdom" },
+  { text: "Your rank in Jannah will be proportional to your love for Allah in this life.", source: "Islamic Wisdom" },
+  { text: "The sign of loving Allah is following the Prophet ﷺ.", source: "Islamic Wisdom" },
+  { text: "Whoever loves to meet Allah, Allah loves to meet him. Prepare for that meeting.", source: "Islamic Wisdom" },
+  { text: "The greatest thing you can do for someone is make dua for them.", source: "Islamic Wisdom" },
+  { text: "A believer who brings joy to another believer has pleased Allah.", source: "Islamic Wisdom" },
+  { text: "Light your home with Quran. Silence your home without it is darkness.", source: "Islamic Wisdom" },
+  { text: "Think well of Allah. That itself is a form of ibadah.", source: "Islamic Wisdom" },
+  { text: "The shortest distance between a problem and its solution is the distance between your knees and the floor in prayer.", source: "Islamic Wisdom" },
+  { text: "Today may be the last day of your life. Make it a day that will count on your scale.", source: "Islamic Wisdom" },
+  { text: "If today you turned to Allah, tomorrow will look different. The next day will look even better.", source: "Islamic Wisdom" },
+  { text: "A moment of tawbah is worth more than a lifetime of sin.", source: "Islamic Wisdom" },
+  { text: "We are not perfect. But we are Muslims — and we keep trying.", source: "Islamic Wisdom" },
+];
+
+const FINAL_QUOTES = [
+  { arabic: "وَمَن يُسْلِمْ وَجْهَهُ إِلَى اللَّهِ وَهُوَ مُحْسِنٌ فَقَدِ اسْتَمْسَكَ بِالْعُرْوَةِ الْوُثْقَىٰ", text: "And whoever submits his face to Allah while being a doer of good — he has grasped the most trustworthy handhold.", author: "Surah Luqman (31:22)", source: "Quran" },
+  { arabic: "إِنَّ اللَّهَ لَا يَظْلِمُ مِثْقَالَ ذَرَّةٍ", text: "Indeed, Allah does not do injustice, even as much as an atom's weight.", author: "Surah An-Nisa (4:40)", source: "Quran" },
+  { arabic: "وَمَا كَانَ اللَّهُ لِيُضِيعَ إِيمَانَكُمْ", text: "And Allah would not have caused your faith to be lost.", author: "Surah Al-Baqarah (2:143)", source: "Quran" },
+  { arabic: "وَلَنَجْزِيَنَّ الَّذِينَ صَبَرُوا أَجْرَهُم بِأَحْسَنِ مَا كَانُوا يَعْمَلُونَ", text: "And We will surely give those who were patient their reward according to the best of what they used to do.", author: "Surah An-Nahl (16:96)", source: "Quran" },
+  { arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ وَلْتَنظُرْ نَفْسٌ مَّا قَدَّمَتْ لِغَدٍ", text: "O you who have believed, fear Allah. And let every soul look to what it has put forth for tomorrow.", author: "Surah Al-Hashr (59:18)", source: "Quran" },
+  { arabic: "وَأَطِيعُوا اللَّهَ وَأَطِيعُوا الرَّسُولَ", text: "And obey Allah and obey the Messenger.", author: "Surah Al-Ma'idah (5:92)", source: "Quran" },
+  { arabic: "إِنَّ اللَّهَ مَعَ الَّذِينَ اتَّقَوا وَّالَّذِينَ هُم مُّحْسِنُونَ", text: "Indeed, Allah is with those who fear Him and those who are doers of good.", author: "Surah An-Nahl (16:128)", source: "Quran" },
+  { arabic: "قَالَ رَبِّ اشْرَحْ لِي صَدْرِي", text: "He said: My Lord, expand for me my chest.", author: "Surah Ta-Ha (20:25)", source: "Quran" },
+  { arabic: "فَتَبَارَكَ اللَّهُ أَحْسَنُ الْخَالِقِينَ", text: "So blessed is Allah, the best of creators.", author: "Surah Al-Mu'minun (23:14)", source: "Quran" },
+  { arabic: "وَهُوَ الرَّحْمَٰنُ الرَّحِيمُ", text: "And He is the Entirely Merciful, the Especially Merciful.", author: "Surah Al-Hashr (59:22)", source: "Quran" },
+  { arabic: "هُوَ اللَّهُ الَّذِي لَا إِلَٰهَ إِلَّا هُوَ", text: "He is Allah, other than whom there is no deity.", author: "Surah Al-Hashr (59:22)", source: "Quran" },
+  { arabic: "سَبَّحَ لِلَّهِ مَا فِي السَّمَاوَاتِ وَالْأَرْضِ", text: "Whatever is in the heavens and earth exalts Allah.", author: "Surah Al-Hadid (57:1)", source: "Quran" },
+  { arabic: "وَهُوَ اللَّطِيفُ الْخَبِيرُ", text: "And He is the Subtle, the Acquainted.", author: "Surah Al-An'am (6:103)", source: "Quran" },
+  { arabic: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ", text: "Our Lord, grant us from among our wives and offspring comfort to our eyes.", author: "Surah Al-Furqan (25:74)", source: "Quran" },
+  { arabic: "وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا", text: "And make us a leader for the righteous.", author: "Surah Al-Furqan (25:74)", source: "Quran" },
+  { arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا قُوا أَنفُسَكُمْ وَأَهْلِيكُمْ نَارًا", text: "O you who have believed, protect yourselves and your families from a Fire.", author: "Surah At-Tahrim (66:6)", source: "Quran" },
+  { arabic: "وَمَن يَتَّقِ اللَّهَ يُكَفِّرْ عَنْهُ سَيِّئَاتِهِ", text: "And whoever fears Allah — He will remove for him his misdeeds.", author: "Surah At-Talaq (65:5)", source: "Quran" },
+  { arabic: "وَيُعَظِّمْ لَهُ أَجْرًا", text: "And will magnify for him his reward.", author: "Surah At-Talaq (65:5)", source: "Quran" },
+  { arabic: "وَلَا تُلْقُوا بِأَيْدِيكُمْ إِلَى التَّهْلُكَةِ", text: "And do not throw yourselves into destruction.", author: "Surah Al-Baqarah (2:195)", source: "Quran" },
+  { arabic: "خُذِ الْعَفْوَ وَأْمُرْ بِالْعُرْفِ وَأَعْرِضْ عَنِ الْجَاهِلِينَ", text: "Take what is given freely, enjoin what is good, and turn away from the ignorant.", author: "Surah Al-A'raf (7:199)", source: "Quran" },
+  { text: "Hold tight to the rope of Allah, all of you together, and do not become divided.", source: "Quran — Al-Imran 3:103" },
+  { text: "The best investment is in your akhirah. Invest in it with every breath.", source: "Islamic Wisdom" },
+  { text: "Do not let your dreams be dreams. Let them be duas.", source: "Islamic Wisdom" },
+  { text: "The Muslim is not drowning when the waves hit — he is swimming toward Allah.", source: "Islamic Wisdom" },
+  { text: "Character is built one decision at a time. Make the right ones.", source: "Islamic Wisdom" },
+  { text: "Salah is five times a day. That is five invitations to return to Allah.", source: "Islamic Wisdom" },
+  { text: "The one who calls people to the truth carries a responsibility greater than words.", source: "Islamic Wisdom" },
+  { text: "Never leave your heart empty. Fill it with Quran, dhikr, and gratitude.", source: "Islamic Wisdom" },
+  { text: "The foundation of all good character is honesty — with Allah, with others, and with yourself.", source: "Islamic Wisdom" },
+  { text: "You cannot change what Allah has decreed, but you can change how you receive it.", source: "Islamic Wisdom" },
+  { text: "The Muslim does not look down on others — he looks up to Allah.", source: "Islamic Wisdom" },
+  { text: "If you ever feel like you are failing, make wudu and make sujud. Reset.", source: "Islamic Wisdom" },
+  { text: "The most beautiful thing you can wear is taqwa.", source: "Islamic Wisdom" },
+  { text: "Charity is not just money. It is a kind word, a smile, removing an obstacle from the road.", source: "Islamic Wisdom" },
+  { text: "Do not be someone who only remembers Allah when in trouble. Remember Him always.", source: "Islamic Wisdom" },
+  { text: "If Allah is for you, nothing can be against you in any way that truly matters.", source: "Islamic Wisdom" },
+  { text: "The Prophet ﷺ used to smile often. Smile — it is his sunnah.", source: "Islamic Wisdom" },
+  { text: "When you feel lost, return to what never changes: the Quran and Sunnah.", source: "Islamic Wisdom" },
+  { text: "Your Fajr prayer is a pact renewed with Allah every morning.", source: "Islamic Wisdom" },
+  { text: "The believer does not fear death — he prepares for it.", source: "Islamic Wisdom" },
+  { text: "Make your good deeds like flowing water — constant and quiet.", source: "Islamic Wisdom" },
+  { text: "The best legacy you can leave is an ummah that benefited from your existence.", source: "Islamic Wisdom" },
+  { text: "Your sins are between you and Allah. Your repentance can reach further than your sins ever did.", source: "Islamic Wisdom" },
+  { text: "The way you treat people when no one is watching is your true character.", source: "Islamic Wisdom" },
+  { text: "A believer in pain is still a believer. That is the most noble thing in the universe.", source: "Islamic Wisdom" },
+  { text: "Knowledge is the foundation. Intention is the structure. Action is the roof.", source: "Islamic Wisdom" },
+  { text: "A true Muslim is not one who only prays. He is one whose whole life is a prayer.", source: "Islamic Wisdom" },
+  { text: "Verily, the deen of Allah is complete. It does not need us to add to it or take from it.", source: "Islamic Wisdom" },
+  { text: "The one who wakes up and his first thought is Allah — what a blessed way to start the day.", source: "Islamic Wisdom" },
+  { text: "Give more than you take. Love more than you hate. Forgive more than you hold grudges.", source: "Islamic Wisdom" },
+  { text: "Every sunnah you revive is a light that shines for the whole ummah.", source: "Islamic Wisdom" },
+  { text: "The most satisfying life is the one dedicated to pleasing Allah.", source: "Islamic Wisdom" },
+  { text: "Whoever you help for the sake of Allah is someone you will meet in Jannah.", source: "Islamic Wisdom" },
+  { text: "Make yourself someone whose presence reminds people of Allah.", source: "Islamic Wisdom" },
+  { text: "The remembrance of death removes the love of the dunya from the heart.", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "Do not store what you cannot take with you to your grave.", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "O son of Adam, you will die alone, be buried alone, be held accountable alone. Why do you live for others?", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "Your heart is the capital of your spiritual life. Guard it as you would guard everything valuable.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "The disease of the heart is worse than the disease of the body.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Every blessing not used for the sake of Allah is a trial.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "You fear people but Allah is more deserving of your fear.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Holding firm to the sunnah in an age of innovation is like holding burning coal — difficult, but necessary.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "A man's truthfulness with Allah is the measure of his rank.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "Whoever reflects on the Quran will find in it a medicine for every spiritual disease.", author: "Ibn al-Qayyim", source: "Islamic Scholar" },
+  { text: "The tongue is the greatest tool of worship and the greatest instrument of destruction.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "The path to Allah is paved with self-discipline and sincerity.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "Purify your intention before every deed — it is the soul of the deed.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "He who knows Allah is never truly poor, and he who knows himself is never truly arrogant.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "The foundation of the deen is knowledge, followed by action, followed by sincerity.", author: "Imam al-Ghazali", source: "Islamic Scholar" },
+  { text: "Faith is not just a declaration — it is a state of the heart that manifests in behavior.", author: "Ibn Taymiyyah", source: "Islamic Scholar" },
+  { text: "The greatest success is to die while Allah is pleased with you.", author: "Ibn Taymiyyah", source: "Islamic Scholar" },
+  { text: "Whoever does not thank Allah for a small blessing will not thank Him for a large one.", author: "Ibn Taymiyyah", source: "Islamic Scholar" },
+  { text: "The heart was not made for this world. It was made for something far greater.", author: "Ibn Taymiyyah", source: "Islamic Scholar" },
+  { text: "The most truthful words are: La ilaha illallah. Make them the center of your life.", author: "Ibn Taymiyyah", source: "Islamic Scholar" },
+  { text: "Whoever does not discipline himself will be disciplined by life.", author: "Umar ibn al-Khattab", source: "Companion of the Prophet" },
+  { text: "The best preparation for the next moment is to fulfill the demands of this one.", author: "Umar ibn al-Khattab", source: "Companion of the Prophet" },
+  { text: "Do not rely on ancestry to elevate you when your deeds have lowered you.", author: "Umar ibn al-Khattab", source: "Companion of the Prophet" },
+  { text: "Verily, the one who speaks the truth even when it is difficult is the truly brave person.", author: "Umar ibn al-Khattab", source: "Companion of the Prophet" },
+  { text: "Attach yourself to the scholars, for they are the heirs of the prophets.", author: "Abu Bakr as-Siddiq", source: "Companion of the Prophet" },
+  { text: "If you see someone doing wrong, correct him gently — that is true brotherhood.", author: "Abu Bakr as-Siddiq", source: "Companion of the Prophet" },
+  { text: "Whoever spends the night in prayer, his sins fall from him like leaves from a tree.", source: "Islamic Wisdom" },
+  { text: "The hardest prayer to maintain is the one in the middle of your busy life. That is why it is the most valuable.", source: "Islamic Wisdom" },
+  { text: "Do not be discouraged by the distance. Every step toward Allah is met by Allah running toward you.", source: "Islamic Wisdom" },
+  { text: "When your heart turns to stone, go and wash it with tears of repentance.", source: "Islamic Wisdom" },
+  { text: "The one who memorizes the Quran carries the most precious thing in the universe in his chest.", source: "Islamic Wisdom" },
+  { text: "If your child learns one ayah of Quran, you have given them a gift that will outlive you.", source: "Islamic Wisdom" },
+  { text: "Be careful with your eyes — they are the windows to your heart.", source: "Islamic Wisdom" },
+  { text: "What you consume — in food, media, company — shapes what your heart becomes.", source: "Islamic Wisdom" },
+  { text: "The ummah needs builders, not complainers. Be someone who builds.", source: "Islamic Wisdom" },
+  { text: "Do not abandon a single good deed because it seems small. Mountains are made of small stones.", source: "Islamic Wisdom" },
+  { text: "Your dua in the last third of the night travels directly to the throne of Allah.", source: "Islamic Wisdom" },
+  { text: "Hold the hand of a struggling Muslim. That is the spirit of the ummah.", source: "Islamic Wisdom" },
+  { text: "To do something purely for Allah, with no desire for recognition, is the highest of deeds.", source: "Islamic Wisdom" },
+  { text: "True knowledge leads to humility. If knowledge gives you pride, check its source.", source: "Islamic Wisdom" },
+  { text: "The world will not break you if your connection to Allah is strong.", source: "Islamic Wisdom" },
+  { text: "Whoever fixes what is between him and Allah, Allah will fix what is between him and the people.", author: "Imam Ahmad ibn Hanbal", source: "Islamic Scholar" },
+  { text: "Nothing is more beneficial to the heart than reading the Quran with reflection.", author: "Imam Ahmad ibn Hanbal", source: "Islamic Scholar" },
+  { text: "The scholar who acts upon his knowledge is like the sun — it gives light while it burns for others.", author: "Imam Ahmad ibn Hanbal", source: "Islamic Scholar" },
+  { text: "A wise man once said: I never encountered anyone I could not learn something from.", author: "Imam Shafi'i", source: "Islamic Scholar" },
+  { text: "Excellence in character is to give to those who withhold from you, to forgive those who wrong you, and to visit those who abandon you.", author: "Imam Shafi'i", source: "Islamic Scholar" },
+  { text: "Whoever tastes the sweetness of ilm (knowledge) will never want anything else.", author: "Imam Malik", source: "Islamic Scholar" },
+  { text: "The scholar who teaches for the sake of Allah plants a garden that will flower for generations.", author: "Imam Malik", source: "Islamic Scholar" },
+  { text: "The best of actions is that which the heart is present in.", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "Do not say: I will do it tomorrow. Tomorrow is not yours.", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "Cry for your sins the way you cry for your losses. That is genuine repentance.", author: "Hasan al-Basri", source: "Islamic Scholar" },
+  { text: "Allah knew every difficulty you would face before He created you. And He created you anyway — because He knew you could handle it.", source: "Islamic Wisdom" },
+  { text: "Never see yourself as too small to make a difference. The mustard seed moves mountains in dua.", source: "Islamic Wisdom" },
+  { text: "You were not created to scroll endlessly. You were created to seek, worship, and return to Allah.", source: "Islamic Wisdom" },
+  { text: "The believer walks through trials the way a ship moves through storms — not around them, but through them, staying the course.", source: "Islamic Wisdom" },
+  { text: "Begin every day with the name of Allah. End every day with gratitude to Allah. Fill what is between with His remembrance.", source: "Islamic Wisdom" },
+  { text: "A believer never wastes sadness — he turns it into dua.", source: "Islamic Wisdom" },
+  { text: "In the end, only two things will matter: what you did for Allah and what you did for people.", source: "Islamic Wisdom" },
+  { text: "Make Jannah your goal and let that goal shape every single decision you make.", source: "Islamic Wisdom" },
+  { text: "If you find the doors of rizq (provision) closed, seek forgiveness. Istighfar opens what nothing else can.", source: "Islamic Wisdom" },
+  { text: "The prayer of a righteous child for his deceased parent is a gift that reaches beyond the grave.", source: "Islamic Wisdom" },
+  { text: "Islam is not just about what you avoid. It is about what you build.", source: "Islamic Wisdom" },
+  { text: "The one who completes the Quran has read a direct message from the Creator of the universe. Let that sink in.", source: "Islamic Wisdom" },
+  { text: "Your Lord promised ease after every hardship — not once, but twice in the same surah. That is how certain His promise is.", source: "Islamic Wisdom" },
+  { text: "Make your home a place where Quran is recited, where salah is observed, and where love for Allah flows freely.", source: "Islamic Wisdom" },
+  { text: "Real luxury is waking up every morning and choosing Allah above all else.", source: "Islamic Wisdom" },
+  { text: "A Muslim who smiles, speaks kindly, and helps others is giving da'wah with every breath.", source: "Islamic Wisdom" },
+  { text: "Never let the dunya distract you from building your akhirah. The dunya ends. The akhirah does not.", source: "Islamic Wisdom" },
+  { text: "You do not know which of your deeds will tip the scale. Do not underestimate any of them.", source: "Islamic Wisdom" },
+  { text: "He who makes people happy has brought joy to the ummah and pleased the Prophet ﷺ.", source: "Islamic Wisdom" },
+  { text: "Whatever you leave for the sake of Allah, He will replace it with something better.", source: "Islamic Wisdom" },
+  { text: "You are never alone in your struggle. Allah sees. He knows. He cares.", source: "Islamic Wisdom" },
+  { text: "Remember that this is all temporary — the pain and the pleasure. The permanent is what awaits you with Allah.", source: "Islamic Wisdom" },
+  { text: "The best thing you can do for this ummah today is work on yourself. A strong tree grows from a strong root.", source: "Islamic Wisdom" },
+];
+
+const MORE_FINAL = [
+  { text: "Every step you take toward Allah is a step away from everything that harms you.", source: "Islamic Wisdom" },
+  { text: "The Prophet ﷺ never replied to rudeness with rudeness. He replied with wisdom and patience.", source: "Islamic Wisdom" },
+  { text: "Do not speak unless your words improve the silence.", author: "Imam Ali ibn Abi Talib", source: "Islamic Scholar" },
+  { text: "Whoever does not feel shame in his worship has not yet truly worshipped.", source: "Islamic Wisdom" },
+  { text: "Gratitude is the bridge between where you are and where you want to be.", source: "Islamic Wisdom" },
+  { text: "The one who is thankful to Allah for little will be given much.", source: "Islamic Wisdom" },
+  { text: "Do not let the world take your prayers from you. Your prayers are your shield.", source: "Islamic Wisdom" },
+  { text: "When you feel overwhelmed, go back to the basics: pray, make dua, be patient.", source: "Islamic Wisdom" },
+  { text: "The biggest deception is to believe you have time — when time belongs only to Allah.", source: "Islamic Wisdom" },
+  { text: "Your child's first teacher is you. Teach them to love Allah before they love anything else.", source: "Islamic Wisdom" },
+  { text: "Every salam you give is a dua for the peace of another Muslim.", source: "Islamic Wisdom" },
+  { text: "Islam is clarity in the middle of confusion. Hold to it tightly.", source: "Islamic Wisdom" },
+  { text: "The greatest of all journeys is the journey back to Allah.", source: "Islamic Wisdom" },
+  { text: "Do not wait for the perfect moment to turn to Allah. This moment is perfect.", source: "Islamic Wisdom" },
+  { text: "The believer's weapon against shaytan is not strength — it is istighfar and dhikr.", source: "Islamic Wisdom" },
+  { text: "You will find true rest only when you surrender fully to Allah's will.", source: "Islamic Wisdom" },
+  { text: "Whoever is gentle with people, Allah is gentle with him.", author: "Prophet Muhammad ﷺ", source: "Sahih Bukhari" },
+  { text: "Do good today as if you will die tonight. Plan for tomorrow as if you will live forever.", source: "Islamic Wisdom" },
+  { text: "The one who reads the Quran in the morning has started his day with the words of his Creator.", source: "Islamic Wisdom" },
+  { text: "If your prayers are answered, praise Allah. If they are not answered yet, trust Allah.", source: "Islamic Wisdom" },
+  { text: "Everything has a polish that removes its rust. The polish of the heart is dhikr.", author: "Prophet Muhammad ﷺ", source: "Bayhaqi" },
+  { text: "The Muslim who is consistent in his prayers will find his life becoming consistently better.", source: "Islamic Wisdom" },
+  { text: "Whatever this world has offered you and taken away, know that what Allah offers lasts forever.", source: "Islamic Wisdom" },
+  { text: "Give freely and without counting. Allah counts every grain of goodness.", source: "Islamic Wisdom" },
+  { text: "The most certain thing in life is death. The most uncertain thing is when. Prepare now.", source: "Islamic Wisdom" },
+  { text: "Faith is not a feeling — it is a commitment that carries you through when feelings fail.", source: "Islamic Wisdom" },
+  { text: "Do not complain about the dark. Light a candle — make dhikr, make dua.", source: "Islamic Wisdom" },
+  { text: "The one who forgives is not weak. He is the strongest person in the room.", source: "Islamic Wisdom" },
+  { text: "Whoever wants to live the good life: fear Allah, do good deeds, and trust in His plan.", source: "Islamic Wisdom" },
+  { text: "This ummah is one family. Treat every Muslim as your brother or sister — because they are.", source: "Islamic Wisdom" },
+  { text: "The person of good character is always giving — their time, their patience, their kindness.", source: "Islamic Wisdom" },
+  { text: "Your Lord is Al-Ghaffar — the One who covers sins repeatedly. Never give up hope.", source: "Islamic Wisdom" },
+  { text: "Your Lord is Al-Tawwab — the One who turns to you again and again in forgiveness. Turn to Him.", source: "Islamic Wisdom" },
+  { text: "Your Lord is Al-Rahman — His mercy encompasses everything. You are not outside of it.", source: "Islamic Wisdom" },
+  { text: "Your Lord is Al-Wadud — the Most Loving. He loves you more than you know.", source: "Islamic Wisdom" },
+  { text: "Your Lord is Al-Qarib — the Near One. He is never far. Reach out to Him.", source: "Islamic Wisdom" },
+  { text: "Your Lord is Al-Mujib — the One who responds. Your dua is never ignored.", source: "Islamic Wisdom" },
+  { text: "Your Lord is Al-Razzaq — the Sustainer. He will never leave you without provision.", source: "Islamic Wisdom" },
+  { text: "Your Lord is Al-Hakim — the All-Wise. Every difficulty in your life has wisdom behind it.", source: "Islamic Wisdom" },
+  { text: "Your Lord is Al-Sabur — the Patient One. He gives you time to return to Him.", source: "Islamic Wisdom" },
+  { text: "Return to Allah before you are returned to Him. The difference is in your hands.", source: "Islamic Wisdom" },
+];
+
+
 // ─── State ────────────────────────────────────────────────
-let currentSource = 'random';
 let currentQuote = { text: '', author: '', arabic: '', source: '' };
 let isLoading = false;
-
-// ─── Source config ────────────────────────────────────────
-const SOURCES = ['quran', 'hadith', 'quranquotes'];
-
-const SOURCE_NAMES = {
-  random:      'Random',
-  quran:       'Quran',
-  hadith:      'Hadith',
-  quranquotes: 'Quran Quotes',
-};
-
-// ─── API helpers ──────────────────────────────────────────
-
-// Total Quran verses: 6236. We pick a random surah:ayah
-function randomAyahRef() {
-  // Surah lengths (approximate, for 114 surahs)
-  const surahLengths = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,54,59,37,75,85,54,54,53,89,45,72,60,119,40,31,60,58,22,48,63,11,34,30,60,70,70,80,52,47,59,55,17,58,44,24,37,31,40,15,57,13,19,16,9,27,37,12,11,12,30,84,54,20,66,17,23,35,45,48,29,15,91,21,54,15,14,12,11,14,11,14,12,3,12,10,13,10,11,12,14,9,11];
-  const surah = Math.floor(Math.random() * 114) + 1;
-  const len = surahLengths[surah - 1] || 10;
-  const ayah = Math.floor(Math.random() * len) + 1;
-  return `${surah}:${ayah}`;
-}
-
-async function fetchQuran() {
-  const ref = randomAyahRef();
-  const url = `https://api.alquran.cloud/v1/ayah/${ref}/editions/quran-simple,en.asad`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Quran API failed');
-  const data = await res.json();
-  const editions = data.data;
-  const arabic = editions[0];
-  const english = editions[1];
-  return {
-    arabic: arabic.text,
-    text: english.text,
-    author: `Surah ${arabic.surah.englishName} (${arabic.surah.number}:${arabic.numberInSurah})`,
-    source: 'Al-Quran · alquran.cloud',
-  };
-}
-
-async function fetchHadith() {
-  // Use hadith-api.vercel.app — free, no key needed
-  // Collections: bukhari (7563 hadiths), muslim (3033)
-  const collections = [
-    { name: 'bukhari', count: 7563 },
-    { name: 'muslim',  count: 3033 },
-  ];
-  const col = collections[Math.floor(Math.random() * collections.length)];
-  const id = Math.floor(Math.random() * col.count) + 1;
-  const url = `https://hadith-api.vercel.app/api/hadiths/${col.name}/${id}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Hadith API failed');
-  const data = await res.json();
-  const h = data.hadith || data;
-  const arabic = h.arabic || h.body_arabic || '';
-  const text = h.english || h.body || h.text || '';
-  const narrator = h.narrator || h.narrator_english || '';
-  return {
-    arabic,
-    text,
-    author: narrator ? narrator : `Sahih ${col.name.charAt(0).toUpperCase() + col.name.slice(1)} #${id}`,
-    source: `Sahih ${col.name.charAt(0).toUpperCase() + col.name.slice(1)} · hadith-api`,
-  };
-}
-
-async function fetchQuranQuotes() {
-  // quranquotes.vercel.app — English only, ~50 quotes
-  const id = Math.floor(Math.random() * 50) + 1;
-  const url = `https://quranquotes.vercel.app/api/get/${id}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('QuranQuotes API failed');
-  const data = await res.json();
-  return {
-    arabic: '',
-    text: data.quote || data.text || data.content || JSON.stringify(data),
-    author: data.surah ? `Surah ${data.surah}` : (data.reference || data.author || 'Quran'),
-    source: 'Quran Quotes · quranquotes.vercel.app',
-  };
-}
-
-async function fetchRandom() {
-  const pick = SOURCES[Math.floor(Math.random() * SOURCES.length)];
-  if (pick === 'quran') return fetchQuran();
-  if (pick === 'hadith') return fetchHadith();
-  return fetchQuranQuotes();
-}
-
-async function fetchQuote() {
-  if (currentSource === 'random') return fetchRandom();
-  if (currentSource === 'quran') return fetchQuran();
-  if (currentSource === 'hadith') return fetchHadith();
-  if (currentSource === 'quranquotes') return fetchQuranQuotes();
-}
+let lastIndex = -1;
 
 // ─── UI helpers ───────────────────────────────────────────
 const quoteBox      = document.getElementById('quoteBox');
@@ -712,47 +1373,17 @@ function showError() {
   quoteBox.classList.add('visible');
 }
 
-async function generate() {
+function generate() {
   if (isLoading) return;
   showLoading();
-  try {
-    const q = await fetchQuote();
-    showQuote(q);
-  } catch(e) {
-    console.error(e);
-    showError();
-  }
+  // Pick a random quote, avoiding the last shown
+  const all = [...QUOTES, ...EXTRA_QUOTES, ...MORE_FINAL];
+  let idx;
+  do { idx = Math.floor(Math.random() * all.length); } while (idx === lastIndex && all.length > 1);
+  lastIndex = idx;
+  // Small timeout to let loading animation show
+  setTimeout(() => showQuote(all[idx]), 250);
 }
-
-// ─── Source dropdown ──────────────────────────────────────
-const sourcePill     = document.getElementById('sourcePill');
-const sourceDropdown = document.getElementById('sourceDropdown');
-const sourcePillName = document.getElementById('sourcePillName');
-
-sourcePill.addEventListener('click', (e) => {
-  e.stopPropagation();
-  sourcePill.classList.toggle('open');
-  sourceDropdown.classList.toggle('open');
-});
-
-document.addEventListener('click', () => {
-  sourcePill.classList.remove('open');
-  sourceDropdown.classList.remove('open');
-});
-
-sourceDropdown.addEventListener('click', (e) => {
-  e.stopPropagation();
-  const opt = e.target.closest('.source-option');
-  if (!opt) return;
-  const src = opt.dataset.source;
-  currentSource = src;
-  sourcePillName.textContent = SOURCE_NAMES[src];
-  document.querySelectorAll('.source-option').forEach(o => o.classList.remove('active'));
-  opt.classList.add('active');
-  sourcePill.classList.remove('open');
-  sourceDropdown.classList.remove('open');
-  generate();
-});
 
 // ─── Generate button & keyboard ───────────────────────────
 generateBtn.addEventListener('click', () => generate());
