@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Preview — See Any Site on Any Device</title>
+<link rel="canonical" href="https://shifat.dev/website-preview" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #263248;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.15);
+  --accent: #38bdf8;
+  --accent2: #818cf8;
+  --accent-glow: rgba(56,189,248,0.25);
+  --text: #f8fafc;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+  --radius: 16px;
+  --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 82px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 0%, rgba(56,189,248,0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 90%, rgba(129,140,248,0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== SHARED PILL NAVBAR ===== */
+.site-pill-nav {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: calc(100% - 2rem);
+  max-width: 720px;
+}
+
+.site-pill-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 54px;
+  padding: 0 1.25rem;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+.site-pill-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.95);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: opacity 0.2s;
+  text-shadow: 0 0 18px rgba(56,189,248,0.4);
+}
+.site-pill-logo:hover { opacity: 0.7; }
+
+.pill-center {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.72);
+}
+
+.pill-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: blink 2.4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+.site-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.site-back-btn:hover { background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.9); }
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 52px 1.25rem 44px;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(56,189,248,0.08);
+  border: 1px solid rgba(56,189,248,0.2);
+  border-radius: 100px;
+  padding: 5px 14px;
+  margin-bottom: 20px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: blink 2s ease-in-out infinite;
+}
+
+h1 {
+  font-family: var(--font);
+  font-size: clamp(2rem, 5.5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  margin-bottom: 14px;
+}
+
+.g {
+  background: linear-gradient(120deg, #38bdf8 0%, #818cf8 55%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 1rem;
+  color: var(--text-dim);
+  font-weight: 400;
+  max-width: 460px;
+  margin: 0 auto 36px;
+  line-height: 1.65;
+}
+
+/* ===== SEARCH BAR ===== */
+.search-wrap { max-width: 640px; margin: 0 auto; }
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 100px;
+  padding: 6px 6px 6px 18px;
+  gap: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-bar:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(56,189,248,0.15), 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.si { display: flex; align-items: center; flex-shrink: 0; color: var(--text-muted); }
+
+#url-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text);
+  min-width: 0;
+}
+#url-input::placeholder { color: var(--text-muted); }
+
+.search-btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 100px;
+  padding: 11px 24px;
+  font-family: var(--font);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(56,189,248,0.28);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.search-btn:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(56,189,248,0.35); }
+.search-btn:active { transform: translateY(0); }
+
+.examples-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  justify-content: center;
+}
+.examples-label { font-size: 0.76rem; color: var(--text-muted); }
+.example-pill {
+  font-size: 0.76rem;
+  color: var(--accent);
+  background: rgba(56,189,248,0.07);
+  border: 1px solid rgba(56,189,248,0.15);
+  border-radius: 100px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.example-pill:hover { background: rgba(56,189,248,0.15); border-color: rgba(56,189,248,0.3); }
+
+/* ===== MAIN ===== */
+.main {
+  position: relative;
+  z-index: 1;
+  padding: 0 1.25rem 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ===== DEVICE SELECTOR ===== */
+.device-section { margin-bottom: 28px; }
+
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.device-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.device-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  user-select: none;
+  flex-shrink: 0;
+}
+.device-chip:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+.device-chip.active { background: rgba(56,189,248,0.1); border-color: var(--accent); color: var(--text); }
+
+.ci { width: 16px; height: 16px; display: flex; align-items: center; flex-shrink: 0; }
+.ci svg { width: 100%; height: 100%; }
+
+.chip-size {
+  font-size: 0.67rem;
+  color: var(--text-muted);
+  font-family: 'DM Mono', monospace;
+}
+.device-chip.active .chip-size { color: var(--accent); }
+
+.device-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 8px;
+}
+.device-divider span {
+  font-size: 0.67rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.device-divider::before, .device-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.custom-inputs { display: none; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.custom-inputs.visible { display: flex; }
+
+.custom-input-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px 12px;
+}
+.custom-input-group label { font-size: 0.74rem; color: var(--text-muted); font-weight: 600; }
+.custom-input-group input {
+  width: 60px;
+  background: none; border: none; outline: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.88rem; font-weight: 400;
+  color: var(--text); text-align: center;
+}
+.apply-btn {
+  background: var(--accent); border: none; border-radius: 10px;
+  padding: 8px 18px; font-family: var(--font);
+  font-size: 0.8rem; font-weight: 700; color: var(--bg);
+  cursor: pointer; transition: opacity 0.2s;
+}
+.apply-btn:hover { opacity: 0.85; }
+
+/* ===== ERROR ===== */
+.error-banner {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 18px;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  color: #fca5a5;
+  font-size: 0.85rem;
+}
+.error-banner.visible { display: flex; }
+
+/* ===== PREVIEW ===== */
+.preview-section { display: none; }
+.preview-section.visible { display: block; }
+
+.preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.toolbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.traffic-lights { display: flex; gap: 6px; flex-shrink: 0; }
+.tl { width: 12px; height: 12px; border-radius: 50%; }
+.tl-r { background: #ff5f57; }
+.tl-y { background: #febc2e; }
+.tl-g { background: #28c840; }
+
+.toolbar-url {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 12px;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toolbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.device-info-label { font-size: 0.74rem; color: var(--text-muted); font-family: 'DM Mono', monospace; white-space: nowrap; }
+
+.scale-control { display: flex; align-items: center; gap: 6px; }
+.scale-lbl { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 78px; height: 4px;
+  background: var(--surface2);
+  border-radius: 4px;
+  outline: none; cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(56,189,248,0.5);
+}
+
+.toolbar-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 7px 13px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 0.78rem; font-weight: 500;
+  color: var(--text-dim);
+  cursor: pointer; transition: all 0.2s;
+}
+.toolbar-btn:hover { color: var(--text); border-color: var(--border2); }
+
+.device-stage {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 40px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 500px;
+  overflow: auto;
+  position: relative;
+}
+
+/* ===== DEVICE FRAMES ===== */
+.device-frame-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* iOS Phone */
+.phone-frame {
+  background: #1c1c1e;
+  border-radius: 44px;
+  padding: 14px;
+  box-shadow: 0 0 0 2px #3a3a3c, 0 30px 70px rgba(0,0,0,0.75), inset 0 2px 4px rgba(255,255,255,0.05);
+  position: relative;
+}
+.phone-frame .notch {
+  position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+  width: 110px; height: 26px; background: #1c1c1e;
+  border-radius: 0 0 18px 18px; z-index: 10;
+}
+.phone-frame .home-indicator {
+  position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+  width: 110px; height: 5px;
+  background: rgba(255,255,255,0.28); border-radius: 100px; z-index: 10;
+}
+.phone-screen { border-radius: 32px; overflow: hidden; position: relative; background: #000; }
+
+/* Android Phone */
+.android-frame {
+  background: #1b1f2d;
+  border-radius: 36px;
+  padding: 42px 12px 48px;
+  box-shadow: 0 0 0 2px #2b3050, 0 30px 70px rgba(0,0,0,0.75), inset 0 2px 4px rgba(255,255,255,0.04);
+  position: relative;
+}
+.android-camera {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  width: 12px; height: 12px;
+  background: #111; border-radius: 50%; border: 2px solid #2b3050; z-index: 10;
+}
+.android-nav-bar {
+  position: absolute; bottom: 12px; left: 0; right: 0;
+  display: flex; justify-content: center; align-items: center; gap: 22px; z-index: 10;
+}
+.a-btn { opacity: 0.35; display: flex; align-items: center; }
+.android-screen { border-radius: 26px; overflow: hidden; position: relative; background: #000; }
+
+/* Tablet */
+.tablet-frame {
+  background: #1c1c1e;
+  border-radius: 22px;
+  padding: 18px 14px;
+  box-shadow: 0 0 0 2px #3a3a3c, 0 30px 70px rgba(0,0,0,0.7), inset 0 2px 4px rgba(255,255,255,0.05);
+  position: relative;
+}
+.tablet-home {
+  position: absolute; right: -1px; top: 50%; transform: translateY(-50%);
+  width: 5px; height: 34px; background: #3a3a3c; border-radius: 0 4px 4px 0;
+}
+.tablet-screen { border-radius: 8px; overflow: hidden; background: #000; }
+
+/* Laptop */
+.laptop-frame { display: flex; flex-direction: column; align-items: center; }
+.laptop-lid {
+  background: #2c2c2e; border-radius: 14px 14px 0 0;
+  padding: 12px 12px 0;
+  box-shadow: 0 0 0 2px #3a3a3c, 0 -4px 30px rgba(0,0,0,0.4);
+  position: relative;
+}
+.laptop-lid::before {
+  content: ''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 8px; border-radius: 50%; background: #3a3a3c;
+  box-shadow: inset 0 0 0 1.5px #555;
+}
+.laptop-screen { border-radius: 6px 6px 0 0; overflow: hidden; background: #000; }
+.laptop-base {
+  background: #2c2c2e; height: 20px; border-radius: 0 0 6px 6px;
+  box-shadow: 0 0 0 2px #3a3a3c; position: relative;
+}
+.laptop-base::after {
+  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 36%; height: 6px; background: #3a3a3c; border-radius: 4px 4px 0 0;
+}
+.laptop-stand {
+  height: 14px;
+  background: linear-gradient(to bottom, #3a3a3c, #2c2c2e);
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+/* Monitor */
+.monitor-frame { display: flex; flex-direction: column; align-items: center; }
+.monitor-body {
+  background: #1c1c1e; border-radius: 14px; padding: 14px 14px 10px;
+  box-shadow: 0 0 0 2px #3a3a3c, 0 20px 60px rgba(0,0,0,0.6);
+}
+.monitor-screen { border-radius: 6px; overflow: hidden; background: #000; }
+.monitor-neck { width: 5px; height: 44px; background: #2c2c2e; box-shadow: 0 0 0 1px #3a3a3c; }
+.monitor-foot { height: 10px; background: #2c2c2e; border-radius: 0 0 8px 8px; box-shadow: 0 0 0 1px #3a3a3c; }
+
+.preview-iframe { display: block; border: none; background: white; }
+
+.loading-overlay {
+  position: absolute; inset: 0;
+  background: rgba(15,23,42,0.92);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 14px; z-index: 5;
+}
+.spinner {
+  width: 34px; height: 34px;
+  border: 3px solid rgba(255,255,255,0.08);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 0.82rem; color: var(--text-muted); font-weight: 500; }
+
+.empty-state { text-align: center; padding: 60px 20px; }
+.empty-title { font-size: 1.1rem; font-weight: 700; color: var(--text-dim); margin-bottom: 8px; }
+.empty-sub { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .site-pill-inner { padding: 0 0.85rem; }
+  .site-pill-logo { font-size: 0.8rem; }
+  .pill-center { display: none; }
+  h1 { font-size: 1.85rem; }
+  .hero { padding: 36px 1rem 30px; }
+  .main { padding: 0 1rem 60px; }
+  .toolbar-url { display: none; }
+  .device-info-label { display: none; }
+  .scale-control { display: none; }
+  .btn-label { display: none; }
+  .device-stage { padding: 18px 8px; min-height: 360px; }
+  .search-btn span { display: none; }
+  .search-btn { padding: 11px 18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- PILL NAVBAR -->
+<nav class="site-pill-nav">
+  <div class="site-pill-inner">
+    <a href="https://shifat.dev/" class="site-pill-logo">
+      <svg width="22" height="22" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="18" cy="21" rx="10" ry="12" fill="#1a1a2e"/>
+        <ellipse cx="18" cy="22" rx="6" ry="8" fill="rgba(255,255,255,0.88)"/>
+        <ellipse cx="18" cy="10" rx="7.5" ry="7" fill="#1a1a2e"/>
+        <circle cx="15.2" cy="9" r="1.7" fill="white"/>
+        <circle cx="20.8" cy="9" r="1.7" fill="white"/>
+        <circle cx="15.6" cy="9.2" r="0.9" fill="#0a0e0b"/>
+        <circle cx="21.2" cy="9.2" r="0.9" fill="#0a0e0b"/>
+        <path d="M16.2 12.5 Q18 14.5 19.8 12.5 Q18 11.5 16.2 12.5Z" fill="#f59e0b"/>
+        <ellipse cx="14" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
+        <ellipse cx="22" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
+        <path d="M8 16 Q5 21 8 26 Q10 22 10 18Z" fill="#1a1a2e"/>
+        <path d="M28 16 Q31 21 28 26 Q26 22 26 18Z" fill="#1a1a2e"/>
+      </svg>
+      Shifat
+    </a>
+
+    <div class="pill-center">
+      <div class="pill-dot"></div>
+      Website Preview
+    </div>
+
+    <a href="https://shifat.dev/" class="site-back-btn">← Back</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Responsive Testing Tool</div>
+  <h1>Preview any site on<br><span class="g">any device</span></h1>
+  <p class="hero-sub">Instantly see how websites look across iOS, Android, tablets, laptops, and desktops — all without leaving your browser.</p>
+
+  <div class="search-wrap">
+    <div class="search-bar">
+      <div class="si">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      </div>
+      <input type="url" id="url-input" placeholder="https://example.com" autocomplete="off" spellcheck="false">
+      <button class="search-btn" onclick="loadPreview()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        <span>Preview</span>
+      </button>
+    </div>
+    <div class="examples-row">
+      <span class="examples-label">Try:</span>
+      <span class="example-pill" onclick="setUrl('https://wikipedia.org')">wikipedia.org</span>
+      <span class="example-pill" onclick="setUrl('https://github.com')">github.com</span>
+      <span class="example-pill" onclick="setUrl('https://vercel.com')">vercel.com</span>
+      <span class="example-pill" onclick="setUrl('https://example.com')">example.com</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="error-banner" id="error-banner">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span id="error-msg">Some websites block iframe embedding for security. Try another URL.</span>
+  </div>
+
+  <!-- DEVICE PRESETS -->
+  <div class="device-section">
+    <div class="section-label">Device Presets</div>
+
+    <!-- iOS -->
+    <div style="margin-bottom:4px;font-size:0.67rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);font-weight:600;">iOS</div>
+    <div class="device-grid">
+
+      <button class="device-chip active" data-name="iPhone 16 Pro" data-w="402" data-h="874" data-type="phone" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span>
+        iPhone 16 Pro <span class="chip-size">402×874</span>
+      </button>
+
+      <button class="device-chip" data-name="iPhone 15 Pro" data-w="393" data-h="852" data-type="phone" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span>
+        iPhone 15 Pro <span class="chip-size">393×852</span>
+      </button>
+
+      <button class="device-chip" data-name="iPad Pro 12.9in" data-w="1024" data-h="1366" data-type="tablet" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"/><circle cx="12" cy="18.5" r="0.8" fill="currentColor"/></svg></span>
+        iPad Pro 12.9" <span class="chip-size">1024×1366</span>
+      </button>
+
+    </div>
+
+    <!-- Android -->
+    <div class="device-divider"><span>Android</span></div>
+    <div class="device-grid">
+
+      <button class="device-chip" data-name="Samsung Galaxy S24" data-w="412" data-h="915" data-type="android" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="9.5" y1="2.5" x2="14.5" y2="2.5" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        Galaxy S24 <span class="chip-size">412×915</span>
+      </button>
+
+      <button class="device-chip" data-name="Google Pixel 8" data-w="412" data-h="892" data-type="android" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="9.5" y1="2.5" x2="14.5" y2="2.5" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        Pixel 8 <span class="chip-size">412×892</span>
+      </button>
+
+      <button class="device-chip" data-name="OnePlus 12" data-w="412" data-h="919" data-type="android" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="9.5" y1="2.5" x2="14.5" y2="2.5" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        OnePlus 12 <span class="chip-size">412×919</span>
+      </button>
+
+      <button class="device-chip" data-name="Galaxy Tab S9" data-w="800" data-h="1280" data-type="tablet-android" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"/><line x1="9" y1="18.5" x2="15" y2="18.5"/></svg></span>
+        Galaxy Tab S9 <span class="chip-size">800×1280</span>
+      </button>
+
+    </div>
+
+    <!-- Laptop & Desktop -->
+    <div class="device-divider"><span>Laptop &amp; Desktop</span></div>
+    <div class="device-grid">
+
+      <button class="device-chip" data-name="MacBook Pro 14in" data-w="1512" data-h="982" data-type="laptop" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M1 20h22"/></svg></span>
+        MacBook Pro 14" <span class="chip-size">1512×982</span>
+      </button>
+
+      <button class="device-chip" data-name="Desktop 1080p" data-w="1920" data-h="1080" data-type="desktop" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+        Desktop 1080p <span class="chip-size">1920×1080</span>
+      </button>
+
+      <button class="device-chip" data-name="Desktop 4K" data-w="3840" data-h="2160" data-type="desktop" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+        Desktop 4K <span class="chip-size">3840×2160</span>
+      </button>
+
+    </div>
+
+    <!-- Legacy -->
+    <div class="device-divider"><span>Legacy — Still Widely Used</span></div>
+    <div class="device-grid">
+
+      <button class="device-chip" data-name="iPhone SE (2022)" data-w="375" data-h="667" data-type="phone" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span>
+        iPhone SE 2022 <span class="chip-size">375×667</span>
+      </button>
+
+      <button class="device-chip" data-name="iPhone 8 / 7 / 6s" data-w="375" data-h="667" data-type="phone" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></span>
+        iPhone 8 / 7 / 6s <span class="chip-size">375×667</span>
+      </button>
+
+      <button class="device-chip" data-name="Samsung Galaxy S9" data-w="360" data-h="740" data-type="android" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="9.5" y1="2.5" x2="14.5" y2="2.5" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        Galaxy S9 <span class="chip-size">360×740</span>
+      </button>
+
+      <button class="device-chip" data-name="Moto G Power" data-w="360" data-h="800" data-type="android" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="9.5" y1="2.5" x2="14.5" y2="2.5" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        Moto G Power <span class="chip-size">360×800</span>
+      </button>
+
+      <button class="device-chip" data-name="iPad 6th Gen" data-w="768" data-h="1024" data-type="tablet" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"/><circle cx="12" cy="18.5" r="0.8" fill="currentColor"/></svg></span>
+        iPad 6th Gen <span class="chip-size">768×1024</span>
+      </button>
+
+      <button class="device-chip" data-name="Laptop HD 768p" data-w="1366" data-h="768" data-type="laptop" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M1 20h22"/></svg></span>
+        Laptop 768p <span class="chip-size">1366×768</span>
+      </button>
+
+      <!-- Custom -->
+      <button class="device-chip" id="custom-chip" data-name="Custom" data-w="800" data-h="600" data-type="desktop" onclick="selectDevice(this)">
+        <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span>
+        Custom <span class="chip-size" id="custom-size-label">W×H</span>
+      </button>
+
+    </div>
+
+    <div class="custom-inputs" id="custom-inputs">
+      <div class="custom-input-group">
+        <label>W</label>
+        <input type="number" id="custom-w" value="800" min="240" max="4000">
+        <span style="color:var(--text-muted);font-size:0.76rem">px</span>
+      </div>
+      <div class="custom-input-group">
+        <label>H</label>
+        <input type="number" id="custom-h" value="600" min="240" max="4000">
+        <span style="color:var(--text-muted);font-size:0.76rem">px</span>
+      </div>
+      <button class="apply-btn" onclick="applyCustom()">Apply</button>
+    </div>
+  </div>
+
+  <!-- PREVIEW SECTION -->
+  <div class="preview-section" id="preview-section">
+    <div class="preview-toolbar">
+      <div class="toolbar-left">
+        <div class="traffic-lights">
+          <div class="tl tl-r"></div>
+          <div class="tl tl-y"></div>
+          <div class="tl tl-g"></div>
+        </div>
+        <div class="toolbar-url" id="toolbar-url">—</div>
+      </div>
+      <div class="toolbar-right">
+        <div class="device-info-label" id="device-info-label">—</div>
+        <div class="scale-control">
+          <span class="scale-lbl">Zoom</span>
+          <input type="range" id="scale-slider" min="15" max="100" value="55" oninput="updateScale(this.value)">
+          <span class="scale-lbl" id="scale-val">55%</span>
+        </div>
+        <button class="toolbar-btn" onclick="openExternal()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span class="btn-label">Open</span>
+        </button>
+        <button class="toolbar-btn" onclick="reloadIframe()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.71"/></svg>
+          <span class="btn-label">Reload</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="device-stage" id="device-stage">
+      <div class="empty-state">
+        <div class="empty-title">Enter a URL above to preview</div>
+        <div class="empty-sub">Select a device preset, then hit Preview.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- placeholder -->
+  <div id="no-preview-placeholder" style="text-align:center;padding:60px 20px;">
+    <div style="margin-bottom:14px;opacity:0.18;display:flex;justify-content:center;">
+      <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round">
+        <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+        <circle cx="7" cy="10" r="1.2"/><rect x="10.5" y="8.5" width="7" height="3" rx="0.8"/>
+      </svg>
+    </div>
+    <div style="font-size:0.98rem;font-weight:700;color:var(--text-muted);margin-bottom:6px;">Select a device &amp; enter a URL</div>
+    <div style="font-size:0.83rem;color:var(--text-muted);line-height:1.6;">Your responsive preview will appear here.</div>
+  </div>
+
+</div>
+
+<script>
+let currentUrl = '';
+let currentDevice = { name: 'iPhone 16 Pro', w: 402, h: 874, type: 'phone' };
+let currentScale = 0.55;
+
+function setUrl(url) { document.getElementById('url-input').value = url; }
+
+function normalizeUrl(url) {
+  url = url.trim();
+  if (!url) return null;
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  try { new URL(url); return url; } catch { return null; }
+}
+
+function selectDevice(btn) {
+  document.querySelectorAll('.device-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  const isCustom = btn.id === 'custom-chip';
+  const ci = document.getElementById('custom-inputs');
+  if (isCustom) {
+    ci.classList.add('visible');
+  } else {
+    ci.classList.remove('visible');
+    currentDevice = { name: btn.dataset.name, w: +btn.dataset.w, h: +btn.dataset.h, type: btn.dataset.type };
+    if (currentUrl) renderPreview(); else updateInfoLabel();
+  }
+}
+
+function applyCustom() {
+  const w = parseInt(document.getElementById('custom-w').value) || 800;
+  const h = parseInt(document.getElementById('custom-h').value) || 600;
+  document.getElementById('custom-size-label').textContent = `${w}×${h}`;
+  currentDevice = { name: 'Custom', w, h, type: 'desktop' };
+  if (currentUrl) renderPreview(); else updateInfoLabel();
+}
+
+function loadPreview() {
+  const url = normalizeUrl(document.getElementById('url-input').value);
+  if (!url) { showError('Please enter a valid URL (e.g. https://example.com)'); return; }
+  hideError();
+  currentUrl = url;
+  document.getElementById('url-input').value = url;
+  document.getElementById('no-preview-placeholder').style.display = 'none';
+  document.getElementById('preview-section').classList.add('visible');
+  renderPreview();
+}
+
+function renderPreview() {
+  updateInfoLabel();
+  document.getElementById('toolbar-url').textContent = currentUrl;
+  const stage = document.getElementById('device-stage');
+  stage.innerHTML = '';
+  stage.appendChild(buildFrame());
+}
+
+function makeScreen(w, h, cls, extra) {
+  const s = document.createElement('div');
+  s.className = cls;
+  s.style.cssText = `width:${w}px;height:${h}px;position:relative;${extra||''}`;
+  return s;
+}
+
+function makeIframe(w, h) {
+  const iframe = document.createElement('iframe');
+  iframe.className = 'preview-iframe';
+  iframe.style.cssText = `width:${w}px;height:${h}px;`;
+  iframe.src = currentUrl;
+  iframe.id = 'main-iframe';
+  iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups');
+  const overlay = document.createElement('div');
+  overlay.className = 'loading-overlay'; overlay.id = 'load-overlay';
+  overlay.innerHTML = `<div class="spinner"></div><div class="loading-text">Loading…</div>`;
+  iframe.onload = () => { const o = document.getElementById('load-overlay'); if(o) o.remove(); };
+  return { iframe, overlay };
+}
+
+function buildFrame() {
+  const { w, h, type } = currentDevice;
+  const s = currentScale;
+  const wrap = document.createElement('div');
+  wrap.className = 'device-frame-wrapper';
+
+  const { iframe, overlay } = makeIframe(w, h);
+  let outerH = h;
+
+  if (type === 'phone') {
+    const frame = document.createElement('div');
+    frame.className = 'phone-frame';
+    const screen = makeScreen(w, h, 'phone-screen');
+    screen.append(iframe, overlay);
+    const notch = document.createElement('div'); notch.className = 'notch';
+    const home = document.createElement('div'); home.className = 'home-indicator';
+    frame.append(notch, screen, home);
+    frame.style.cssText = `transform:scale(${s});transform-origin:top center;`;
+    outerH = (h + 90) * s;
+    wrap.appendChild(frame);
+
+  } else if (type === 'android') {
+    const frame = document.createElement('div');
+    frame.className = 'android-frame';
+    const screen = makeScreen(w, h, 'android-screen');
+    screen.append(iframe, overlay);
+    const cam = document.createElement('div'); cam.className = 'android-camera';
+    // Android gesture nav bar
+    const nav = document.createElement('div'); nav.className = 'android-nav-bar';
+    nav.innerHTML = `
+      <div class="a-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="a-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6"/></svg></div>
+      <div class="a-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="6" width="14" height="12" rx="2"/></svg></div>`;
+    frame.append(cam, screen, nav);
+    frame.style.cssText = `transform:scale(${s});transform-origin:top center;`;
+    outerH = (h + 100) * s;
+    wrap.appendChild(frame);
+
+  } else if (type === 'tablet' || type === 'tablet-android') {
+    const frame = document.createElement('div');
+    frame.className = 'tablet-frame';
+    const screen = makeScreen(w, h, 'tablet-screen');
+    screen.append(iframe, overlay);
+    const home = document.createElement('div'); home.className = 'tablet-home';
+    frame.append(screen, home);
+    frame.style.cssText = `transform:scale(${s});transform-origin:top center;`;
+    outerH = (h + 60) * s;
+    wrap.appendChild(frame);
+
+  } else if (type === 'laptop') {
+    const frame = document.createElement('div');
+    frame.className = 'laptop-frame';
+    const lid = document.createElement('div'); lid.className = 'laptop-lid';
+    const screen = makeScreen(w, h, 'laptop-screen');
+    screen.append(iframe, overlay);
+    lid.appendChild(screen);
+    const base = document.createElement('div'); base.className = 'laptop-base'; base.style.width = (w+24)+'px';
+    const stand = document.createElement('div'); stand.className = 'laptop-stand'; stand.style.width = (w+44)+'px';
+    frame.append(lid, base, stand);
+    frame.style.cssText = `transform:scale(${s});transform-origin:top center;`;
+    outerH = (h + 110) * s;
+    wrap.appendChild(frame);
+
+  } else {
+    const frame = document.createElement('div');
+    frame.className = 'monitor-frame';
+    const body = document.createElement('div'); body.className = 'monitor-body';
+    const screen = makeScreen(w, h, 'monitor-screen');
+    screen.append(iframe, overlay);
+    body.appendChild(screen);
+    const neck = document.createElement('div'); neck.className = 'monitor-neck';
+    const foot = document.createElement('div'); foot.className = 'monitor-foot'; foot.style.width = '160px';
+    frame.append(body, neck, foot);
+    frame.style.cssText = `transform:scale(${s});transform-origin:top center;`;
+    outerH = (h + 110) * s;
+    wrap.appendChild(frame);
+  }
+
+  wrap.style.height = Math.round(outerH) + 'px';
+  return wrap;
+}
+
+function updateScale(val) {
+  currentScale = val / 100;
+  document.getElementById('scale-val').textContent = val + '%';
+  if (currentUrl) renderPreview();
+}
+
+function updateInfoLabel() {
+  document.getElementById('device-info-label').textContent =
+    `${currentDevice.name} · ${currentDevice.w}×${currentDevice.h}`;
+}
+
+function openExternal() { if (currentUrl) window.open(currentUrl, '_blank'); }
+function reloadIframe() { if (currentUrl) renderPreview(); }
+function showError(msg) { document.getElementById('error-msg').textContent = msg; document.getElementById('error-banner').classList.add('visible'); }
+function hideError() { document.getElementById('error-banner').classList.remove('visible'); }
+
+document.getElementById('url-input').addEventListener('keydown', e => { if (e.key === 'Enter') loadPreview(); });
+
+window.addEventListener('DOMContentLoaded', () => {
+  const sw = window.innerWidth - 60;
+  let s = Math.min(0.85, sw / currentDevice.w);
+  s = Math.max(0.15, Math.min(1, s));
+  currentScale = s;
+  const pct = Math.round(s * 100);
+  document.getElementById('scale-slider').value = pct;
+  document.getElementById('scale-val').textContent = pct + '%';
+});
+</script>
+
+</body>
+</html>

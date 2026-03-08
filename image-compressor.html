@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Compressor — by Shifat</title>
+<link rel="canonical" href="https://shifat.dev/image-compressor" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #080d1a;
+  --surface: #0e1628;
+  --surface2: #131f35;
+  --surface3: #1a2845;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --accent: #7c6af7;
+  --accent2: #a78bfa;
+  --accent3: #c4b5fd;
+  --accent-soft: rgba(124,106,247,0.12);
+  --accent-glow: rgba(124,106,247,0.3);
+  --teal: #2dd4bf;
+  --rose: #fb7185;
+  --amber: #fbbf24;
+  --text: #eef2ff;
+  --text-muted: #4a5568;
+  --text-dim: #7b8ca8;
+  --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --mono: 'DM Mono', monospace;
+  --r: 16px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 82px;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -5%, rgba(124,106,247,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 5% 70%, rgba(45,212,191,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 95% 40%, rgba(167,139,250,0.07) 0%, transparent 55%);
+}
+
+/* Grid texture */
+body::after {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(124,106,247,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,106,247,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ====== NAVBAR ====== */
+.site-pill-nav {
+  position: fixed; top: 16px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: calc(100% - 2rem); max-width: 720px;
+}
+.site-pill-inner {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  height: 54px; padding: 0 1.25rem;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.site-pill-logo {
+  display: flex; align-items: center; gap: 0.55rem;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.92rem; font-weight: 900;
+  color: rgba(255,255,255,0.95); text-decoration: none;
+  letter-spacing: 0.04em; transition: opacity 0.2s;
+  text-shadow: 0 0 20px rgba(124,106,247,0.5);
+}
+.site-pill-logo:hover { opacity: 0.7; }
+.pill-center {
+  display: flex; align-items: center; gap: 0.45rem;
+  font-family: var(--font); font-size: 0.82rem;
+  font-weight: 600; color: rgba(255,255,255,0.6);
+}
+.pill-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent2);
+  box-shadow: 0 0 9px var(--accent2);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.85)} }
+.site-back-btn {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-family: var(--mono); font-size: 0.65rem;
+  letter-spacing: 0.08em; color: rgba(255,255,255,0.42);
+  text-decoration: none; padding: 0.4rem 0.9rem;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.2s, color 0.2s; white-space: nowrap;
+}
+.site-back-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.88); }
+
+/* ====== HERO ====== */
+.hero {
+  position: relative; z-index: 1;
+  text-align: center; padding: 52px 1.25rem 44px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.71rem; font-weight: 700;
+  letter-spacing: 0.11em; text-transform: uppercase;
+  color: var(--accent2);
+  background: var(--accent-soft);
+  border: 1px solid rgba(124,106,247,0.25);
+  border-radius: 100px; padding: 5px 16px; margin-bottom: 22px;
+}
+.hero-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent2); animation: pulse 2s ease-in-out infinite;
+}
+h1 {
+  font-size: clamp(2rem, 5.5vw, 3.7rem);
+  font-weight: 800; line-height: 1.07;
+  letter-spacing: -0.045em; margin-bottom: 14px;
+}
+.g {
+  background: linear-gradient(125deg, #7c6af7 0%, #a78bfa 45%, #c4b5fd 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1rem; color: var(--text-dim);
+  font-weight: 400; max-width: 480px;
+  margin: 0 auto 26px; line-height: 1.7;
+}
+.trust-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 7px; flex-wrap: wrap;
+}
+.trust-pill {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.73rem; font-weight: 600; color: var(--text-dim);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border2); border-radius: 100px;
+  padding: 5px 13px;
+}
+.trust-pill.v { color: var(--accent3); border-color: rgba(196,181,253,0.2); background: rgba(196,181,253,0.05); }
+.trust-pill.t { color: var(--teal); border-color: rgba(45,212,191,0.2); background: rgba(45,212,191,0.05); }
+.trust-pill.a { color: var(--amber); border-color: rgba(251,191,36,0.2); background: rgba(251,191,36,0.05); }
+
+/* ====== MAIN LAYOUT ====== */
+.main {
+  position: relative; z-index: 1;
+  padding: 0 1.25rem 90px;
+  max-width: 980px; margin: 0 auto;
+}
+
+/* ====== CARD ====== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+  margin-bottom: 18px;
+}
+.card-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 20px 22px 0;
+}
+.cicon {
+  width: 38px; height: 38px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.ci-v { background: var(--accent-soft); color: var(--accent2); }
+.ci-t { background: rgba(45,212,191,0.1); color: var(--teal); }
+.ci-a { background: rgba(251,191,36,0.1); color: var(--amber); }
+.ci-r { background: rgba(251,113,133,0.1); color: var(--rose); }
+.ctitle { font-size: 0.89rem; font-weight: 700; letter-spacing: -0.01em; }
+.csub { font-size: 0.74rem; color: var(--text-muted); margin-top: 2px; }
+.cbody { padding: 18px 22px 22px; }
+
+/* ====== DROP ZONE ====== */
+.drop-zone {
+  border: 2px dashed rgba(124,106,247,0.28);
+  border-radius: 14px; padding: 48px 20px;
+  text-align: center; cursor: pointer;
+  transition: all 0.25s; background: rgba(124,106,247,0.03);
+  position: relative; overflow: hidden;
+}
+.drop-zone::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(124,106,247,0.07) 0%, transparent 70%);
+  opacity: 0; transition: opacity 0.3s; pointer-events: none;
+}
+.drop-zone:hover { border-color: rgba(124,106,247,0.55); background: rgba(124,106,247,0.06); }
+.drop-zone:hover::after { opacity: 1; }
+.drop-zone.drag-over { border-color: var(--accent); background: rgba(124,106,247,0.1); transform: scale(1.005); }
+.drop-zone.has-files { border-style: solid; border-color: rgba(124,106,247,0.35); }
+
+.dz-icon {
+  width: 68px; height: 68px; margin: 0 auto 16px;
+  background: var(--accent-soft); border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent2); position: relative; z-index: 1;
+  box-shadow: 0 0 0 10px rgba(124,106,247,0.05);
+}
+.dz-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; position: relative; z-index: 1; }
+.dz-sub { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; position: relative; z-index: 1; }
+.dz-accepts {
+  margin-top: 14px; display: flex;
+  align-items: center; justify-content: center;
+  gap: 5px; flex-wrap: wrap; position: relative; z-index: 1;
+}
+.fmt-pill {
+  font-family: var(--mono); font-size: 0.68rem;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 3px 8px; color: var(--text-dim);
+}
+#file-input { display: none; }
+
+/* ====== FILE LIST ====== */
+.file-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+
+.file-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; transition: border-color 0.2s;
+  position: relative; overflow: hidden;
+}
+.file-item.done { border-color: rgba(45,212,191,0.25); }
+.file-thumb {
+  width: 44px; height: 44px; border-radius: 8px;
+  object-fit: cover; flex-shrink: 0;
+  background: var(--surface3);
+}
+.file-info { flex: 1; min-width: 0; }
+.file-fname {
+  font-size: 0.84rem; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.file-fmeta { font-size: 0.72rem; color: var(--text-muted); font-family: var(--mono); margin-top: 2px; }
+.file-status { flex-shrink: 0; font-size: 0.72rem; font-weight: 700; font-family: var(--mono); }
+.file-status.ready { color: var(--accent3); }
+.file-status.done { color: var(--teal); }
+.file-status.processing {
+  color: var(--amber);
+  display: flex; align-items: center; gap: 5px;
+}
+.file-remove {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 8px;
+  border: 1px solid var(--border2); background: none;
+  color: var(--text-muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.file-remove:hover { background: rgba(251,113,133,0.12); border-color: rgba(251,113,133,0.3); color: var(--rose); }
+
+.mini-spin {
+  width: 12px; height: 12px; border: 2px solid rgba(251,191,36,0.2);
+  border-top-color: var(--amber); border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ====== SETTINGS GRID ====== */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* ====== FORMAT CARDS ====== */
+.fmt-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.fmt-card {
+  padding: 12px 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px; cursor: pointer;
+  transition: all 0.2s; text-align: center;
+  position: relative; overflow: hidden;
+}
+.fmt-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--accent-soft); opacity: 0; transition: opacity 0.2s;
+}
+.fmt-card:hover { border-color: var(--border2); }
+.fmt-card.active { border-color: var(--accent); background: rgba(124,106,247,0.08); }
+.fmt-card.active::before { opacity: 1; }
+.fmt-card input { display: none; }
+.fmt-name {
+  font-family: var(--mono); font-size: 0.9rem;
+  color: var(--text); position: relative; z-index: 1;
+  display: block; margin-bottom: 3px;
+}
+.fmt-card.active .fmt-name { color: var(--accent3); }
+.fmt-tag2 {
+  font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; position: relative; z-index: 1;
+  padding: 2px 6px; border-radius: 4px; display: inline-block;
+}
+.tag-web { background: rgba(45,212,191,0.15); color: var(--teal); }
+.tag-print { background: rgba(196,181,253,0.15); color: var(--accent3); }
+.tag-next { background: rgba(251,191,36,0.15); color: var(--amber); }
+.tag-raw { background: rgba(251,113,133,0.15); color: var(--rose); }
+
+/* ====== QUALITY SECTION ====== */
+.quality-block { display: flex; flex-direction: column; gap: 14px; }
+
+.preset-row { display: flex; gap: 6px; }
+.preset-btn {
+  flex: 1; padding: 8px 4px; border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  font-family: var(--font); font-size: 0.76rem; font-weight: 600;
+  color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+  text-align: center;
+}
+.preset-btn:hover { color: var(--text-dim); border-color: var(--border2); }
+.preset-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent3); }
+
+.slider-field label {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 9px;
+}
+.slider-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); }
+.slider-val { font-family: var(--mono); font-size: 0.82rem; color: var(--accent3); }
+
+input[type="range"].q-slider {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 5px; border-radius: 5px;
+  background: var(--surface3); outline: none; cursor: pointer; border: none;
+}
+input[type="range"].q-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--accent2);
+  box-shadow: 0 0 12px var(--accent-glow);
+  cursor: pointer; transition: transform 0.15s;
+}
+input[type="range"].q-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.slider-ends { display: flex; justify-content: space-between; font-size: 0.67rem; color: var(--text-muted); margin-top: 5px; }
+
+/* ====== RESIZE SECTION ====== */
+.resize-row { display: flex; align-items: center; gap: 10px; }
+.resize-check { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.resize-check input { display: none; }
+.r-toggle {
+  width: 36px; height: 20px; border-radius: 100px;
+  background: var(--surface3); border: 1px solid var(--border2);
+  position: relative; cursor: pointer; transition: background 0.2s;
+  flex-shrink: 0;
+}
+.r-toggle::after {
+  content: ''; position: absolute;
+  left: 3px; top: 50%; transform: translateY(-50%);
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--text-muted); transition: all 0.2s;
+}
+.resize-check input:checked + .r-toggle { background: var(--accent); border-color: var(--accent); }
+.resize-check input:checked + .r-toggle::after { left: 19px; background: #fff; }
+.r-label { font-size: 0.8rem; font-weight: 600; color: var(--text-dim); }
+
+.resize-inputs {
+  display: none; gap: 8px; align-items: center; margin-top: 10px;
+}
+.resize-inputs.visible { display: flex; }
+.dim-input {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 7px 12px; flex: 1;
+}
+.dim-input label { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; }
+.dim-input input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: var(--mono); font-size: 0.88rem;
+  color: var(--text); min-width: 0; width: 60px;
+}
+.dim-link {
+  color: var(--text-muted); font-size: 0.72rem;
+  display: flex; align-items: center;
+}
+
+/* ====== COMPRESS BUTTON ====== */
+.compress-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #7c6af7, #a78bfa, #c4b5fd);
+  border: none; border-radius: 14px; padding: 16px 24px;
+  font-family: var(--font); font-size: 0.94rem; font-weight: 800;
+  color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 6px 28px rgba(124,106,247,0.35);
+  letter-spacing: -0.01em; margin-top: 6px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.compress-btn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(124,106,247,0.45); }
+.compress-btn:active { transform: translateY(0); }
+.compress-btn:disabled { opacity: 0.38; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ====== PROGRESS ====== */
+.progress-wrap { display: none; margin-top: 16px; }
+.progress-wrap.visible { display: block; }
+.progress-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+.progress-lbl { font-size: 0.8rem; font-weight: 600; color: var(--text-dim); }
+.progress-pct { font-family: var(--mono); font-size: 0.8rem; color: var(--accent3); }
+.progress-track { height: 7px; background: var(--surface3); border-radius: 7px; overflow: hidden; }
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #7c6af7, #c4b5fd);
+  border-radius: 7px; width: 0%; transition: width 0.35s ease;
+  box-shadow: 0 0 14px rgba(124,106,247,0.5); position: relative;
+}
+.progress-bar::after {
+  content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 50px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35));
+  animation: shim 1.1s ease-in-out infinite;
+}
+@keyframes shim { 0%,100%{opacity:0} 50%{opacity:1} }
+.progress-sub { font-size: 0.73rem; color: var(--text-muted); margin-top: 7px; }
+
+/* ====== RESULTS ====== */
+.results-section { display: none; }
+.results-section.visible { display: block; }
+
+.results-summary {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; margin-bottom: 16px;
+}
+.summary-card {
+  padding: 16px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 14px;
+  text-align: center;
+}
+.summary-val {
+  font-size: 1.5rem; font-weight: 800;
+  letter-spacing: -0.04em; line-height: 1;
+  margin-bottom: 5px;
+}
+.summary-val.green { color: var(--teal); }
+.summary-val.violet { color: var(--accent3); }
+.summary-val.amber { color: var(--amber); }
+.summary-lbl { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* Result items */
+.result-list { display: flex; flex-direction: column; gap: 10px; }
+
+.result-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface2);
+  border: 1px solid rgba(45,212,191,0.18);
+  border-radius: 14px;
+  animation: fadeUp 0.35s ease forwards;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+.result-thumb {
+  width: 60px; height: 60px; border-radius: 10px;
+  object-fit: cover; background: var(--surface3);
+}
+.result-info { min-width: 0; }
+.result-fname {
+  font-size: 0.84rem; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  margin-bottom: 6px;
+}
+.result-savings-bar {
+  height: 5px; background: var(--surface3); border-radius: 5px;
+  overflow: hidden; margin-bottom: 6px;
+}
+.result-savings-fill {
+  height: 100%; background: linear-gradient(90deg, #7c6af7, #2dd4bf);
+  border-radius: 5px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.result-sizes {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted);
+}
+.size-before { text-decoration: line-through; opacity: 0.6; }
+.size-arrow { color: var(--text-muted); }
+.size-after { color: var(--teal); font-weight: 400; }
+.size-saved { color: var(--accent3); font-weight: 400; }
+
+.result-dl {
+  display: flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--accent-soft); border: 1px solid rgba(124,106,247,0.25);
+  color: var(--accent3); cursor: pointer; flex-shrink: 0;
+  transition: all 0.2s; text-decoration: none;
+}
+.result-dl:hover { background: rgba(124,106,247,0.2); border-color: var(--accent); transform: translateY(-1px); }
+
+/* Download all */
+.dl-all-btn {
+  width: 100%; margin-top: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 20px;
+  background: linear-gradient(135deg, #2dd4bf, #7c6af7);
+  border: none; border-radius: 12px;
+  font-family: var(--font); font-size: 0.88rem; font-weight: 700;
+  color: #fff; cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  box-shadow: 0 4px 20px rgba(45,212,191,0.2);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.dl-all-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* Before/After preview */
+.preview-compare {
+  display: none; margin-bottom: 14px;
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--border2);
+}
+.preview-compare.visible { display: block; }
+.compare-labels {
+  display: flex;
+}
+.compare-label {
+  flex: 1; text-align: center;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  padding: 8px;
+  background: var(--surface3);
+}
+.compare-label.orig { color: var(--rose); }
+.compare-label.comp { color: var(--teal); }
+.compare-imgs {
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+.compare-imgs img {
+  width: 100%; height: 180px; object-fit: contain;
+  background: var(--surface2); display: block;
+}
+.compare-imgs img:first-child { border-right: 1px solid var(--border); }
+
+/* ====== TOAST ====== */
+.toast {
+  position: fixed; bottom: 26px; left: 50%;
+  transform: translateX(-50%) translateY(14px);
+  background: var(--surface);
+  border: 1px solid rgba(124,106,247,0.3);
+  border-radius: 100px; padding: 10px 20px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.82rem; font-weight: 600; color: var(--text);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  opacity: 0; pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 9999; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ====== ERR ====== */
+.err-bar {
+  display: none; margin-top: 12px; padding: 12px 16px;
+  background: rgba(251,113,133,0.07);
+  border: 1px solid rgba(251,113,133,0.2); border-radius: 11px;
+  font-size: 0.82rem; color: #fca5a5; gap: 10px; align-items: flex-start;
+}
+.err-bar.visible { display: flex; }
+
+/* ====== FIELD label ====== */
+.flabel {
+  font-size: 0.71rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 9px; display: block;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 680px) {
+  .pill-center { display: none; }
+  h1 { font-size: 1.9rem; }
+  .hero { padding: 38px 1rem 32px; }
+  .main { padding: 0 1rem 60px; }
+  .cbody { padding: 14px 14px 18px; }
+  .card-head { padding: 16px 14px 0; }
+  .settings-grid { grid-template-columns: 1fr; }
+  .fmt-grid { grid-template-columns: repeat(3, 1fr); }
+  .results-summary { grid-template-columns: 1fr 1fr; }
+  .result-item { grid-template-columns: 48px 1fr auto; gap: 10px; }
+  .result-thumb { width: 48px; height: 48px; }
+}
+@media (max-width: 420px) {
+  .fmt-grid { grid-template-columns: repeat(2, 1fr); }
+  .preset-row { flex-wrap: wrap; }
+  .results-summary { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="site-pill-nav">
+  <div class="site-pill-inner">
+    <a href="https://shifat.dev/" class="site-pill-logo">
+      <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
+        <ellipse cx="18" cy="21" rx="10" ry="12" fill="#1a1a2e"/>
+        <ellipse cx="18" cy="22" rx="6" ry="8" fill="rgba(255,255,255,0.88)"/>
+        <ellipse cx="18" cy="10" rx="7.5" ry="7" fill="#1a1a2e"/>
+        <circle cx="15.2" cy="9" r="1.7" fill="white"/>
+        <circle cx="20.8" cy="9" r="1.7" fill="white"/>
+        <circle cx="15.6" cy="9.2" r="0.9" fill="#0a0e0b"/>
+        <circle cx="21.2" cy="9.2" r="0.9" fill="#0a0e0b"/>
+        <path d="M16.2 12.5 Q18 14.5 19.8 12.5 Q18 11.5 16.2 12.5Z" fill="#f59e0b"/>
+        <ellipse cx="14" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
+        <ellipse cx="22" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
+        <path d="M8 16 Q5 21 8 26 Q10 22 10 18Z" fill="#1a1a2e"/>
+        <path d="M28 16 Q31 21 28 26 Q26 22 26 18Z" fill="#1a1a2e"/>
+      </svg>
+      Shifat
+    </a>
+    <div class="pill-center">
+      <div class="pill-dot"></div>
+      Image Compressor
+    </div>
+    <a href="https://shifat.dev/" class="site-back-btn">← Back</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">100% Offline · No Upload · Instant Results</div>
+  <h1>Compress &amp; convert<br><span class="g">images instantly</span></h1>
+  <p class="hero-sub">Shrink images, change formats, resize — all in your browser. No file ever touches a server.</p>
+  <div class="trust-row">
+    <div class="trust-pill v">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Zero server upload
+    </div>
+    <div class="trust-pill t">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Batch processing
+    </div>
+    <div class="trust-pill a">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Works offline
+    </div>
+    <div class="trust-pill">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Fully private
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- Upload -->
+  <div class="card">
+    <div class="card-head">
+      <div class="cicon ci-v">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </div>
+      <div>
+        <div class="ctitle">Upload Images</div>
+        <div class="csub">Drag &amp; drop or click — supports multiple files at once</div>
+      </div>
+    </div>
+    <div class="cbody">
+
+      <div class="drop-zone" id="drop-zone"
+        onclick="document.getElementById('file-input').click()"
+        ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+        <div class="dz-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </div>
+        <div class="dz-title">Drop images here</div>
+        <div class="dz-sub">or click to select — batch supported, process many at once</div>
+        <div class="dz-accepts">
+          <span class="fmt-pill">JPG</span><span class="fmt-pill">PNG</span>
+          <span class="fmt-pill">WEBP</span><span class="fmt-pill">GIF</span>
+          <span class="fmt-pill">BMP</span><span class="fmt-pill">TIFF</span>
+          <span class="fmt-pill">SVG</span><span class="fmt-pill">AVIF</span>
+        </div>
+      </div>
+      <input type="file" id="file-input" accept="image/*" multiple onchange="addFiles(this.files)">
+
+      <div class="file-list" id="file-list"></div>
+
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="card">
+    <div class="card-head">
+      <div class="cicon ci-t">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      </div>
+      <div>
+        <div class="ctitle">Compression Settings</div>
+        <div class="csub">Format, quality, resize — applied to all images</div>
+      </div>
+    </div>
+    <div class="cbody">
+
+      <div class="settings-grid">
+
+        <!-- Output Format -->
+        <div>
+          <span class="flabel">Output Format</span>
+          <div class="fmt-grid">
+
+            <label class="fmt-card" id="fmt-same">
+              <input type="radio" name="fmt" value="same" checked onchange="setFormat(this)">
+              <span class="fmt-name">Same</span>
+              <span class="fmt-tag2 tag-print">Original</span>
+            </label>
+
+            <label class="fmt-card">
+              <input type="radio" name="fmt" value="jpeg" onchange="setFormat(this)">
+              <span class="fmt-name">JPEG</span>
+              <span class="fmt-tag2 tag-web">Web</span>
+            </label>
+
+            <label class="fmt-card">
+              <input type="radio" name="fmt" value="png" onchange="setFormat(this)">
+              <span class="fmt-name">PNG</span>
+              <span class="fmt-tag2 tag-print">Lossless</span>
+            </label>
+
+            <label class="fmt-card">
+              <input type="radio" name="fmt" value="webp" onchange="setFormat(this)">
+              <span class="fmt-name">WebP</span>
+              <span class="fmt-tag2 tag-next">Modern</span>
+            </label>
+
+            <label class="fmt-card">
+              <input type="radio" name="fmt" value="avif" onchange="setFormat(this)">
+              <span class="fmt-name">AVIF</span>
+              <span class="fmt-tag2 tag-next">Next-gen</span>
+            </label>
+
+            <label class="fmt-card">
+              <input type="radio" name="fmt" value="gif" onchange="setFormat(this)">
+              <span class="fmt-name">GIF</span>
+              <span class="fmt-tag2 tag-web">Anim</span>
+            </label>
+
+            <label class="fmt-card">
+              <input type="radio" name="fmt" value="bmp" onchange="setFormat(this)">
+              <span class="fmt-name">BMP</span>
+              <span class="fmt-tag2 tag-raw">Raw</span>
+            </label>
+
+            <label class="fmt-card">
+              <input type="radio" name="fmt" value="ico" onchange="setFormat(this)">
+              <span class="fmt-name">ICO</span>
+              <span class="fmt-tag2 tag-raw">Icon</span>
+            </label>
+
+          </div>
+        </div>
+
+        <!-- Quality -->
+        <div>
+          <span class="flabel">Compression Level</span>
+          <div class="quality-block">
+
+            <div class="preset-row">
+              <button class="preset-btn" data-q="92" onclick="applyPreset(this,92)">Maximum<br><span style="font-size:.65rem;font-weight:400;opacity:.6">92%</span></button>
+              <button class="preset-btn active" data-q="80" onclick="applyPreset(this,80)">Balanced<br><span style="font-size:.65rem;font-weight:400;opacity:.6">80%</span></button>
+              <button class="preset-btn" data-q="60" onclick="applyPreset(this,60)">Small<br><span style="font-size:.65rem;font-weight:400;opacity:.6">60%</span></button>
+              <button class="preset-btn" data-q="35" onclick="applyPreset(this,35)">Tiny<br><span style="font-size:.65rem;font-weight:400;opacity:.6">35%</span></button>
+            </div>
+
+            <div class="slider-field">
+              <label>
+                <span class="slider-label">Custom Quality</span>
+                <span class="slider-val" id="q-val">80%</span>
+              </label>
+              <input type="range" class="q-slider" id="q-slider" min="1" max="100" value="80" oninput="onQualityChange(this.value)">
+              <div class="slider-ends"><span>← Smaller file</span><span>Higher quality →</span></div>
+            </div>
+
+            <!-- Resize toggle -->
+            <div>
+              <label class="resize-check">
+                <input type="checkbox" id="resize-toggle" onchange="toggleResize(this.checked)">
+                <div class="r-toggle"></div>
+                <span class="r-label">Resize output dimensions</span>
+              </label>
+              <div class="resize-inputs" id="resize-inputs">
+                <div class="dim-input">
+                  <label>W</label>
+                  <input type="number" id="dim-w" placeholder="auto" min="1" max="8000">
+                  <span style="font-size:.72rem;color:var(--text-muted)">px</span>
+                </div>
+                <div class="dim-link">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"/><path d="M16 6h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3"/></svg>
+                </div>
+                <div class="dim-input">
+                  <label>H</label>
+                  <input type="number" id="dim-h" placeholder="auto" min="1" max="8000">
+                  <span style="font-size:.72rem;color:var(--text-muted)">px</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Compress -->
+  <div class="card">
+    <div class="card-head">
+      <div class="cicon ci-a">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div>
+        <div class="ctitle">Compress &amp; Download</div>
+        <div class="csub">All processing happens locally in your browser</div>
+      </div>
+    </div>
+    <div class="cbody">
+
+      <button class="compress-btn" id="compress-btn" onclick="startCompression()" disabled>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/>
+          <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/>
+        </svg>
+        Compress Images
+      </button>
+
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-head">
+          <span class="progress-lbl" id="progress-lbl">Processing…</span>
+          <span class="progress-pct" id="progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="progress-sub" id="progress-sub">Starting…</div>
+      </div>
+
+      <div class="err-bar" id="err-bar">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="err-msg">Something went wrong.</span>
+      </div>
+
+      <!-- Results -->
+      <div class="results-section" id="results-section">
+
+        <div class="results-summary" id="results-summary"></div>
+
+        <!-- Before/After -->
+        <div class="preview-compare" id="preview-compare">
+          <div class="compare-labels">
+            <div class="compare-label orig">Original</div>
+            <div class="compare-label comp">Compressed</div>
+          </div>
+          <div class="compare-imgs">
+            <img id="before-img" alt="Original">
+            <img id="after-img" alt="Compressed">
+          </div>
+        </div>
+
+        <div class="result-list" id="result-list"></div>
+
+        <button class="dl-all-btn" id="dl-all-btn" onclick="downloadAll()" style="display:none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download All as ZIP
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Done!</span>
+</div>
+
+<script>
+/* =========================================================
+   Image Compressor — 100% client-side
+   Uses Canvas API for compression & format conversion
+   ========================================================= */
+
+let files = [];            // Array of {file, id, thumbUrl}
+let results = [];          // Processed results
+let selectedFormat = 'same';
+let quality = 0.80;
+let nextId = 0;
+
+const formatMime = {
+  jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp',
+  avif: 'image/avif', gif: 'image/gif', bmp: 'image/bmp',
+  ico: 'image/x-icon', same: null
+};
+const formatExt = {
+  jpeg: 'jpg', png: 'png', webp: 'webp',
+  avif: 'avif', gif: 'gif', bmp: 'bmp',
+  ico: 'ico', same: null
+};
+
+// ---- DRAG/DROP ----
+function onDragOver(e) {
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('drop-zone').classList.add('drag-over');
+}
+function onDragLeave(e) {
+  document.getElementById('drop-zone').classList.remove('drag-over');
+}
+function onDrop(e) {
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('drop-zone').classList.remove('drag-over');
+  const dropped = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
+  if (!dropped.length) { toast('Please drop image files.', false); return; }
+  addFiles(dropped);
+}
+
+// ---- ADD FILES ----
+function addFiles(fileList) {
+  const arr = [...fileList];
+  arr.forEach(f => {
+    if (!f.type.startsWith('image/')) return;
+    const id = nextId++;
+    const url = URL.createObjectURL(f);
+    files.push({ file: f, id, url });
+    renderFileItem({ file: f, id, url });
+  });
+  document.getElementById('drop-zone').classList.toggle('has-files', files.length > 0);
+  document.getElementById('compress-btn').disabled = files.length === 0;
+  hideResults();
+}
+
+function renderFileItem(entry) {
+  const list = document.getElementById('file-list');
+  const div = document.createElement('div');
+  div.className = 'file-item';
+  div.id = 'file-item-' + entry.id;
+  div.innerHTML = `
+    <img class="file-thumb" src="${entry.url}" alt="">
+    <div class="file-info">
+      <div class="file-fname">${escHtml(entry.file.name)}</div>
+      <div class="file-fmeta">${fmtBytes(entry.file.size)} · ${entry.file.type.split('/')[1].toUpperCase()} · ${entry.file.name.split('.').pop()}</div>
+    </div>
+    <div class="file-status ready" id="status-${entry.id}">Ready</div>
+    <button class="file-remove" onclick="removeFile(${entry.id})" title="Remove">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>`;
+  list.appendChild(div);
+}
+
+function removeFile(id) {
+  files = files.filter(f => f.id !== id);
+  const el = document.getElementById('file-item-' + id);
+  if (el) el.remove();
+  document.getElementById('compress-btn').disabled = files.length === 0;
+  document.getElementById('drop-zone').classList.toggle('has-files', files.length > 0);
+}
+
+// ---- FORMAT ----
+function setFormat(radio) {
+  document.querySelectorAll('.fmt-card').forEach(c => c.classList.remove('active'));
+  radio.closest('.fmt-card').classList.add('active');
+  selectedFormat = radio.value;
+}
+
+// ---- QUALITY ----
+function onQualityChange(val) {
+  quality = val / 100;
+  document.getElementById('q-val').textContent = val + '%';
+  document.querySelectorAll('.preset-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.q) === parseInt(val));
+  });
+}
+
+function applyPreset(btn, val) {
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  quality = val / 100;
+  document.getElementById('q-slider').value = val;
+  document.getElementById('q-val').textContent = val + '%';
+}
+
+// ---- RESIZE ----
+function toggleResize(on) {
+  document.getElementById('resize-inputs').classList.toggle('visible', on);
+}
+
+// ---- COMPRESSION ----
+async function startCompression() {
+  if (!files.length) return;
+  results = [];
+  hideResults();
+  hideErr();
+  showProgress();
+  document.getElementById('compress-btn').disabled = true;
+
+  let totalOriginal = 0;
+  let totalCompressed = 0;
+
+  for (let i = 0; i < files.length; i++) {
+    const entry = files[i];
+    const pct = Math.round(((i) / files.length) * 100);
+    setProgress(pct, `Processing ${i+1} of ${files.length}…`, entry.file.name);
+    setFileStatus(entry.id, 'processing');
+
+    try {
+      const result = await compressImage(entry);
+      results.push(result);
+      totalOriginal += entry.file.size;
+      totalCompressed += result.blob.size;
+      setFileStatus(entry.id, 'done', result.blob.size);
+      document.getElementById('file-item-' + entry.id).classList.add('done');
+    } catch (e) {
+      setFileStatus(entry.id, 'error');
+    }
+
+    await sleep(40);
+  }
+
+  setProgress(100, 'Done!', 'All images processed.');
+  await sleep(400);
+  hideProgress();
+
+  if (results.length > 0) {
+    renderResults(totalOriginal, totalCompressed);
+    toast(`${results.length} image${results.length > 1 ? 's' : ''} compressed successfully!`);
+  }
+  document.getElementById('compress-btn').disabled = false;
+}
+
+async function compressImage(entry) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        let w = img.naturalWidth;
+        let h = img.naturalHeight;
+
+        // Resize if requested
+        const resizeOn = document.getElementById('resize-toggle').checked;
+        if (resizeOn) {
+          const tw = parseInt(document.getElementById('dim-w').value) || 0;
+          const th = parseInt(document.getElementById('dim-h').value) || 0;
+          if (tw && th) { w = tw; h = th; }
+          else if (tw) { h = Math.round(h * tw / w); w = tw; }
+          else if (th) { w = Math.round(w * th / h); h = th; }
+        }
+
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+
+        // White background for formats that don't support transparency
+        const fmt = selectedFormat === 'same' ? getTypeExt(entry.file.type) : selectedFormat;
+        if (fmt === 'jpeg' || fmt === 'bmp' || fmt === 'ico') {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+        }
+
+        ctx.drawImage(img, 0, 0, w, h);
+
+        const mime = selectedFormat === 'same' ? entry.file.type : (formatMime[selectedFormat] || 'image/jpeg');
+        const q = (fmt === 'png') ? undefined : quality;
+
+        canvas.toBlob(blob => {
+          if (!blob) { reject(new Error('Canvas failed')); return; }
+          const outUrl = URL.createObjectURL(blob);
+          const ext = selectedFormat === 'same'
+            ? entry.file.name.split('.').pop()
+            : (formatExt[selectedFormat] || 'jpg');
+          const outName = entry.file.name.replace(/\.[^.]+$/, '') + '_compressed.' + ext;
+          resolve({ blob, url: outUrl, name: outName, origUrl: entry.url, origSize: entry.file.size, mime, w, h });
+        }, mime, q);
+
+      } catch(e) { reject(e); }
+    };
+    img.onerror = () => reject(new Error('Image load failed'));
+    img.src = entry.url;
+  });
+}
+
+function getTypeExt(type) {
+  const map = { 'image/jpeg': 'jpeg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/bmp': 'bmp', 'image/avif': 'avif' };
+  return map[type] || 'jpeg';
+}
+
+// ---- RENDER RESULTS ----
+function renderResults(origTotal, compTotal) {
+  const section = document.getElementById('results-section');
+  const saved = origTotal - compTotal;
+  const savedPct = Math.round((saved / origTotal) * 100);
+
+  // Summary
+  document.getElementById('results-summary').innerHTML = `
+    <div class="summary-card">
+      <div class="summary-val green">${savedPct}%</div>
+      <div class="summary-lbl">Size Reduction</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-val violet">${fmtBytes(saved)}</div>
+      <div class="summary-lbl">Space Saved</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-val amber">${results.length}</div>
+      <div class="summary-lbl">Files Processed</div>
+    </div>`;
+
+  // Before/After preview for first image
+  if (results.length === 1 || results.length > 0) {
+    const first = results[0];
+    document.getElementById('before-img').src = first.origUrl;
+    document.getElementById('after-img').src = first.url;
+    document.getElementById('preview-compare').classList.add('visible');
+  }
+
+  // Result items
+  const list = document.getElementById('result-list');
+  list.innerHTML = '';
+  results.forEach((r, idx) => {
+    const savedP = Math.round(((r.origSize - r.blob.size) / r.origSize) * 100);
+    const savingsW = Math.max(0, Math.min(100, savedP));
+    const item = document.createElement('div');
+    item.className = 'result-item';
+    item.style.animationDelay = (idx * 60) + 'ms';
+    item.innerHTML = `
+      <img class="result-thumb" src="${r.url}" alt="">
+      <div class="result-info">
+        <div class="result-fname">${escHtml(r.name)}</div>
+        <div class="result-savings-bar">
+          <div class="result-savings-fill" style="width:${savingsW}%"></div>
+        </div>
+        <div class="result-sizes">
+          <span class="size-before">${fmtBytes(r.origSize)}</span>
+          <span class="size-arrow">→</span>
+          <span class="size-after">${fmtBytes(r.blob.size)}</span>
+          <span class="size-saved">−${savedP}%</span>
+        </div>
+      </div>
+      <a class="result-dl" href="${r.url}" download="${escHtml(r.name)}" title="Download">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </a>`;
+    list.appendChild(item);
+  });
+
+  if (results.length > 1) {
+    document.getElementById('dl-all-btn').style.display = 'flex';
+  }
+
+  section.classList.add('visible');
+  section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ---- DOWNLOAD ALL (ZIP via JS) ----
+async function downloadAll() {
+  if (!results.length) return;
+
+  // Simple: download each file individually (no dep)
+  toast('Downloading all files…');
+  for (let i = 0; i < results.length; i++) {
+    await sleep(i * 200);
+    const a = document.createElement('a');
+    a.href = results[i].url;
+    a.download = results[i].name;
+    a.click();
+  }
+}
+
+// ---- STATUS ----
+function setFileStatus(id, state, newSize) {
+  const el = document.getElementById('status-' + id);
+  if (!el) return;
+  el.className = 'file-status ' + state;
+  if (state === 'processing') {
+    el.innerHTML = `<div class="mini-spin"></div> Working`;
+  } else if (state === 'done') {
+    el.innerHTML = `✓ ${fmtBytes(newSize)}`;
+    el.className = 'file-status done';
+  } else if (state === 'error') {
+    el.innerHTML = '✕ Failed';
+    el.style.color = 'var(--rose)';
+  } else {
+    el.textContent = 'Ready';
+  }
+}
+
+// ---- PROGRESS ----
+function setProgress(pct, lbl, sub) {
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-lbl').textContent = lbl;
+  document.getElementById('progress-sub').textContent = sub;
+}
+function showProgress() { document.getElementById('progress-wrap').classList.add('visible'); }
+function hideProgress() { document.getElementById('progress-wrap').classList.remove('visible'); }
+function hideResults() {
+  document.getElementById('results-section').classList.remove('visible');
+  document.getElementById('preview-compare').classList.remove('visible');
+  document.getElementById('dl-all-btn').style.display = 'none';
+}
+function showErr(msg) {
+  const b = document.getElementById('err-bar');
+  document.getElementById('err-msg').textContent = msg;
+  b.classList.add('visible');
+}
+function hideErr() { document.getElementById('err-bar').classList.remove('visible'); }
+
+// ---- TOAST ----
+let toastT;
+function toast(msg, ok = true) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.style.borderColor = ok ? 'rgba(124,106,247,0.4)' : 'rgba(251,113,133,0.4)';
+  t.querySelector('svg').style.stroke = ok ? 'var(--accent3)' : 'var(--rose)';
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ---- UTILS ----
+function fmtBytes(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  return (b/(1024*1024)).toFixed(2) + ' MB';
+}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Init: activate first format card
+document.querySelector('.fmt-card').classList.add('active');
+</script>
+</body>
+</html>

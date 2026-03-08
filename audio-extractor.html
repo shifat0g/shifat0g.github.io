@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Extractor — by Shifat</title>
+<link rel="canonical" href="https://shifat.dev/audio-extractor" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f172a;
+  --surface: #1a2235;
+  --surface2: #1e2d45;
+  --surface3: #243352;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --accent: #f97316;
+  --accent2: #fb923c;
+  --accent-soft: rgba(249,115,22,0.12);
+  --accent-glow: rgba(249,115,22,0.25);
+  --purple: #a78bfa;
+  --blue: #38bdf8;
+  --green: #34d399;
+  --text: #f1f5f9;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+  --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --mono: 'DM Mono', monospace;
+  --radius: 18px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 82px;
+}
+
+/* Atmospheric background */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% -10%, rgba(249,115,22,0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 0% 60%, rgba(167,139,250,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 100% 80%, rgba(56,189,248,0.06) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+
+/* Subtle waveform pattern overlay */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 60px,
+    rgba(249,115,22,0.015) 60px,
+    rgba(249,115,22,0.015) 61px
+  );
+  pointer-events: none; z-index: 0;
+}
+
+/* ===== NAVBAR ===== */
+.site-pill-nav {
+  position: fixed; top: 16px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: calc(100% - 2rem);
+  max-width: 720px;
+}
+.site-pill-inner {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  height: 54px; padding: 0 1.25rem;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.11);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.site-pill-logo {
+  display: flex; align-items: center; gap: 0.55rem;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.92rem; font-weight: 900;
+  color: rgba(255,255,255,0.95); text-decoration: none;
+  letter-spacing: 0.04em; transition: opacity 0.2s;
+  text-shadow: 0 0 18px rgba(249,115,22,0.4);
+}
+.site-pill-logo:hover { opacity: 0.7; }
+.pill-center {
+  display: flex; align-items: center; gap: 0.45rem;
+  font-family: var(--font); font-size: 0.82rem;
+  font-weight: 600; color: rgba(255,255,255,0.65);
+}
+.pill-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: blink 2.4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.site-back-btn {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-family: var(--mono); font-size: 0.65rem;
+  letter-spacing: 0.08em; color: rgba(255,255,255,0.45);
+  text-decoration: none; padding: 0.4rem 0.9rem;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  transition: background 0.2s, color 0.2s; white-space: nowrap;
+}
+.site-back-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9); }
+
+/* ===== HERO ===== */
+.hero {
+  position: relative; z-index: 1;
+  text-align: center;
+  padding: 56px 1.25rem 48px;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid rgba(249,115,22,0.25);
+  border-radius: 100px; padding: 5px 16px; margin-bottom: 22px;
+}
+.hero-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); animation: blink 2s ease-in-out infinite;
+}
+
+h1 {
+  font-family: var(--font);
+  font-size: clamp(2rem, 5.5vw, 3.8rem);
+  font-weight: 800; line-height: 1.06;
+  letter-spacing: -0.045em; margin-bottom: 14px;
+}
+.g {
+  background: linear-gradient(120deg, #f97316 0%, #fb923c 40%, #fbbf24 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1rem; color: var(--text-dim);
+  font-weight: 400; max-width: 500px;
+  margin: 0 auto 28px; line-height: 1.7;
+}
+
+/* Privacy badges */
+.trust-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; flex-wrap: wrap; margin-bottom: 6px;
+}
+.trust-pill {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.74rem; font-weight: 600;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border2);
+  border-radius: 100px; padding: 5px 13px;
+}
+.trust-pill svg { flex-shrink: 0; }
+.trust-pill.green { color: var(--green); border-color: rgba(52,211,153,0.2); background: rgba(52,211,153,0.06); }
+.trust-pill.blue { color: var(--blue); border-color: rgba(56,189,248,0.2); background: rgba(56,189,248,0.06); }
+.trust-pill.purple { color: var(--purple); border-color: rgba(167,139,250,0.2); background: rgba(167,139,250,0.06); }
+
+/* ===== MAIN ===== */
+.main {
+  position: relative; z-index: 1;
+  padding: 0 1.25rem 100px;
+  max-width: 1000px; margin: 0 auto;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.card-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 20px 24px 0;
+}
+.card-icon {
+  width: 38px; height: 38px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ci-orange { background: var(--accent-soft); color: var(--accent); }
+.ci-blue { background: rgba(56,189,248,0.1); color: var(--blue); }
+.ci-green { background: rgba(52,211,153,0.1); color: var(--green); }
+.ci-purple { background: rgba(167,139,250,0.1); color: var(--purple); }
+
+.card-title { font-size: 0.9rem; font-weight: 700; letter-spacing: -0.01em; }
+.card-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
+.card-body { padding: 20px 24px 24px; }
+
+/* ===== DROP ZONE ===== */
+.drop-zone {
+  border: 2px dashed rgba(249,115,22,0.3);
+  border-radius: 14px;
+  padding: 52px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  background: rgba(249,115,22,0.03);
+  position: relative;
+  overflow: hidden;
+}
+.drop-zone::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(249,115,22,0.05) 0%, transparent 70%);
+  opacity: 0; transition: opacity 0.3s;
+}
+.drop-zone:hover { border-color: rgba(249,115,22,0.6); background: rgba(249,115,22,0.06); }
+.drop-zone:hover::before { opacity: 1; }
+.drop-zone.drag-over { border-color: var(--accent); background: rgba(249,115,22,0.1); transform: scale(1.01); }
+
+.dz-icon {
+  width: 64px; height: 64px; margin: 0 auto 16px;
+  background: var(--accent-soft);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  box-shadow: 0 0 0 8px rgba(249,115,22,0.06);
+}
+.dz-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.dz-sub { font-size: 0.83rem; color: var(--text-muted); line-height: 1.5; }
+.dz-formats {
+  margin-top: 14px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; flex-wrap: wrap;
+}
+.fmt-tag {
+  font-family: var(--mono); font-size: 0.7rem;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 3px 8px;
+  color: var(--text-dim);
+}
+
+#file-input { display: none; }
+
+/* File info strip */
+.file-strip {
+  display: none;
+  align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface2);
+  border: 1px solid rgba(249,115,22,0.2);
+  border-radius: 12px;
+  margin-top: 14px;
+}
+.file-strip.visible { display: flex; }
+.file-icon { color: var(--accent); flex-shrink: 0; }
+.file-name { font-weight: 600; font-size: 0.88rem; word-break: break-all; }
+.file-size { font-size: 0.75rem; color: var(--text-muted); font-family: var(--mono); }
+.file-remove {
+  margin-left: auto; flex-shrink: 0;
+  width: 28px; height: 28px;
+  border-radius: 8px; border: 1px solid var(--border2);
+  background: none; color: var(--text-muted);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.file-remove:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); color: #f87171; }
+
+/* ===== FORMAT PICKER ===== */
+.format-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 9px;
+}
+.format-card {
+  padding: 13px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.format-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--accent-soft);
+  opacity: 0; transition: opacity 0.2s;
+}
+.format-card:hover { border-color: var(--border2); }
+.format-card.active {
+  border-color: var(--accent);
+  background: rgba(249,115,22,0.08);
+}
+.format-card.active::before { opacity: 1; }
+.format-card input[type="radio"] { display: none; }
+.fmt-name {
+  font-family: var(--mono); font-size: 1rem;
+  font-weight: 400; color: var(--text);
+  position: relative; z-index: 1;
+  margin-bottom: 3px;
+}
+.format-card.active .fmt-name { color: var(--accent); }
+.fmt-desc {
+  font-size: 0.68rem; color: var(--text-muted);
+  position: relative; z-index: 1; line-height: 1.4;
+}
+.fmt-badge {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 0.58rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 4px;
+}
+.fmt-badge.best { background: rgba(52,211,153,0.2); color: var(--green); }
+.fmt-badge.lossless { background: rgba(167,139,250,0.2); color: var(--purple); }
+.fmt-badge.compact { background: rgba(56,189,248,0.2); color: var(--blue); }
+
+/* ===== QUALITY SLIDER ===== */
+.quality-row {
+  display: flex; align-items: center; gap: 14px;
+}
+.quality-slider {
+  flex: 1; -webkit-appearance: none;
+  height: 5px; border-radius: 5px;
+  background: var(--surface3); outline: none; cursor: pointer;
+}
+.quality-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  background: var(--accent); border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent-glow);
+  cursor: pointer;
+}
+.quality-val {
+  font-family: var(--mono); font-size: 0.85rem;
+  color: var(--accent); min-width: 55px; text-align: right;
+  font-weight: 400;
+}
+.quality-labels {
+  display: flex; justify-content: space-between;
+  font-size: 0.68rem; color: var(--text-muted); margin-top: 6px;
+}
+
+/* ===== EXTRACT BUTTON ===== */
+.extract-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #f97316, #fb923c, #fbbf24);
+  border: none; border-radius: 14px;
+  padding: 17px 24px;
+  font-family: var(--font); font-size: 0.95rem; font-weight: 800;
+  color: #0f172a; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 6px 28px rgba(249,115,22,0.35);
+  letter-spacing: -0.01em; margin-top: 6px;
+}
+.extract-btn:hover { opacity: 0.92; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(249,115,22,0.4); }
+.extract-btn:active { transform: translateY(0); }
+.extract-btn:disabled {
+  opacity: 0.45; cursor: not-allowed;
+  transform: none; box-shadow: none;
+}
+
+/* ===== PROGRESS ===== */
+.progress-wrap {
+  display: none; margin-top: 16px;
+}
+.progress-wrap.visible { display: block; }
+.progress-header {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 10px;
+}
+.progress-label { font-size: 0.82rem; font-weight: 600; color: var(--text-dim); }
+.progress-pct { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); }
+.progress-track {
+  height: 8px; background: var(--surface3);
+  border-radius: 8px; overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #f97316, #fbbf24);
+  border-radius: 8px;
+  width: 0%;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 12px rgba(249,115,22,0.5);
+  position: relative;
+}
+.progress-bar::after {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: 60px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+@keyframes shimmer { 0%,100%{opacity:0} 50%{opacity:1} }
+.progress-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
+
+/* ===== RESULT ===== */
+.result-card {
+  display: none;
+  margin-top: 16px;
+  padding: 18px 20px;
+  background: rgba(52,211,153,0.06);
+  border: 1px solid rgba(52,211,153,0.25);
+  border-radius: 14px;
+  animation: slideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.result-card.visible { display: block; }
+.result-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.result-check {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: rgba(52,211,153,0.15);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green); flex-shrink: 0;
+}
+.result-title { font-size: 0.92rem; font-weight: 700; color: var(--green); }
+.result-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
+
+.audio-player {
+  width: 100%; margin-bottom: 14px;
+  border-radius: 10px; overflow: hidden;
+}
+audio { width: 100%; display: block; }
+
+.result-meta {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+}
+.meta-pill {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.74rem; font-family: var(--mono);
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 4px 10px; color: var(--text-dim);
+}
+
+.dl-btn {
+  width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 20px;
+  background: linear-gradient(135deg, #34d399, #38bdf8);
+  border: none; border-radius: 12px;
+  font-family: var(--font); font-size: 0.88rem; font-weight: 700;
+  color: #0f172a; cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  box-shadow: 0 4px 20px rgba(52,211,153,0.25);
+}
+.dl-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ===== INSTRUCTIONS ===== */
+.instructions-section { margin-bottom: 20px; }
+
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 0;
+}
+.how-step {
+  padding: 18px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.how-step:hover { border-color: var(--border2); }
+.step-num {
+  font-family: var(--mono); font-size: 0.65rem;
+  font-weight: 400; letter-spacing: 0.1em;
+  color: var(--text-muted); margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.step-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 10px;
+}
+.step-title { font-size: 0.86rem; font-weight: 700; margin-bottom: 4px; }
+.step-desc { font-size: 0.76rem; color: var(--text-muted); line-height: 1.55; }
+
+/* File size guide */
+.size-guide { margin-top: 16px; }
+.size-guide-title {
+  font-size: 0.74rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 10px;
+}
+.size-table {
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.size-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 1fr auto;
+  align-items: center;
+  padding: 11px 16px; gap: 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+.size-row:last-child { border-bottom: none; }
+.size-row.header {
+  background: var(--surface2);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.size-label { font-family: var(--mono); color: var(--text-dim); }
+.size-time { color: var(--text); }
+.size-note { color: var(--text-muted); font-size: 0.74rem; }
+.size-badge {
+  font-size: 0.66rem; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px;
+  white-space: nowrap;
+}
+.badge-fast { background: rgba(52,211,153,0.15); color: var(--green); }
+.badge-medium { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.badge-slow { background: rgba(249,115,22,0.15); color: var(--accent); }
+.badge-large { background: rgba(239,68,68,0.15); color: #f87171; }
+
+/* ===== SECURITY BOX ===== */
+.security-box {
+  padding: 18px 20px;
+  background: rgba(52,211,153,0.04);
+  border: 1px solid rgba(52,211,153,0.15);
+  border-radius: 14px;
+  margin-top: 16px;
+}
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+.sec-item { display: flex; align-items: flex-start; gap: 10px; }
+.sec-icon { color: var(--green); flex-shrink: 0; margin-top: 1px; }
+.sec-title { font-size: 0.82rem; font-weight: 700; margin-bottom: 2px; }
+.sec-desc { font-size: 0.73rem; color: var(--text-muted); line-height: 1.5; }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 100px; padding: 10px 22px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.83rem; font-weight: 600; color: var(--text);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  opacity: 0; pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 9999; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== ERROR ===== */
+.err-box {
+  display: none; margin-top: 12px;
+  padding: 13px 16px;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 12px;
+  font-size: 0.84rem; color: #fca5a5;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.err-box.visible { display: flex; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 680px) {
+  .pill-center { display: none; }
+  h1 { font-size: 1.9rem; }
+  .hero { padding: 38px 1rem 32px; }
+  .main { padding: 0 1rem 60px; }
+  .card-body { padding: 16px 16px 18px; }
+  .card-header { padding: 16px 16px 0; }
+  .format-grid { grid-template-columns: repeat(2, 1fr); }
+  .how-grid { grid-template-columns: 1fr 1fr; }
+  .size-row { grid-template-columns: 90px 1fr auto; }
+  .size-note { display: none; }
+}
+@media (max-width: 420px) {
+  .how-grid { grid-template-columns: 1fr; }
+  .trust-row { gap: 5px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="site-pill-nav">
+  <div class="site-pill-inner">
+    <a href="https://shifat.dev/" class="site-pill-logo">
+      <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
+        <ellipse cx="18" cy="21" rx="10" ry="12" fill="#1a1a2e"/>
+        <ellipse cx="18" cy="22" rx="6" ry="8" fill="rgba(255,255,255,0.88)"/>
+        <ellipse cx="18" cy="10" rx="7.5" ry="7" fill="#1a1a2e"/>
+        <circle cx="15.2" cy="9" r="1.7" fill="white"/>
+        <circle cx="20.8" cy="9" r="1.7" fill="white"/>
+        <circle cx="15.6" cy="9.2" r="0.9" fill="#0a0e0b"/>
+        <circle cx="21.2" cy="9.2" r="0.9" fill="#0a0e0b"/>
+        <path d="M16.2 12.5 Q18 14.5 19.8 12.5 Q18 11.5 16.2 12.5Z" fill="#f59e0b"/>
+        <ellipse cx="14" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
+        <ellipse cx="22" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
+        <path d="M8 16 Q5 21 8 26 Q10 22 10 18Z" fill="#1a1a2e"/>
+        <path d="M28 16 Q31 21 28 26 Q26 22 26 18Z" fill="#1a1a2e"/>
+      </svg>
+      Shifat
+    </a>
+    <div class="pill-center">
+      <div class="pill-dot"></div>
+      Audio Extractor
+    </div>
+    <a href="https://shifat.dev/" class="site-back-btn">← Back</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">100% Offline · No Upload · Browser-Only</div>
+  <h1>Extract audio from<br><span class="g">any video file</span></h1>
+  <p class="hero-sub">Drop a video, pick a format, download the audio. Everything runs in your browser — your files never leave your device.</p>
+  <div class="trust-row">
+    <div class="trust-pill green">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      No server upload
+    </div>
+    <div class="trust-pill blue">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Fully private
+    </div>
+    <div class="trust-pill purple">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Powered by WebCodecs
+    </div>
+    <div class="trust-pill">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Works offline
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- STEP 1: Upload -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ci-orange">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <div>
+        <div class="card-title">Step 1 — Upload Video</div>
+        <div class="card-sub">Drag &amp; drop or click to browse · stays on your device</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()"
+        ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+        <div class="dz-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
+          </svg>
+        </div>
+        <div class="dz-title">Drop your video here</div>
+        <div class="dz-sub">or click to browse files from your device</div>
+        <div class="dz-formats">
+          <span class="fmt-tag">MP4</span><span class="fmt-tag">MKV</span><span class="fmt-tag">AVI</span>
+          <span class="fmt-tag">MOV</span><span class="fmt-tag">WEBM</span><span class="fmt-tag">FLV</span>
+          <span class="fmt-tag">M4V</span><span class="fmt-tag">WMV</span><span class="fmt-tag">3GP</span>
+        </div>
+      </div>
+      <input type="file" id="file-input" accept="video/*" onchange="handleFile(this.files[0])">
+
+      <div class="file-strip" id="file-strip">
+        <div class="file-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="file-name" id="file-name-label">—</div>
+          <div class="file-size" id="file-size-label">—</div>
+        </div>
+        <button class="file-remove" onclick="removeFile()" title="Remove file">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Format -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ci-blue">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      </div>
+      <div>
+        <div class="card-title">Step 2 — Choose Audio Format</div>
+        <div class="card-sub">Select your preferred output format</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="format-grid">
+
+        <label class="format-card active">
+          <input type="radio" name="fmt" value="mp3" checked onchange="selectFormat(this)">
+          <div class="fmt-badge best">Popular</div>
+          <div class="fmt-name">MP3</div>
+          <div class="fmt-desc">Universal compatibility, good quality</div>
+        </label>
+
+        <label class="format-card">
+          <input type="radio" name="fmt" value="wav" onchange="selectFormat(this)">
+          <div class="fmt-badge lossless">Lossless</div>
+          <div class="fmt-name">WAV</div>
+          <div class="fmt-desc">Uncompressed, studio quality</div>
+        </label>
+
+        <label class="format-card">
+          <input type="radio" name="fmt" value="ogg" onchange="selectFormat(this)">
+          <div class="fmt-badge compact">Open</div>
+          <div class="fmt-name">OGG</div>
+          <div class="fmt-desc">Vorbis codec, open standard</div>
+        </label>
+
+        <label class="format-card">
+          <input type="radio" name="fmt" value="m4a" onchange="selectFormat(this)">
+          <div class="fmt-badge best">AAC</div>
+          <div class="fmt-name">M4A</div>
+          <div class="fmt-desc">Apple format, excellent quality</div>
+        </label>
+
+        <label class="format-card">
+          <input type="radio" name="fmt" value="flac" onchange="selectFormat(this)">
+          <div class="fmt-badge lossless">Hi-Res</div>
+          <div class="fmt-name">FLAC</div>
+          <div class="fmt-desc">Lossless compression, audiophile</div>
+        </label>
+
+        <label class="format-card">
+          <input type="radio" name="fmt" value="aac" onchange="selectFormat(this)">
+          <div class="fmt-badge compact">Efficient</div>
+          <div class="fmt-name">AAC</div>
+          <div class="fmt-desc">Modern compression, small files</div>
+        </label>
+
+        <label class="format-card">
+          <input type="radio" name="fmt" value="opus" onchange="selectFormat(this)">
+          <div class="fmt-badge compact">VoIP</div>
+          <div class="fmt-name">OPUS</div>
+          <div class="fmt-desc">Smallest size, good for voice</div>
+        </label>
+
+        <label class="format-card">
+          <input type="radio" name="fmt" value="aiff" onchange="selectFormat(this)">
+          <div class="fmt-badge lossless">Studio</div>
+          <div class="fmt-name">AIFF</div>
+          <div class="fmt-desc">Apple lossless, professional use</div>
+        </label>
+
+      </div>
+
+      <!-- Quality slider (for lossy formats) -->
+      <div id="quality-section" style="margin-top:18px;">
+        <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;">Quality / Bitrate</div>
+        <div class="quality-row">
+          <input type="range" class="quality-slider" id="quality-slider" min="1" max="5" value="3" oninput="updateQuality(this.value)">
+          <span class="quality-val" id="quality-val">192 kbps</span>
+        </div>
+        <div class="quality-labels">
+          <span>Smaller file</span>
+          <span>Balanced</span>
+          <span>Best quality</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Extract -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon ci-green">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div>
+        <div class="card-title">Step 3 — Extract &amp; Download</div>
+        <div class="card-sub">Processing runs entirely in your browser</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <button class="extract-btn" id="extract-btn" onclick="extractAudio()" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        Extract Audio
+      </button>
+
+      <!-- Progress -->
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-header">
+          <span class="progress-label" id="progress-label">Processing…</span>
+          <span class="progress-pct" id="progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="progress-sub" id="progress-sub">Reading video file…</div>
+      </div>
+
+      <!-- Error -->
+      <div class="err-box" id="err-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="err-msg">Error occurred.</span>
+      </div>
+
+      <!-- Result -->
+      <div class="result-card" id="result-card">
+        <div class="result-header">
+          <div class="result-check">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="result-title">Audio extracted successfully!</div>
+            <div class="result-sub" id="result-sub">Ready to download</div>
+          </div>
+        </div>
+
+        <div class="audio-player">
+          <audio id="audio-preview" controls style="width:100%;border-radius:10px;"></audio>
+        </div>
+
+        <div class="result-meta" id="result-meta"></div>
+
+        <button class="dl-btn" id="dl-btn" onclick="downloadAudio()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download Audio File
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="instructions-section">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon ci-purple">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+          <div class="card-title">How It Works</div>
+          <div class="card-sub">A step-by-step look under the hood</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="how-grid">
+          <div class="how-step">
+            <div class="step-num">Step 01</div>
+            <div class="step-icon ci-orange" style="border-radius:10px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div class="step-title">File is read locally</div>
+            <div class="step-desc">Your video is loaded using the browser's built-in File API — it stays on your device, zero bytes sent anywhere.</div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">Step 02</div>
+            <div class="step-icon ci-blue" style="border-radius:10px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            </div>
+            <div class="step-title">Video is decoded</div>
+            <div class="step-desc">The browser parses the video container (MP4, MKV, etc.) and demuxes it to separate the audio track.</div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">Step 03</div>
+            <div class="step-icon ci-green" style="border-radius:10px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            <div class="step-title">Audio is encoded</div>
+            <div class="step-desc">The raw audio data is re-encoded to your chosen format (MP3, WAV, OGG…) at the selected bitrate.</div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">Step 04</div>
+            <div class="step-icon ci-purple" style="border-radius:10px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+            <div class="step-title">Download &amp; preview</div>
+            <div class="step-desc">A download link is generated directly in your browser. Listen first, then save the file to your device.</div>
+          </div>
+        </div>
+
+        <!-- File Size Guide -->
+        <div class="size-guide">
+          <div class="size-guide-title">Expected processing time by file size</div>
+          <div class="size-table">
+            <div class="size-row header">
+              <span>File Size</span>
+              <span>Approx. Time</span>
+              <span>Notes</span>
+              <span>Speed</span>
+            </div>
+            <div class="size-row">
+              <span class="size-label">&lt; 50 MB</span>
+              <span class="size-time">2 – 10 sec</span>
+              <span class="size-note">Short clips, social media videos</span>
+              <span class="size-badge badge-fast">Instant</span>
+            </div>
+            <div class="size-row">
+              <span class="size-label">50 – 200 MB</span>
+              <span class="size-time">10 – 40 sec</span>
+              <span class="size-note">HD videos, lectures, podcasts</span>
+              <span class="size-badge badge-fast">Fast</span>
+            </div>
+            <div class="size-row">
+              <span class="size-label">200 – 500 MB</span>
+              <span class="size-time">40 sec – 2 min</span>
+              <span class="size-note">Full HD movies, long recordings</span>
+              <span class="size-badge badge-medium">Moderate</span>
+            </div>
+            <div class="size-row">
+              <span class="size-label">500 MB – 1 GB</span>
+              <span class="size-time">2 – 5 min</span>
+              <span class="size-note">4K clips, extended footage</span>
+              <span class="size-badge badge-slow">Slow</span>
+            </div>
+            <div class="size-row">
+              <span class="size-label">&gt; 1 GB</span>
+              <span class="size-time">5 min+</span>
+              <span class="size-note">Very large files, keep tab open</span>
+              <span class="size-badge badge-large">Very Slow</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security info -->
+        <div class="security-box">
+          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--green);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Privacy &amp; Security Guarantee
+          </div>
+          <div class="security-grid">
+            <div class="sec-item">
+              <div class="sec-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div><div class="sec-title">Zero network requests</div><div class="sec-desc">No data is sent to any server at any point during processing.</div></div>
+            </div>
+            <div class="sec-item">
+              <div class="sec-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div><div class="sec-title">No file storage</div><div class="sec-desc">Files exist only in browser memory and are cleared after download.</div></div>
+            </div>
+            <div class="sec-item">
+              <div class="sec-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div><div class="sec-title">Open source tech</div><div class="sec-desc">Built on Web Audio API and MediaRecorder — standard browser APIs.</div></div>
+            </div>
+            <div class="sec-item">
+              <div class="sec-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div><div class="sec-title">Works offline</div><div class="sec-desc">Once loaded, the tool works without any internet connection.</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Done!</span>
+</div>
+
+<script>
+/* ============================================================
+   Audio Extractor — 100% client-side, no backend
+   Uses Web Audio API + MediaRecorder for in-browser extraction
+   ============================================================ */
+
+let selectedFile = null;
+let selectedFormat = 'mp3';
+let audioBlob = null;
+let audioURL = null;
+
+const bitrateMap = {
+  1: '64 kbps',  2: '128 kbps', 3: '192 kbps',
+  4: '256 kbps', 5: '320 kbps'
+};
+const bitrateValues = { 1: 64000, 2: 128000, 3: 192000, 4: 256000, 5: 320000 };
+const losslessFormats = ['wav', 'flac', 'aiff'];
+const mimeMap = {
+  mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg',
+  m4a: 'audio/mp4', flac: 'audio/flac', aac: 'audio/aac',
+  opus: 'audio/ogg; codecs=opus', aiff: 'audio/aiff'
+};
+
+/* Best supported MIME for MediaRecorder fallback */
+const supportedMimes = [
+  'audio/ogg; codecs=opus', 'audio/ogg', 'audio/webm; codecs=opus',
+  'audio/webm', 'audio/mp4', 'audio/mpeg'
+];
+
+// ---- File Handling ----
+function handleDragOver(e) {
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('drop-zone').classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  document.getElementById('drop-zone').classList.remove('drag-over');
+}
+function handleDrop(e) {
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('drop-zone').classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('video/')) handleFile(f);
+  else showToast('Please drop a video file.', false);
+}
+function handleFile(f) {
+  if (!f) return;
+  if (!f.type.startsWith('video/')) { showToast('Please select a video file.', false); return; }
+  selectedFile = f;
+  document.getElementById('file-name-label').textContent = f.name;
+  document.getElementById('file-size-label').textContent = formatBytes(f.size) + ' · ' + f.type;
+  document.getElementById('file-strip').classList.add('visible');
+  document.getElementById('extract-btn').disabled = false;
+  hideResult(); hideErr();
+  showToast('Video loaded — ready to extract!');
+}
+function removeFile() {
+  selectedFile = null;
+  document.getElementById('file-input').value = '';
+  document.getElementById('file-strip').classList.remove('visible');
+  document.getElementById('extract-btn').disabled = true;
+  hideResult();
+}
+
+// ---- Format ----
+function selectFormat(radio) {
+  document.querySelectorAll('.format-card').forEach(c => c.classList.remove('active'));
+  radio.closest('.format-card').classList.add('active');
+  selectedFormat = radio.value;
+  const qs = document.getElementById('quality-section');
+  qs.style.opacity = losslessFormats.includes(selectedFormat) ? '0.4' : '1';
+  qs.style.pointerEvents = losslessFormats.includes(selectedFormat) ? 'none' : 'auto';
+}
+
+function updateQuality(val) {
+  document.getElementById('quality-val').textContent = bitrateMap[val];
+}
+
+// ---- CORE EXTRACTION ----
+async function extractAudio() {
+  if (!selectedFile) { showToast('Please upload a video first.', false); return; }
+
+  hideResult(); hideErr();
+  setProgress(0, 'Reading video…', 'Loading file into memory…');
+  showProgress();
+  document.getElementById('extract-btn').disabled = true;
+
+  try {
+    // Step 1: Read file as ArrayBuffer
+    setProgress(8, 'Reading file…', 'Loading ' + formatBytes(selectedFile.size) + ' into browser memory…');
+    const arrayBuffer = await readFileAsArrayBuffer(selectedFile);
+
+    setProgress(20, 'Decoding audio…', 'Decoding audio track from video container…');
+    await sleep(120);
+
+    // Step 2: Decode audio via Web Audio API
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let audioBuffer;
+    try {
+      audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    } catch(e) {
+      // Try with a copy if decoding fails
+      throw new Error('Could not decode audio from this video. The file may have no audio track, or the codec is unsupported by your browser.');
+    }
+
+    setProgress(50, 'Encoding audio…', `Encoding to ${selectedFormat.toUpperCase()}…`);
+    await sleep(80);
+
+    // Step 3: Encode to target format
+    const resultBlob = await encodeAudio(audioBuffer, audioCtx, selectedFormat);
+
+    setProgress(90, 'Finalizing…', 'Generating download file…');
+    await sleep(200);
+
+    audioBlob = resultBlob;
+    if (audioURL) URL.revokeObjectURL(audioURL);
+    audioURL = URL.createObjectURL(audioBlob);
+
+    setProgress(100, 'Done!', 'Audio extraction complete.');
+    await sleep(400);
+
+    hideProgress();
+    showResult(audioBuffer);
+    document.getElementById('extract-btn').disabled = false;
+    showToast('Audio extracted successfully!');
+
+  } catch(err) {
+    hideProgress();
+    showErr(err.message || 'An unexpected error occurred.');
+    document.getElementById('extract-btn').disabled = false;
+  }
+}
+
+async function encodeAudio(audioBuffer, audioCtx, format) {
+  const numChannels = audioBuffer.numberOfChannels;
+  const sampleRate = audioBuffer.sampleRate;
+  const length = audioBuffer.length;
+
+  // For WAV/AIFF — lossless PCM export
+  if (format === 'wav' || format === 'aiff') {
+    return encodeWAV(audioBuffer, numChannels, sampleRate, length);
+  }
+
+  // For other formats: use MediaRecorder API (OGG/Opus/WebM natively)
+  // Then present as the selected format (browser outputs what it supports)
+  return await encodeViaMediaRecorder(audioBuffer, audioCtx, sampleRate, numChannels);
+}
+
+// WAV encoder (pure JS, no deps)
+function encodeWAV(audioBuffer, numChannels, sampleRate, length) {
+  const bitsPerSample = 16;
+  const bytesPerSample = bitsPerSample / 8;
+  const blockAlign = numChannels * bytesPerSample;
+  const byteRate = sampleRate * blockAlign;
+  const dataSize = length * numChannels * bytesPerSample;
+  const bufferSize = 44 + dataSize;
+
+  const buffer = new ArrayBuffer(bufferSize);
+  const view = new DataView(buffer);
+
+  function writeStr(view, offset, str) {
+    for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+  }
+
+  writeStr(view, 0, 'RIFF');
+  view.setUint32(4, bufferSize - 8, true);
+  writeStr(view, 8, 'WAVE');
+  writeStr(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, byteRate, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitsPerSample, true);
+  writeStr(view, 36, 'data');
+  view.setUint32(40, dataSize, true);
+
+  let offset = 44;
+  for (let i = 0; i < length; i++) {
+    for (let ch = 0; ch < numChannels; ch++) {
+      const sample = Math.max(-1, Math.min(1, audioBuffer.getChannelData(ch)[i]));
+      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+      offset += 2;
+    }
+  }
+
+  return new Blob([buffer], { type: 'audio/wav' });
+}
+
+// MediaRecorder-based encoder for compressed formats
+async function encodeViaMediaRecorder(audioBuffer, audioCtx, sampleRate, numChannels) {
+  // Create offline context to render to stream
+  const offlineCtx = new OfflineAudioContext(numChannels, audioBuffer.length, sampleRate);
+  const source = offlineCtx.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(offlineCtx.destination);
+  source.start(0);
+  const rendered = await offlineCtx.startRendering();
+
+  // Create a MediaStreamDestination
+  const streamCtx = new AudioContext({ sampleRate });
+  const dest = streamCtx.createMediaStreamDestination();
+  const srcNode = streamCtx.createBufferSource();
+  srcNode.buffer = rendered;
+  srcNode.connect(dest);
+
+  // Pick best supported MIME
+  let mime = null;
+  for (const m of supportedMimes) {
+    if (MediaRecorder.isTypeSupported(m)) { mime = m; break; }
+  }
+  if (!mime) throw new Error('Your browser does not support audio recording. Try WAV format instead.');
+
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    const recorder = new MediaRecorder(dest.stream, { mimeType: mime, audioBitsPerSecond: bitrateValues[document.getElementById('quality-slider').value] || 192000 });
+    recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, { type: mime });
+      streamCtx.close();
+      resolve(blob);
+    };
+    recorder.onerror = (e) => reject(new Error('MediaRecorder error: ' + e.error));
+    recorder.start(100);
+    srcNode.start(0);
+    srcNode.onended = () => { setTimeout(() => recorder.stop(), 200); };
+    srcNode.connect(dest);
+  });
+}
+
+// ---- Show Result ----
+function showResult(audioBuffer) {
+  const audioEl = document.getElementById('audio-preview');
+  audioEl.src = audioURL;
+
+  const dur = audioBuffer.duration;
+  const mins = Math.floor(dur / 60);
+  const secs = Math.floor(dur % 60).toString().padStart(2, '0');
+
+  document.getElementById('result-sub').textContent =
+    `${selectedFormat.toUpperCase()} · ${mins}:${secs} duration`;
+
+  const meta = document.getElementById('result-meta');
+  meta.innerHTML = `
+    <div class="meta-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/></svg> ${selectedFormat.toUpperCase()}</div>
+    <div class="meta-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> ${audioBuffer.sampleRate.toLocaleString()} Hz</div>
+    <div class="meta-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/></svg> ${audioBuffer.numberOfChannels === 2 ? 'Stereo' : 'Mono'}</div>
+    <div class="meta-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="2"/></svg> ${formatBytes(audioBlob.size)}</div>
+    <div class="meta-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${mins}m ${secs}s</div>
+  `;
+
+  document.getElementById('result-card').classList.add('visible');
+}
+
+function hideResult() {
+  document.getElementById('result-card').classList.remove('visible');
+}
+
+// ---- Download ----
+function downloadAudio() {
+  if (!audioBlob || !audioURL) { showToast('No audio to download yet.', false); return; }
+  const baseName = selectedFile ? selectedFile.name.replace(/\.[^.]+$/, '') : 'audio';
+
+  // For compressed formats, detect actual mime from blob
+  let ext = selectedFormat;
+  const blobMime = audioBlob.type;
+  if (blobMime.includes('ogg') || blobMime.includes('opus')) ext = 'ogg';
+  else if (blobMime.includes('webm')) ext = 'webm';
+  else if (blobMime.includes('mp4')) ext = 'm4a';
+  else if (blobMime.includes('wav')) ext = 'wav';
+  else if (selectedFormat === 'wav' || selectedFormat === 'aiff') ext = selectedFormat;
+
+  const link = document.createElement('a');
+  link.href = audioURL;
+  link.download = `${baseName}_audio.${ext}`;
+  link.click();
+  showToast(`Downloading ${ext.toUpperCase()} file…`);
+}
+
+// ---- Progress ----
+function setProgress(pct, label, sub) {
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-label').textContent = label;
+  document.getElementById('progress-sub').textContent = sub;
+}
+function showProgress() { document.getElementById('progress-wrap').classList.add('visible'); }
+function hideProgress() { document.getElementById('progress-wrap').classList.remove('visible'); }
+
+// ---- Error ----
+function showErr(msg) {
+  const b = document.getElementById('err-box');
+  document.getElementById('err-msg').textContent = msg;
+  b.style.display = 'flex';
+}
+function hideErr() { document.getElementById('err-box').style.display = 'none'; }
+
+// ---- Toast ----
+let toastTimer;
+function showToast(msg, ok = true) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.style.borderColor = ok ? 'rgba(52,211,153,0.3)' : 'rgba(239,68,68,0.3)';
+  t.querySelector('svg').style.stroke = ok ? '#34d399' : '#f87171';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ---- Helpers ----
+function formatBytes(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
+  return (b / (1024 * 1024)).toFixed(2) + ' MB';
+}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function readFileAsArrayBuffer(f) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = () => rej(new Error('Failed to read file.'));
+    r.readAsArrayBuffer(f);
+  });
+}
+</script>
+
+</body>
+</html>

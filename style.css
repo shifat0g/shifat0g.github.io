@@ -367,7 +367,7 @@ img{max-width:100%;display:block;}
 }
 .section{margin-bottom:3.5rem;}
 .section-tag{
-  display:inline-block;font-family:var(--font-d);font-size:1.05rem;font-weight:600;
+  display:inline-block;font-family:var(--font-d);font-size:1.05rem;font-weight:700;
   letter-spacing:0.04em;color:var(--accent);margin-bottom:1.4rem;position:relative;
   transition:color 0.18s ease;
 }
