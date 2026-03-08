@@ -1,0 +1,694 @@
+---
+permalink: /Micro-Expenses
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Micro-Expense &amp; Habit Impact</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d0f14;
+  --bg2:#13161e;
+  --bg3:#1a1e28;
+  --bg4:#1f2433;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text1:#f0f2f8;
+  --text2:#8a93b0;
+  --text3:#4a536e;
+  --cyan:#2eecc7;
+  --violet:#a78bfa;
+  --amber:#fbbf24;
+  --rose:#f87171;
+  --green:#4ade80;
+  --blue:#60a5fa;
+  --fd:'Outfit',sans-serif;
+  --fb:'Outfit',sans-serif;
+  --fm:'JetBrains Mono',monospace;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{
+    padding-top: 88px;
+  background:var(--bg);color:var(--text1);
+  font-family:var(--fb);min-height:100vh;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+a{text-decoration:none;color:inherit;}
+input,button,select{font-family:inherit;}
+::selection{background:var(--cyan);color:#000;}
+
+/* Grain */
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  opacity:0.4;
+}
+
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--bg3);}
+
+/* ═══ LAYOUT ═══ */
+.page{
+  position:relative;z-index:1;
+  max-width:660px;margin:0 auto;
+  padding:5rem 1.5rem 6rem;
+}
+
+/* Navbar */
+.site-pill-nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 2.5rem);max-width:680px;}
+.site-pill-inner{display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 1rem;border-radius:100px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 4px 24px rgba(0,0,0,0.35);}
+.site-pill-logo{display:flex;align-items:center;gap:0.5rem;font-family:'Cinzel Decorative',serif;font-size:0.9rem;font-weight:900;color:rgba(255,255,255,0.95);text-decoration:none;letter-spacing:0.04em;text-shadow:0 0 18px rgba(47,186,189,0.45);transition:opacity 0.2s;}
+.site-pill-logo:hover{opacity:0.7;}
+.site-back-btn{display:flex;align-items:center;gap:0.4rem;font-family:'JetBrains Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;color:rgba(255,255,255,0.5);text-decoration:none;padding:0.35rem 0.8rem;border-radius:100px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);transition:background 0.2s,color 0.2s;}
+.site-back-btn:hover{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.9);}
+
+/* Badge */
+.badge{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  font-family:var(--fm);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text2);background:var(--bg3);border:1px solid var(--border2);
+  border-radius:100px;padding:0.38rem 0.9rem;margin-bottom:1.8rem;
+}
+.badge-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 8px var(--cyan);animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* Hero */
+.hero{margin-bottom:2.2rem;}
+.hero h1{
+  font-family:var(--fd);font-size:clamp(2.2rem,7.5vw,3.5rem);
+  font-weight:800;line-height:1.1;letter-spacing:-0.02em;margin-bottom:1rem;
+}
+.c1{color:var(--cyan);}
+.c2{color:var(--violet);}
+.hero p{font-size:0.95rem;line-height:1.75;color:var(--text2);max-width:500px;}
+
+/* Card */
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:20px;padding:1.75rem;margin-bottom:1rem;
+}
+.card-title{
+  font-family:var(--fm);font-size:0.58rem;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:1.3rem;
+}
+
+/* Currency pills */
+.cur-row{display:flex;flex-wrap:wrap;gap:0.42rem;margin-bottom:1.5rem;}
+.cur-btn{
+  font-family:var(--fm);font-size:0.62rem;letter-spacing:0.06em;
+  padding:0.35rem 0.72rem;border-radius:8px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;
+  transition:all 0.16s;
+}
+.cur-btn:hover{color:var(--text1);border-color:var(--border2);}
+.cur-btn.active{
+  background:rgba(46,236,199,0.1);border-color:rgba(46,236,199,0.38);color:var(--cyan);
+}
+
+/* Field */
+.field{margin-bottom:1.3rem;}
+.fl{
+  display:block;font-family:var(--fm);font-size:0.58rem;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:0.6rem;
+}
+.fi{
+  width:100%;padding:0.85rem 1rem;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;color:var(--text1);
+  font-size:0.95rem;outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.fi:focus{border-color:rgba(46,236,199,0.38);box-shadow:0 0 0 3px rgba(46,236,199,0.06);}
+.pfx{
+  display:flex;align-items:center;
+  background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.pfx:focus-within{border-color:rgba(46,236,199,0.38);box-shadow:0 0 0 3px rgba(46,236,199,0.06);}
+.pfx-sym{
+  padding:0.85rem 0 0.85rem 1rem;
+  font-family:var(--fm);font-size:0.82rem;color:var(--text3);flex-shrink:0;
+}
+.pfx input{
+  flex:1;padding:0.85rem 1rem 0.85rem 0.35rem;
+  background:transparent;border:none;color:var(--text1);font-size:0.95rem;outline:none;min-width:0;
+}
+
+/* Freq tabs */
+.freq-tabs{
+  display:flex;gap:0.3rem;
+  background:var(--bg3);border-radius:12px;padding:0.28rem;
+}
+.ftab{
+  flex:1;padding:0.58rem;text-align:center;
+  font-family:var(--fm);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;
+  border-radius:9px;cursor:pointer;color:var(--text3);
+  background:transparent;border:none;
+  transition:background 0.18s,color 0.18s;
+}
+.ftab.active{background:rgba(167,139,250,0.18);color:var(--violet);}
+
+/* Times row */
+.times-row{
+  margin-top:0.85rem;
+  display:flex;align-items:center;gap:0.6rem;
+  padding:0.75rem 1rem;
+  background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:10px;
+}
+.times-row label{
+  font-family:var(--fm);font-size:0.58rem;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--text3);white-space:nowrap;
+}
+.ti{
+  width:62px;padding:0.35rem 0.5rem;
+  background:var(--bg4);border:1px solid var(--border2);
+  border-radius:8px;color:var(--text1);
+  font-family:var(--fm);font-size:0.82rem;text-align:center;outline:none;
+  transition:border-color 0.18s;
+}
+.ti:focus{border-color:rgba(167,139,250,0.4);}
+.tu{font-size:0.72rem;color:var(--text3);}
+
+/* Slider */
+.sl-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;
+}
+.sl-val{
+  font-family:var(--fm);font-size:0.75rem;
+  background:rgba(46,236,199,0.1);border:1px solid rgba(46,236,199,0.28);
+  color:var(--cyan);padding:0.22rem 0.7rem;border-radius:100px;
+}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:4px;border-radius:2px;background:var(--bg3);outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--cyan);box-shadow:0 0 14px rgba(46,236,199,0.55);cursor:pointer;
+  transition:transform 0.14s;
+}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
+input[type=range]::-moz-range-thumb{
+  width:20px;height:20px;border-radius:50%;border:none;
+  background:var(--cyan);box-shadow:0 0 14px rgba(46,236,199,0.55);cursor:pointer;
+}
+.sl-ticks{
+  display:flex;justify-content:space-between;margin-top:0.4rem;
+  font-family:var(--fm);font-size:0.56rem;color:var(--text3);
+}
+
+/* CTA */
+.cta{
+  width:100%;padding:1.05rem;border-radius:14px;border:none;
+  background:linear-gradient(130deg,var(--cyan),#18c9a8);
+  color:#041a14;font-family:var(--fd);font-size:1rem;font-weight:700;
+  letter-spacing:0.01em;cursor:pointer;
+  transition:transform 0.18s,box-shadow 0.18s;
+  box-shadow:0 4px 24px rgba(46,236,199,0.22);
+}
+.cta:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(46,236,199,0.32);}
+.cta:active{transform:translateY(0);}
+
+/* ═══ RESULTS ═══ */
+.results{display:none;}
+.results.show{display:block;}
+
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.results.show>*{animation:slideUp 0.45s var(--ease) both;}
+.results.show>*:nth-child(1){animation-delay:0.05s;}
+.results.show>*:nth-child(2){animation-delay:0.12s;}
+.results.show>*:nth-child(3){animation-delay:0.19s;}
+.results.show>*:nth-child(4){animation-delay:0.26s;}
+.results.show>*:nth-child(5){animation-delay:0.33s;}
+.results.show>*:nth-child(6){animation-delay:0.40s;}
+
+/* Total card */
+.total-card{
+  background:linear-gradient(150deg,var(--bg2),var(--bg3));
+  border:1px solid rgba(248,113,113,0.15);border-radius:20px;
+  padding:2rem 1.75rem;margin-bottom:1rem;
+  text-align:center;position:relative;overflow:hidden;
+}
+.total-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 65% 55% at 50% 0%,rgba(248,113,113,0.07),transparent);
+  pointer-events:none;
+}
+.rbadge{
+  display:inline-flex;align-items:center;gap:0.45rem;
+  font-family:var(--fm);font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--rose);background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.22);
+  border-radius:100px;padding:0.33rem 0.82rem;margin-bottom:1.1rem;
+}
+.big-n{
+  font-family:var(--fd);
+  font-size:clamp(2.6rem,9vw,4.2rem);
+  font-weight:800;letter-spacing:-0.03em;
+  color:var(--text1);line-height:1;margin-bottom:0.75rem;
+}
+.big-n b{color:var(--rose);}
+.total-desc{font-size:0.9rem;line-height:1.65;color:var(--text2);}
+.total-desc strong{color:var(--text1);}
+
+/* 2×2 mini grid */
+.mini-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0.7rem;margin-bottom:1rem;
+}
+.mini{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:15px;padding:1.1rem;
+}
+.ml{font-family:var(--fm);font-size:0.55rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text3);margin-bottom:0.35rem;}
+.mv{font-family:var(--fd);font-size:1.35rem;font-weight:700;letter-spacing:-0.02em;line-height:1;}
+.ms{font-size:0.72rem;color:var(--text2);margin-top:0.22rem;}
+.ca{color:var(--amber);}
+.cb{color:var(--blue);}
+.cv{color:var(--violet);}
+.cc{color:var(--cyan);}
+
+/* Invest card */
+.inv-card{
+  background:var(--bg2);border:1px solid rgba(74,222,128,0.13);
+  border-radius:20px;padding:1.75rem;margin-bottom:1rem;
+  position:relative;overflow:hidden;
+}
+.inv-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 45% at 0% 110%,rgba(74,222,128,0.05),transparent);
+  pointer-events:none;
+}
+.inv-label{
+  display:flex;align-items:center;gap:0.45rem;
+  font-family:var(--fm);font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--green);margin-bottom:1.1rem;
+}
+.inv-n{
+  font-family:var(--fd);font-size:clamp(1.9rem,6vw,2.8rem);
+  font-weight:700;letter-spacing:-0.02em;color:var(--text1);margin-bottom:0.55rem;
+}
+.inv-desc{font-size:0.86rem;line-height:1.65;color:var(--text2);}
+.inv-desc strong{color:var(--text1);}
+.divider{
+  height:1px;
+  background:linear-gradient(to right,transparent,var(--border),transparent);
+  margin:1.1rem 0;
+}
+.compound-table{display:flex;flex-direction:column;gap:0;}
+
+/* Reality card */
+.real-card{
+  background:var(--bg2);border:1px solid rgba(167,139,250,0.13);
+  border-radius:20px;padding:1.75rem;margin-bottom:1rem;
+  position:relative;overflow:hidden;
+}
+.real-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 55% 55% at 100% 0%,rgba(167,139,250,0.05),transparent);
+  pointer-events:none;
+}
+.real-label{
+  display:flex;align-items:center;gap:0.45rem;
+  font-family:var(--fm);font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--violet);margin-bottom:1.2rem;
+}
+.real-grid{display:flex;flex-direction:column;gap:0.6rem;}
+.real-item{
+  display:flex;align-items:center;gap:0.9rem;
+  padding:0.85rem 1rem;
+  background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:12px;
+}
+.real-ico{
+  width:44px;height:44px;flex-shrink:0;border-radius:10px;
+  background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.18);
+  display:flex;align-items:center;justify-content:center;font-size:1.25rem;
+}
+.real-count{font-family:var(--fd);font-size:1.35rem;font-weight:700;color:var(--violet);}
+.real-thing{font-size:0.78rem;color:var(--text2);margin-top:0.1rem;}
+
+/* Share */
+.share-wrap{display:flex;flex-direction:column;gap:0.65rem;margin-bottom:1rem;}
+.sbtn{
+  width:100%;padding:0.95rem;border-radius:14px;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;gap:0.7rem;
+  font-size:0.92rem;font-weight:500;cursor:pointer;
+  transition:transform 0.16s,background 0.18s,border-color 0.18s;
+}
+.sbtn:hover{transform:translateY(-2px);}
+.sx{background:rgba(255,255,255,0.04);color:var(--text1);}
+.sx:hover{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.18);}
+.stg{background:rgba(42,174,226,0.07);border-color:rgba(42,174,226,0.18);color:#40b3e0;}
+.stg:hover{background:rgba(42,174,226,0.14);border-color:rgba(42,174,226,0.32);}
+
+/* Responsive */
+@media(max-width:480px){
+  .page{padding:2rem 1rem 5rem;}
+  .hero h1{font-size:2.1rem;}
+  .mini-grid{grid-template-columns:1fr;}
+  .big-n{font-size:2.6rem;}
+}
+</style>
+  <!-- Instant mode restore -->
+  <script>
+    (function(){
+      var m = localStorage.getItem('shifat-mode') || 'light';
+      if (m === 'aurora') m = 'cyber';
+      document.documentElement.setAttribute('data-mode', m);
+    })();
+  </script>
+  <!-- Shared site CSS -->
+  <link rel="stylesheet" href="https://shifat0g.github.io/style.css" data-shared-css="1" />
+  <!-- Shared fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet" data-shared-fonts="1" />
+</head>
+<body>
+  <!-- Shared navbar + mode switcher -->
+  <script src="https://shifat0g.github.io/shared-nav.js"></script>
+
+
+
+
+<div class="page">
+
+  <div class="badge"><span class="badge-dot"></span>Financial Reality Check</div>
+
+  <div class="hero">
+    <h1>Micro-<span class="c1">Expense</span> &amp;<br>Habit <span class="c2">Impact</span></h1>
+    <p>See how much your small routine purchases are actually costing you over time. The results might shock you.</p>
+  </div>
+
+  <!-- INPUT CARD -->
+  <div class="card">
+    <p class="card-title">Configure Your Habit</p>
+
+    <div class="field">
+      <label class="fl">Currency</label>
+      <div class="cur-row" id="curRow">
+        <button class="cur-btn active" data-code="BDT" data-sym="৳">BDT ৳</button>
+        <button class="cur-btn" data-code="USD" data-sym="$">USD $</button>
+        <button class="cur-btn" data-code="EUR" data-sym="€">EUR €</button>
+        <button class="cur-btn" data-code="GBP" data-sym="£">GBP £</button>
+        <button class="cur-btn" data-code="JPY" data-sym="¥">JPY ¥</button>
+        <button class="cur-btn" data-code="INR" data-sym="₹">INR ₹</button>
+        <button class="cur-btn" data-code="AUD" data-sym="A$">AUD</button>
+        <button class="cur-btn" data-code="CAD" data-sym="C$">CAD</button>
+        <button class="cur-btn" data-code="SGD" data-sym="S$">SGD</button>
+        <button class="cur-btn" data-code="AED" data-sym="د.إ">AED</button>
+        <button class="cur-btn" data-code="SAR" data-sym="﷼">SAR</button>
+        <button class="cur-btn" data-code="MYR" data-sym="RM">MYR</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="fl" for="hname">What's the habit?</label>
+      <input id="hname" class="fi" type="text" placeholder="Daily Latte, Cigarette, Takeout…" value="Daily Latte"/>
+    </div>
+
+    <div class="field">
+      <label class="fl" for="hcost">How much does it cost?</label>
+      <div class="pfx">
+        <span class="pfx-sym" id="symDisp">৳</span>
+        <input id="hcost" type="number" min="0" step="0.01" placeholder="0.00" value="120"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="fl">How often?</label>
+      <div class="freq-tabs" id="fTabs">
+        <button class="ftab active" data-f="daily">Daily</button>
+        <button class="ftab" data-f="weekly">Weekly</button>
+        <button class="ftab" data-f="monthly">Monthly</button>
+      </div>
+      <div class="times-row">
+        <label for="tInput">Times per</label>
+        <input id="tInput" class="ti" type="number" min="1" max="365" value="1"/>
+        <span class="tu" id="tUnit">day</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="fl">For how long?</label>
+      <div class="sl-header">
+        <span style="font-family:var(--fm);font-size:0.58rem;color:var(--text3)">Duration</span>
+        <span class="sl-val" id="slVal">10 Years</span>
+      </div>
+      <input type="range" id="ySlider" min="1" max="50" value="10"/>
+      <div class="sl-ticks"><span>1 YR</span><span>25 YRS</span><span>50 YRS</span></div>
+    </div>
+
+    <button class="cta" id="calcBtn">Calculate the Shock 🔥</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="results">
+
+    <div class="total-card">
+      <div class="rbadge">🔥 Total Lifetime Cost</div>
+      <div class="big-n"><b id="totalCost">—</b></div>
+      <p class="total-desc" id="totalDesc">—</p>
+    </div>
+
+    <div class="mini-grid">
+      <div class="mini"><div class="ml">Per Day</div><div class="mv ca" id="pDay">—</div><div class="ms">avg daily spend</div></div>
+      <div class="mini"><div class="ml">Per Month</div><div class="mv cb" id="pMonth">—</div><div class="ms">avg monthly spend</div></div>
+      <div class="mini"><div class="ml">Per Year</div><div class="mv cv" id="pYear">—</div><div class="ms">annual spend</div></div>
+      <div class="mini"><div class="ml">Total Sessions</div><div class="mv cc" id="tSess">—</div><div class="ms">habit occurrences</div></div>
+    </div>
+
+    <div class="inv-card">
+      <div class="inv-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        Opportunity Cost (7% Compound Annual Return)
+      </div>
+      <div class="inv-n" id="invNum">—</div>
+      <p class="inv-desc">If you invested this money instead at a <strong>7% compound annual return</strong>, it would grow to <strong id="invInline">—</strong> over <span id="invYrs">—</span> years.</p>
+      <div class="divider"></div>
+      <div class="compound-table" id="cTable"></div>
+    </div>
+
+    <div class="real-card">
+      <div class="real-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        Reality Check — What Else Could You Buy?
+      </div>
+      <div class="real-grid" id="realGrid">—</div>
+    </div>
+
+    <div class="share-wrap">
+      <button class="sbtn sx" id="shareX">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Share the Shock on X
+      </button>
+      <button class="sbtn stg" id="shareTg">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        Share on Telegram
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let curSym = '৳', curCode = 'BDT', freq = 'daily', years = 10;
+
+/* Currency */
+document.getElementById('curRow').addEventListener('click', e => {
+  const b = e.target.closest('.cur-btn');
+  if (!b) return;
+  document.querySelectorAll('.cur-btn').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  curSym = b.dataset.sym; curCode = b.dataset.code;
+  document.getElementById('symDisp').textContent = curSym;
+  calculate();
+});
+
+/* Frequency */
+document.getElementById('fTabs').addEventListener('click', e => {
+  const t = e.target.closest('.ftab');
+  if (!t) return;
+  document.querySelectorAll('.ftab').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  freq = t.dataset.f;
+  document.getElementById('tUnit').textContent = freq === 'daily' ? 'day' : freq === 'weekly' ? 'week' : 'month';
+  calculate();
+});
+
+/* Slider */
+const slider = document.getElementById('ySlider');
+function updateTrack() {
+  const pct = ((+slider.value - 1) / 49 * 100).toFixed(1);
+  slider.style.background = `linear-gradient(to right,#2eecc7 ${pct}%,#1a1e28 ${pct}%)`;
+  years = +slider.value;
+  document.getElementById('slVal').textContent = years + (years === 1 ? ' Year' : ' Years');
+}
+slider.addEventListener('input', ()=>{ updateTrack(); calculate(); });
+updateTrack();
+
+/* Format helpers */
+function fmt(n) {
+  if (n >= 1e8) return curSym + (n/1e8).toFixed(2) + ' B';
+  if (n >= 1e7) return curSym + (n/1e7).toFixed(2) + ' Cr';
+  if (n >= 1e5) return curSym + (n/1e5).toFixed(2) + ' Lac';
+  if (n >= 1000) return curSym + Math.round(n).toLocaleString();
+  return curSym + n.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0});
+}
+function fmtRaw(n) { return curSym + Math.round(n).toLocaleString(); }
+
+/* Animated count-up */
+function countUp(el, target, pfx='', sfx='', dur=800) {
+  const s = Date.now();
+  (function tick(){
+    const p = Math.min((Date.now()-s)/dur,1);
+    const e = 1-(1-p)**3;
+    el.textContent = pfx + Math.round(target*e).toLocaleString() + sfx;
+    if(p<1) requestAnimationFrame(tick);
+  })();
+}
+
+/* Reality items database */
+const ITEMS = [
+  {label:'Smartphones',        icon:'📱',  p:{BDT:88000,  USD:800,  EUR:750,  GBP:700,  JPY:110000,INR:60000, AUD:1200,CAD:1100,SGD:1100,AED:2900,SAR:3000,MYR:3500}},
+  {label:'Budget Flights',     icon:'✈️',  p:{BDT:55000,  USD:500,  EUR:450,  GBP:400,  JPY:70000, INR:8000,  AUD:700, CAD:650, SGD:650, AED:1800,SAR:1900,MYR:2200}},
+  {label:'OLED TVs',           icon:'📺',  p:{BDT:130000, USD:1200, EUR:1100, GBP:1000, JPY:160000,INR:80000, AUD:1800,CAD:1600,SGD:1600,AED:4400,SAR:4500,MYR:5200}},
+  {label:'Gaming PCs',         icon:'🖥️',  p:{BDT:170000, USD:1500, EUR:1400, GBP:1200, JPY:200000,INR:120000,AUD:2200,CAD:2000,SGD:2000,AED:5500,SAR:5600,MYR:6800}},
+  {label:'Months of rent',     icon:'🏠',  p:{BDT:18000,  USD:1200, EUR:900,  GBP:1100, JPY:100000,INR:15000, AUD:1600,CAD:1400,SGD:2200,AED:3500,SAR:2500,MYR:1500}},
+  {label:'Concert tickets',    icon:'🎵',  p:{BDT:8000,   USD:150,  EUR:130,  GBP:120,  JPY:15000, INR:3000,  AUD:200, CAD:180, SGD:180, AED:550, SAR:560, MYR:650}},
+  {label:'Books',              icon:'📚',  p:{BDT:400,    USD:20,   EUR:18,   GBP:15,   JPY:2000,  INR:400,   AUD:30,  CAD:28,  SGD:28,  AED:75,  SAR:80,  MYR:90}},
+  {label:'Gym memberships/yr', icon:'💪',  p:{BDT:30000,  USD:600,  EUR:500,  GBP:450,  JPY:72000, INR:15000, AUD:800, CAD:720, SGD:720, AED:2200,SAR:2300,MYR:2600}},
+  {label:'Laptops',            icon:'💻',  p:{BDT:100000, USD:900,  EUR:850,  GBP:800,  JPY:120000,INR:75000, AUD:1400,CAD:1200,SGD:1200,AED:3300,SAR:3400,MYR:4000}},
+  {label:'Pairs of sneakers',  icon:'👟',  p:{BDT:12000,  USD:120,  EUR:110,  GBP:100,  JPY:15000, INR:5000,  AUD:170, CAD:150, SGD:150, AED:440, SAR:450, MYR:520}},
+  {label:'Dinners out',        icon:'🍽️',  p:{BDT:1200,   USD:50,   EUR:45,   GBP:40,   JPY:5000,  INR:800,   AUD:70,  CAD:65,  SGD:65,  AED:185, SAR:190, MYR:220}},
+  {label:'Video games',        icon:'🎮',  p:{BDT:6000,   USD:60,   EUR:55,   GBP:50,   JPY:7000,  INR:3000,  AUD:85,  CAD:80,  SGD:80,  AED:220, SAR:225, MYR:260}},
+  {label:'Months of savings',  icon:'🏦',  p:{BDT:10000,  USD:500,  EUR:450,  GBP:400,  JPY:50000, INR:10000, AUD:700, CAD:600, SGD:700, AED:1800,SAR:1900,MYR:2100}},
+  {label:'Wristwatches',       icon:'⌚',  p:{BDT:25000,  USD:200,  EUR:180,  GBP:160,  JPY:25000, INR:8000,  AUD:280, CAD:260, SGD:260, AED:740, SAR:750, MYR:880}},
+];
+
+/* CALCULATE */
+function calculate() {
+  const habit  = document.getElementById('hname').value.trim() || 'This Habit';
+  const cost   = parseFloat(document.getElementById('hcost').value) || 0;
+  const times  = Math.max(1, parseInt(document.getElementById('tInput').value) || 1);
+
+  let spd; /* sessions per day */
+  if (freq==='daily')   spd = times;
+  else if(freq==='weekly')  spd = times/7;
+  else                  spd = times/30;
+
+  const totalDays = years * 365;
+  const totalSess = Math.round(spd * totalDays);
+  const total     = cost * totalSess;
+  const perDay    = cost * spd;
+  const perMonth  = perDay * 30;
+  const perYear   = perDay * 365;
+
+  /* Compound investment: invest monthly at 7%/yr */
+  const r = 0.07/12, nM = years*12;
+  const fv = perMonth * (Math.pow(1+r,nM)-1)/r;
+
+  /* Show */
+  const res = document.getElementById('results');
+  const wasShown = res.classList.contains('show');
+  res.classList.remove('show');
+  void res.offsetWidth; /* reflow for re-trigger */
+  res.classList.add('show');
+
+  /* Total */
+  setTimeout(()=>{ countUp(document.getElementById('totalCost'), total, curSym); }, 100);
+  document.getElementById('totalDesc').innerHTML =
+    `That's how much you'll spend on <strong>${habit}</strong> over the next <strong>${years} year${years>1?'s':''}</strong>.`;
+
+  /* Mini */
+  setTimeout(()=>{
+    countUp(document.getElementById('pDay'),    perDay,    curSym,'',600);
+    countUp(document.getElementById('pMonth'),  perMonth,  curSym,'',600);
+    countUp(document.getElementById('pYear'),   perYear,   curSym,'',600);
+    countUp(document.getElementById('tSess'),   totalSess, '','',600);
+  },200);
+
+  /* Investment */
+  setTimeout(()=>{
+    countUp(document.getElementById('invNum'), fv, curSym,'',900);
+    document.getElementById('invInline').textContent = fmtRaw(fv);
+    document.getElementById('invYrs').textContent = years;
+  },300);
+
+  /* Compound milestones table */
+  const ms = [1,2,5,10,20,30,50].filter(y=>y<=years);
+  if (!ms.includes(years) && years>1) ms.push(years);
+  ms.sort((a,b)=>a-b);
+  let tHTML = '';
+  ms.forEach(y=>{
+    const n2=y*12;
+    const fv2 = perMonth*(Math.pow(1+r,n2)-1)/r;
+    const tc2 = cost*spd*y*365;
+    tHTML += `<div style="display:flex;justify-content:space-between;align-items:center;
+      font-family:var(--fm);font-size:0.68rem;padding:0.45rem 0;
+      border-bottom:1px solid rgba(255,255,255,0.05);">
+      <span style="color:var(--text3);min-width:50px">${y} yr${y>1?'s':''}</span>
+      <span style="color:var(--rose)">${fmtRaw(tc2)} spent</span>
+      <span style="color:var(--green)">→ ${fmtRaw(fv2)} invested</span>
+    </div>`;
+  });
+  document.getElementById('cTable').innerHTML = tHTML;
+
+  /* Reality check — pick 5 random, avoid ones with count < 1 */
+  const price = item => item.p[curCode] || item.p.USD;
+  const valid = ITEMS.filter(i => Math.floor(total / price(i)) >= 1);
+  const shuffled = valid.sort(()=>Math.random()-0.5).slice(0,5);
+  let rHTML = '';
+  shuffled.forEach(item=>{
+    const p = price(item);
+    const count = Math.max(1,Math.floor(total/p));
+    rHTML += `<div class="real-item">
+      <div class="real-ico">${item.icon}</div>
+      <div>
+        <div class="real-count">${count.toLocaleString()} ×</div>
+        <div class="real-thing">${item.label}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('realGrid').innerHTML = rHTML || '<p style="color:var(--text3);font-size:0.8rem">Enter a higher amount to see comparisons.</p>';
+
+  /* Save for sharing */
+  window._sd = {habit, total, years, fv, curSym, curCode};
+}
+
+document.getElementById('calcBtn').addEventListener('click', calculate);
+document.getElementById('hcost').addEventListener('input', calculate);
+document.getElementById('hname').addEventListener('input', calculate);
+document.getElementById('tInput').addEventListener('input', calculate);
+document.getElementById('hcost').addEventListener('keydown', e=>{ if(e.key==='Enter') calculate(); });
+document.getElementById('hname').addEventListener('keydown', e=>{ if(e.key==='Enter') calculate(); });
+
+/* Share */
+document.getElementById('shareX').addEventListener('click', ()=>{
+  const d = window._sd; if(!d) return;
+  const txt = `💸 Micro-Expense Reality Check\n\nHabit: "${d.habit}"\nTotal over ${d.years} yrs: ${d.curSym}${Math.round(d.total).toLocaleString()}\nIf invested at 7%: ${d.curSym}${Math.round(d.fv).toLocaleString()}\n\nCalculate yours 👇\nhttps://shifat0g.github.io/Micro-expenses`;
+  window.open('https://x.com/intent/tweet?text='+encodeURIComponent(txt),'_blank');
+});
+document.getElementById('shareTg').addEventListener('click', ()=>{
+  const d = window._sd; if(!d) return;
+  const txt = `💸 Micro-Expense Reality Check\n\nHabit: "${d.habit}"\n📅 Total over ${d.years} years: ${d.curSym}${Math.round(d.total).toLocaleString()}\n📈 If invested at 7% compound interest → ${d.curSym}${Math.round(d.fv).toLocaleString()}\n\nCalculate your own habits 👇\nhttps://shifat0g.github.io/Micro-expenses`;
+  window.open('https://t.me/share/url?url=https://shifat0g.github.io/Micro-expenses&text='+encodeURIComponent(txt),'_blank');
+});
+
+/* No auto-demo on load */
+</script>
+</body>
+</html>

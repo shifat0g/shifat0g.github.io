@@ -1,0 +1,1095 @@
+---
+permalink: /color
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Color Combination</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet"/>
+<style>
+/* ─── Reset & Base ─────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+    padding-top: 88px;
+  width: 100%; min-height: 100vh;
+  background: #0c0c0e;
+  color: #e8e6e1;
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Grain overlay ─────────────────────────── */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 9999;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px;
+}
+
+/* ─── Navbar ─────────────────────────────────── */
+.site-pill-nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 2.5rem);max-width:680px;}
+.site-pill-inner{display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 1rem;border-radius:100px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.11);backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 4px 24px rgba(0,0,0,0.4);}
+.site-pill-logo{display:flex;align-items:center;gap:.5rem;font-family:'Cinzel Decorative',serif;font-size:.9rem;font-weight:900;color:rgba(255,255,255,.95);text-decoration:none;letter-spacing:.04em;text-shadow:0 0 18px rgba(47,186,189,.45);transition:opacity .2s;}
+.site-pill-logo:hover{opacity:.7;}
+.site-back-btn{display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;color:rgba(255,255,255,.5);text-decoration:none;padding:.32rem .78rem;border-radius:100px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);transition:background .2s,color .2s;}
+.site-back-btn:hover{background:rgba(255,255,255,.12);color:rgba(255,255,255,.9);}
+
+/* ─── Layout ─────────────────────────────────── */
+.app {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 380px 1fr;
+  height: 100vh;
+  padding-top: 76px;
+  gap: 0;
+}
+
+/* ─── Header ─────────────────────────────────── */
+.header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  background: rgba(12,12,14,0.95);
+  backdrop-filter: blur(12px);
+  flex-shrink: 0;
+}
+.header-logo {
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff3b3b, #ffcc00, #3bff8a, #3bb5ff, #c13bff, #ff3b3b);
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(255,255,255,0.12);
+}
+.logo-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #fff;
+}
+.logo-sub {
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin-left: 2px;
+}
+.header-mode {
+  display: flex; gap: 3px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 100px;
+  padding: 3px;
+}
+.mode-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  background: none; border: none;
+  padding: 4px 12px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.mode-pill.active {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+/* ─── Left Panel — Channels ──────────────────── */
+.channels-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  gap: 10px;
+  overflow: hidden;
+}
+.panel-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 2px;
+}
+
+/* ─── Channel Slider Card ─────────────────────── */
+.channel-card {
+  flex: 1;
+  background: rgba(255,255,255,0.032);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.channel-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+.ch-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ch-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.ch-name.red  { color: #ff6b6b; }
+.ch-name.green{ color: #6bff9e; }
+.ch-name.blue { color: #6bb5ff; }
+
+.ch-hex-badge {
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+.ch-value-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ch-value-big {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+  width: 64px;
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+.ch-value-big.red  { color: #ff6b6b; }
+.ch-value-big.green{ color: #6bff9e; }
+.ch-value-big.blue { color: #6bb5ff; }
+
+/* ─── Custom Range Slider ─────────────────────── */
+.ch-slider-wrap {
+  flex: 1;
+  position: relative;
+  height: 32px;
+  display: flex;
+  align-items: center;
+}
+.ch-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  position: relative;
+  overflow: visible;
+}
+.ch-track-fill {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%;
+  border-radius: 4px;
+  pointer-events: none;
+}
+input[type=range] {
+  position: absolute;
+  width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
+  top: 0; left: 0;
+}
+.ch-thumb {
+  position: absolute;
+  top: 50%;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.8);
+  background: #fff;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  transition: box-shadow 0.15s;
+}
+
+/* Percent sub-bar */
+.ch-pct {
+  display: flex;
+  justify-content: space-between;
+}
+.ch-pct span {
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.15);
+}
+
+/* Color name tag */
+.ch-color-name {
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.45);
+  font-family: 'JetBrains Mono', monospace;
+  height: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── Right Panel — Result ────────────────────── */
+.result-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px;
+  gap: 10px;
+  overflow: hidden;
+}
+
+/* Big color swatch */
+.result-swatch {
+  flex: 1;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 120px;
+}
+.result-swatch-inner {
+  position: absolute;
+  inset: 0;
+  transition: background 0.04s;
+}
+.swatch-fullscreen-btn {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s, color 0.2s;
+  z-index: 2;
+}
+.swatch-fullscreen-btn:hover { background: rgba(0,0,0,0.6); color: #fff; }
+
+.swatch-overlay-label {
+  position: absolute;
+  bottom: 12px; left: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  pointer-events: none;
+}
+
+/* Color name display */
+.result-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.result-color-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 65%;
+}
+.result-luminance {
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+}
+
+/* ─── Copy Codes ─────────────────────────────── */
+.copy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.copy-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.18s, border-color 0.18s;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.copy-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.copy-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.14);
+}
+.copy-card.copied {
+  border-color: rgba(100,255,180,0.45);
+  background: rgba(100,255,180,0.07);
+}
+.copy-format {
+  font-size: 0.48rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+.copy-value {
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.75);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.copy-icon {
+  position: absolute;
+  top: 8px; right: 8px;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.2);
+  transition: color 0.2s;
+}
+.copy-card:hover .copy-icon { color: rgba(255,255,255,0.55); }
+.copy-card.copied .copy-icon { color: rgba(100,255,180,0.8); }
+
+/* ─── Harmony Row ─────────────────────────────── */
+.harmony-row {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+  align-items: center;
+}
+.harmony-label {
+  font-size: 0.5rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  flex-shrink: 0;
+  width: 52px;
+}
+.harmony-swatches {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+.h-swatch {
+  flex: 1;
+  height: 22px;
+  border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s;
+}
+.h-swatch:hover { transform: scaleY(1.3); }
+.h-swatch-tip {
+  display: none;
+  position: absolute;
+  bottom: 28px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  padding: 3px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+}
+.h-swatch:hover .h-swatch-tip { display: block; }
+
+/* ─── Fullscreen Overlay ─────────────────────── */
+.fullscreen-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.fullscreen-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+.fullscreen-exit {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px);
+  z-index: 2;
+  transition: background 0.2s, transform 0.15s;
+}
+.fullscreen-exit:hover { background: rgba(0,0,0,0.7); transform: scale(1.1); }
+.fullscreen-color-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  mix-blend-mode: difference;
+  color: #fff;
+  pointer-events: none;
+  text-align: center;
+  padding: 0 20px;
+}
+.fullscreen-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.8rem, 2vw, 1.2rem);
+  letter-spacing: 0.12em;
+  mix-blend-mode: difference;
+  color: rgba(255,255,255,0.7);
+  pointer-events: none;
+  margin-top: 8px;
+}
+
+/* ─── Responsive ─────────────────────────────── */
+@media (max-width: 700px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    height: auto;
+    min-height: calc(100vh - 76px);
+    overflow-y: auto;
+    padding-bottom: 2rem;
+  }
+  body { overflow-y: auto; overflow-x: hidden; }
+  .channels-panel { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); min-height: 60vh; }
+  .preview-panel { min-height: 50vh; }
+  .header { padding: 10px 14px; }
+  .logo-sub { display: none; }
+  .copy-grid { grid-template-columns: 1fr 1fr; }
+  .ch-value-big { font-size: 1.8rem; }
+}
+</style>
+  <!-- Instant mode restore -->
+  <script>
+    (function(){
+      var m = localStorage.getItem('shifat-mode') || 'light';
+      if (m === 'aurora') m = 'cyber';
+      document.documentElement.setAttribute('data-mode', m);
+    })();
+  </script>
+  <!-- Shared site CSS -->
+  <link rel="stylesheet" href="https://shifat0g.github.io/style.css" data-shared-css="1" />
+  <!-- Shared fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet" data-shared-fonts="1" />
+</head>
+<body>
+  <!-- Shared navbar + mode switcher -->
+  <script src="https://shifat0g.github.io/shared-nav.js"></script>
+
+
+
+
+<div class="app">
+
+  <!-- ── Header ── -->
+  <header class="header">
+    <div class="header-logo">
+      <div class="logo-dot" id="logoDot"></div>
+      <div>
+        <div class="logo-name">Color Combination</div>
+        <div class="logo-sub">RGB · HSL · HEX · All Colors</div>
+      </div>
+    </div>
+    <div class="header-mode">
+      <button class="mode-pill active" data-mode="rgb" onclick="setMode('rgb')">RGB</button>
+      <button class="mode-pill" data-mode="hsl" onclick="setMode('hsl')">HSL</button>
+      <button class="mode-pill" data-mode="cmyk" onclick="setMode('cmyk')">CMYK</button>
+    </div>
+  </header>
+
+  <!-- ── Left: Channels ── -->
+  <section class="channels-panel">
+    <div class="panel-label">Channels</div>
+
+    <!-- Channel A -->
+    <div class="channel-card" id="card-a">
+      <div class="ch-header">
+        <span class="ch-name red" id="ch-a-label">Red</span>
+        <span class="ch-hex-badge" id="ch-a-badge">FF</span>
+      </div>
+      <div class="ch-value-row">
+        <div class="ch-value-big red" id="ch-a-val">255</div>
+        <div class="ch-slider-wrap">
+          <div class="ch-track" id="track-a">
+            <div class="ch-track-fill" id="fill-a"></div>
+            <div class="ch-thumb" id="thumb-a"></div>
+            <input type="range" id="slider-a" min="0" max="255" value="255" oninput="onSlider('a')"/>
+          </div>
+        </div>
+      </div>
+      <div class="ch-pct">
+        <span>0</span><span>64</span><span>128</span><span>192</span><span>255</span>
+      </div>
+      <div class="ch-color-name" id="ch-a-name">Pure Red</div>
+    </div>
+
+    <!-- Channel B -->
+    <div class="channel-card" id="card-b">
+      <div class="ch-header">
+        <span class="ch-name green" id="ch-b-label">Green</span>
+        <span class="ch-hex-badge" id="ch-b-badge">00</span>
+      </div>
+      <div class="ch-value-row">
+        <div class="ch-value-big green" id="ch-b-val">0</div>
+        <div class="ch-slider-wrap">
+          <div class="ch-track" id="track-b">
+            <div class="ch-track-fill" id="fill-b"></div>
+            <div class="ch-thumb" id="thumb-b"></div>
+            <input type="range" id="slider-b" min="0" max="255" value="0" oninput="onSlider('b')"/>
+          </div>
+        </div>
+      </div>
+      <div class="ch-pct">
+        <span>0</span><span>64</span><span>128</span><span>192</span><span>255</span>
+      </div>
+      <div class="ch-color-name" id="ch-b-name">Black</div>
+    </div>
+
+    <!-- Channel C -->
+    <div class="channel-card" id="card-c">
+      <div class="ch-header">
+        <span class="ch-name blue" id="ch-c-label">Blue</span>
+        <span class="ch-hex-badge" id="ch-c-badge">00</span>
+      </div>
+      <div class="ch-value-row">
+        <div class="ch-value-big blue" id="ch-c-val">0</div>
+        <div class="ch-slider-wrap">
+          <div class="ch-track" id="track-c">
+            <div class="ch-track-fill" id="fill-c"></div>
+            <div class="ch-thumb" id="thumb-c"></div>
+            <input type="range" id="slider-c" min="0" max="255" value="0" oninput="onSlider('c')"/>
+          </div>
+        </div>
+      </div>
+      <div class="ch-pct">
+        <span>0</span><span>64</span><span>128</span><span>192</span><span>255</span>
+      </div>
+      <div class="ch-color-name" id="ch-c-name">Black</div>
+    </div>
+  </section>
+
+  <!-- ── Right: Result ── -->
+  <section class="result-panel">
+    <div class="panel-label">Result</div>
+
+    <div class="result-swatch" onclick="openFullscreen()">
+      <div class="result-swatch-inner" id="resultSwatch"></div>
+      <button class="swatch-fullscreen-btn" onclick="openFullscreen(); event.stopPropagation();" title="View fullscreen">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+      </button>
+      <div class="swatch-overlay-label">Click to fullscreen</div>
+    </div>
+
+    <div class="result-name-row">
+      <div class="result-color-name" id="resultName">Red</div>
+      <div class="result-luminance" id="resultLum">Luminance: —</div>
+    </div>
+
+    <div class="copy-grid" id="copyGrid">
+      <div class="copy-card" onclick="copyCode('hex')" id="copy-hex">
+        <div class="copy-format">HEX</div>
+        <div class="copy-value" id="code-hex">#FF0000</div>
+        <span class="copy-icon">⎘</span>
+      </div>
+      <div class="copy-card" onclick="copyCode('rgb')" id="copy-rgb">
+        <div class="copy-format">RGB</div>
+        <div class="copy-value" id="code-rgb">rgb(255, 0, 0)</div>
+        <span class="copy-icon">⎘</span>
+      </div>
+      <div class="copy-card" onclick="copyCode('hsl')" id="copy-hsl">
+        <div class="copy-format">HSL</div>
+        <div class="copy-value" id="code-hsl">hsl(0, 100%, 50%)</div>
+        <span class="copy-icon">⎘</span>
+      </div>
+      <div class="copy-card" onclick="copyCode('cmyk')" id="copy-cmyk">
+        <div class="copy-format">CMYK</div>
+        <div class="copy-value" id="code-cmyk">cmyk(0, 100, 100, 0)</div>
+        <span class="copy-icon">⎘</span>
+      </div>
+      <div class="copy-card" onclick="copyCode('hwb')" id="copy-hwb">
+        <div class="copy-format">HWB</div>
+        <div class="copy-value" id="code-hwb">hwb(0 0% 0%)</div>
+        <span class="copy-icon">⎘</span>
+      </div>
+      <div class="copy-card" onclick="copyCode('css')" id="copy-css">
+        <div class="copy-format">CSS VAR</div>
+        <div class="copy-value" id="code-css">--color: #FF0000</div>
+        <span class="copy-icon">⎘</span>
+      </div>
+    </div>
+
+    <!-- Harmony swatches -->
+    <div class="harmony-row">
+      <span class="harmony-label">Harmony</span>
+      <div class="harmony-swatches" id="harmonyRow"></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ── Fullscreen Overlay ── -->
+<div class="fullscreen-overlay" id="fsOverlay" onclick="closeFullscreen()">
+  <button class="fullscreen-exit" onclick="closeFullscreen(); event.stopPropagation();" title="Exit fullscreen">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>
+  </button>
+  <div class="fullscreen-color-name" id="fsName"></div>
+  <div class="fullscreen-code" id="fsCode"></div>
+  <div style="position:absolute;bottom:24px;font-family:'JetBrains Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;color:rgba(255,255,255,0.3);mix-blend-mode:difference;pointer-events:none;">PRESS ESC OR CLICK TO EXIT</div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════ */
+let mode = 'rgb';
+// channels: in RGB mode [0-255, 0-255, 0-255]
+// in HSL mode: [0-360, 0-100, 0-100]
+// in CMYK mode: [0-100, 0-100, 0-100, 0-100]
+let chA = 255, chB = 0, chC = 0;
+
+/* ════════════════════════════════════════════
+   COLOR MATH
+════════════════════════════════════════════ */
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+function getRGB(){
+  if(mode === 'rgb') return [chA, chB, chC];
+  if(mode === 'hsl') return hslToRgb(chA, chB, chC);
+  if(mode === 'cmyk') return cmykToRgb(chA, chB, chC, 0);
+  return [0,0,0];
+}
+
+function hslToRgb(h, s, l){
+  s /= 100; l /= 100;
+  const k = n => (n + h/30) % 12;
+  const a = s * Math.min(l, 1-l);
+  const f = n => l - a * Math.max(-1, Math.min(k(n)-3, Math.min(9-k(n), 1)));
+  return [Math.round(f(0)*255), Math.round(f(8)*255), Math.round(f(4)*255)];
+}
+
+function rgbToHsl(r, g, b){
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if(max===min){ h=s=0; }
+  else {
+    const d=max-min;
+    s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){
+      case r: h=((g-b)/d+(g<b?6:0))/6; break;
+      case g: h=((b-r)/d+2)/6; break;
+      case b: h=((r-g)/d+4)/6; break;
+    }
+  }
+  return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+}
+
+function cmykToRgb(c, m, y, k){
+  c/=100; m/=100; y/=100; k/=100;
+  return [
+    Math.round(255*(1-c)*(1-k)),
+    Math.round(255*(1-m)*(1-k)),
+    Math.round(255*(1-y)*(1-k)),
+  ];
+}
+
+function rgbToCmyk(r,g,b){
+  r/=255; g/=255; b/=255;
+  const k=1-Math.max(r,g,b);
+  if(k===1) return [0,0,0,100];
+  return [
+    Math.round((1-r-k)/(1-k)*100),
+    Math.round((1-g-k)/(1-k)*100),
+    Math.round((1-b-k)/(1-k)*100),
+    Math.round(k*100),
+  ];
+}
+
+function rgbToHex(r,g,b){
+  return '#' + [r,g,b].map(x=>x.toString(16).padStart(2,'0').toUpperCase()).join('');
+}
+
+function rgbToHwb(r,g,b){
+  const [h] = rgbToHsl(r,g,b);
+  const w = Math.round(Math.min(r,g,b)/255*100);
+  const bl= Math.round((1-Math.max(r,g,b)/255)*100);
+  return [h, w, bl];
+}
+
+function luminance(r,g,b){
+  const srgb = [r,g,b].map(v => {
+    v /= 255;
+    return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4);
+  });
+  return 0.2126*srgb[0] + 0.7152*srgb[1] + 0.0722*srgb[2];
+}
+
+/* ════════════════════════════════════════════
+   COLOR NAMING  — covers ~200 named anchors
+════════════════════════════════════════════ */
+const NAMED_COLORS = [
+  [0,0,0,'Black'],[255,255,255,'White'],[128,128,128,'Gray'],[192,192,192,'Silver'],
+  [255,0,0,'Red'],[0,128,0,'Green'],[0,0,255,'Blue'],[255,255,0,'Yellow'],
+  [0,255,255,'Cyan'],[255,0,255,'Magenta'],[255,165,0,'Orange'],[128,0,128,'Purple'],
+  [255,192,203,'Pink'],[165,42,42,'Brown'],[0,0,128,'Navy'],[128,128,0,'Olive'],
+  [0,128,128,'Teal'],[75,0,130,'Indigo'],[238,130,238,'Violet'],[255,20,147,'Deep Pink'],
+  [255,69,0,'Red-Orange'],[255,215,0,'Gold'],[0,255,127,'Spring Green'],
+  [135,206,235,'Sky Blue'],[255,127,80,'Coral'],[220,20,60,'Crimson'],
+  [0,191,255,'Deep Sky Blue'],[148,0,211,'Dark Violet'],[50,205,50,'Lime Green'],
+  [255,99,71,'Tomato'],[64,224,208,'Turquoise'],[127,255,212,'Aquamarine'],
+  [255,228,196,'Bisque'],[255,222,173,'Navajo White'],[245,245,220,'Beige'],
+  [210,180,140,'Tan'],[188,143,143,'Rosy Brown'],[139,69,19,'Saddle Brown'],
+  [255,140,0,'Dark Orange'],[255,255,224,'Light Yellow'],[240,230,140,'Khaki'],
+  [173,255,47,'Yellow-Green'],[154,205,50,'Yellow Green'],[0,100,0,'Dark Green'],
+  [144,238,144,'Light Green'],[60,179,113,'Medium Sea Green'],[46,139,87,'Sea Green'],
+  [0,250,154,'Medium Spring Green'],[0,139,139,'Dark Cyan'],[32,178,170,'Light Sea Green'],
+  [0,206,209,'Dark Turquoise'],[72,209,204,'Medium Turquoise'],[173,216,230,'Light Blue'],
+  [100,149,237,'Cornflower Blue'],[70,130,180,'Steel Blue'],[30,144,255,'Dodger Blue'],
+  [65,105,225,'Royal Blue'],[0,0,205,'Medium Blue'],[25,25,112,'Midnight Blue'],
+  [123,104,238,'Medium Slate Blue'],[106,90,205,'Slate Blue'],[72,61,139,'Dark Slate Blue'],
+  [153,50,204,'Dark Orchid'],[186,85,211,'Medium Orchid'],[218,112,214,'Orchid'],
+  [221,160,221,'Plum'],[216,191,216,'Thistle'],[255,182,193,'Light Pink'],
+  [255,105,180,'Hot Pink'],[199,21,133,'Medium Violet Red'],[219,112,147,'Pale Violet Red'],
+  [250,128,114,'Salmon'],[233,150,122,'Dark Salmon'],[255,160,122,'Light Salmon'],
+  [205,133,63,'Peru'],[222,184,135,'Burlywood'],[244,164,96,'Sandy Brown'],
+  [218,165,32,'Goldenrod'],[184,134,11,'Dark Goldenrod'],[238,232,170,'Pale Goldenrod'],
+  [240,128,128,'Light Coral'],[205,92,92,'Indian Red'],[178,34,34,'Firebrick'],
+  [139,0,0,'Dark Red'],[255,250,250,'Snow'],[255,240,245,'Lavender Blush'],
+  [255,228,225,'Misty Rose'],[250,235,215,'Antique White'],[255,239,213,'Papaya Whip'],
+  [255,245,238,'Seashell'],[253,245,230,'Old Lace'],[255,250,240,'Floral White'],
+  [255,255,240,'Ivory'],[240,255,240,'Honeydew'],[240,255,255,'Azure'],
+  [240,248,255,'Alice Blue'],[248,248,255,'Ghost White'],[230,230,250,'Lavender'],
+  [216,191,216,'Thistle'],[112,128,144,'Slate Gray'],[119,136,153,'Light Slate Gray'],
+  [169,169,169,'Dark Gray'],[105,105,105,'Dim Gray'],[47,79,79,'Dark Slate Gray'],
+  [0,0,0,'Black'],[255,250,205,'Lemon Chiffon'],[255,228,181,'Moccasin'],
+  [255,218,185,'Peach Puff'],[255,160,122,'Light Salmon'],[250,250,210,'Light Goldenrod'],
+  [152,251,152,'Pale Green'],[0,255,0,'Lime'],[127,255,0,'Chartreuse'],
+  [124,252,0,'Lawn Green'],[34,139,34,'Forest Green'],[107,142,35,'Olive Drab'],
+];
+
+function nearestColorName(r, g, b){
+  let best = NAMED_COLORS[0], dist = Infinity;
+  for(const [nr,ng,nb,name] of NAMED_COLORS){
+    const d = (r-nr)**2 + (g-ng)**2 + (b-nb)**2;
+    if(d < dist){ dist=d; best=[nr,ng,nb,name]; }
+  }
+  return best[3];
+}
+
+function channelColorName(ch, val, mode){
+  if(mode === 'rgb'){
+    const pct = val/255;
+    const names = {
+      'a': pct===0?'Black': pct<0.2?'Dark Red': pct<0.5?'Medium Red': pct<0.8?'Red': 'Bright Red',
+      'b': pct===0?'Black': pct<0.2?'Dark Green': pct<0.5?'Medium Green': pct<0.8?'Green': 'Bright Green',
+      'c': pct===0?'Black': pct<0.2?'Dark Blue': pct<0.5?'Medium Blue': pct<0.8?'Blue': 'Bright Blue',
+    };
+    return names[ch];
+  }
+  if(mode === 'hsl'){
+    const hueNames = ['Red','Red-Orange','Orange','Yellow-Orange','Yellow','Yellow-Green','Green','Green-Cyan','Cyan','Cyan-Blue','Blue','Blue-Violet','Violet','Violet-Magenta','Magenta','Magenta-Red'];
+    if(ch==='a') return hueNames[Math.round(val/360*15)%16];
+    if(ch==='b') return val===0?'Achromatic':val<30?'Low Saturation':val<70?'Moderate':val<90?'Saturated':'Vivid';
+    if(ch==='c') return val===0?'Black':val<20?'Very Dark':val<40?'Dark':val<60?'Mid':val<80?'Light':'Near White';
+  }
+  if(mode === 'cmyk'){
+    const pigments = {a:'Cyan',b:'Magenta',c:'Yellow'};
+    const pct2 = val/100;
+    const p = pigments[ch];
+    return pct2===0?`No ${p}`:pct2<0.3?`Light ${p}`:pct2<0.7?`Medium ${p}`:`Deep ${p}`;
+  }
+  return '';
+}
+
+/* ════════════════════════════════════════════
+   HARMONY
+════════════════════════════════════════════ */
+function getHarmonyColors(r, g, b){
+  const [h, s, l] = rgbToHsl(r, g, b);
+  return [
+    { label:'Complementary', rgb: hslToRgb((h+180)%360, s, l) },
+    { label:'Triadic A',     rgb: hslToRgb((h+120)%360, s, l) },
+    { label:'Triadic B',     rgb: hslToRgb((h+240)%360, s, l) },
+    { label:'Analogous A',   rgb: hslToRgb((h+30)%360, s, l) },
+    { label:'Analogous B',   rgb: hslToRgb((h-30+360)%360, s, l) },
+    { label:'Split A',       rgb: hslToRgb((h+150)%360, s, l) },
+    { label:'Split B',       rgb: hslToRgb((h+210)%360, s, l) },
+    { label:'Tint',          rgb: hslToRgb(h, s, Math.min(95,l+25)) },
+    { label:'Shade',         rgb: hslToRgb(h, s, Math.max(5,l-25)) },
+    { label:'Desaturated',   rgb: hslToRgb(h, Math.max(0,s-40), l) },
+  ];
+}
+
+/* ════════════════════════════════════════════
+   MODE CONFIG
+════════════════════════════════════════════ */
+const MODE_CFG = {
+  rgb: {
+    a: { label:'Red',   color:'red',   min:0, max:255, default:255 },
+    b: { label:'Green', color:'green', min:0, max:255, default:0   },
+    c: { label:'Blue',  color:'blue',  min:0, max:255, default:0   },
+  },
+  hsl: {
+    a: { label:'Hue',        color:'red',   min:0, max:360, default:0   },
+    b: { label:'Saturation', color:'green', min:0, max:100, default:100 },
+    c: { label:'Lightness',  color:'blue',  min:0, max:100, default:50  },
+  },
+  cmyk: {
+    a: { label:'Cyan',    color:'red',   min:0, max:100, default:0   },
+    b: { label:'Magenta', color:'green', min:0, max:100, default:100 },
+    c: { label:'Yellow',  color:'blue',  min:0, max:100, default:100 },
+  },
+};
+
+/* ════════════════════════════════════════════
+   SLIDER TRACKS
+════════════════════════════════════════════ */
+const TRACK_GRADIENTS = {
+  rgb: {
+    a: (v) => `linear-gradient(90deg, #000, #ff0000)`,
+    b: (v) => `linear-gradient(90deg, #000, #00ff00)`,
+    c: (v) => `linear-gradient(90deg, #000, #0000ff)`,
+  },
+  hsl: {
+    a: () => `linear-gradient(90deg,hsl(0,100%,50%),hsl(30,100%,50%),hsl(60,100%,50%),hsl(90,100%,50%),hsl(120,100%,50%),hsl(150,100%,50%),hsl(180,100%,50%),hsl(210,100%,50%),hsl(240,100%,50%),hsl(270,100%,50%),hsl(300,100%,50%),hsl(330,100%,50%),hsl(360,100%,50%))`,
+    b: (v,a,c) => `linear-gradient(90deg, hsl(${a},0%,${c}%), hsl(${a},100%,${c}%))`,
+    c: (v,a,b) => `linear-gradient(90deg, #000, hsl(${a},${b}%,50%), #fff)`,
+  },
+  cmyk: {
+    a: () => `linear-gradient(90deg, #fff, #00ffff)`,
+    b: () => `linear-gradient(90deg, #fff, #ff00ff)`,
+    c: () => `linear-gradient(90deg, #fff, #ffff00)`,
+  },
+};
+
+/* ════════════════════════════════════════════
+   RENDER
+════════════════════════════════════════════ */
+function render(){
+  const [r,g,b] = getRGB();
+  const hex   = rgbToHex(r,g,b);
+  const [h,s,l] = rgbToHsl(r,g,b);
+  const [cy,m,y,k] = rgbToCmyk(r,g,b);
+  const [hw,w,bl] = rgbToHwb(r,g,b);
+  const lum   = luminance(r,g,b);
+  const name  = nearestColorName(r,g,b);
+
+  // Swatch
+  document.getElementById('resultSwatch').style.background = hex;
+  document.getElementById('logoDot').style.background = hex;
+
+  // Name + luminance
+  document.getElementById('resultName').textContent = name;
+  const contrastColor = lum > 0.3 ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.6)';
+  document.getElementById('resultName').style.color = '#fff';
+  document.getElementById('resultLum').textContent = `Luminance: ${(lum*100).toFixed(1)}%`;
+
+  // Code values
+  document.getElementById('code-hex').textContent  = hex;
+  document.getElementById('code-rgb').textContent  = `rgb(${r}, ${g}, ${b})`;
+  document.getElementById('code-hsl').textContent  = `hsl(${h}, ${s}%, ${l}%)`;
+  document.getElementById('code-cmyk').textContent = `cmyk(${cy}, ${m}, ${y}, ${k})`;
+  document.getElementById('code-hwb').textContent  = `hwb(${hw} ${w}% ${bl}%)`;
+  document.getElementById('code-css').textContent  = `--color: ${hex}`;
+
+  // Harmony
+  const harmonies = getHarmonyColors(r,g,b);
+  const hRow = document.getElementById('harmonyRow');
+  hRow.innerHTML = '';
+  harmonies.forEach(({label, rgb:[hr,hg,hb]}) => {
+    const sw = document.createElement('div');
+    sw.className = 'h-swatch';
+    const hHex = rgbToHex(hr,hg,hb);
+    sw.style.background = hHex;
+    sw.title = label;
+    sw.innerHTML = `<span class="h-swatch-tip">${label}<br>${hHex}</span>`;
+    sw.onclick = (e) => { e.stopPropagation(); applyHarmonyColor(hr,hg,hb); };
+    hRow.appendChild(sw);
+  });
+
+  // Update sliders
+  ['a','b','c'].forEach(ch => {
+    const val = ch==='a'?chA:ch==='b'?chB:chC;
+    const cfg = MODE_CFG[mode][ch];
+    const pct = (val - cfg.min) / (cfg.max - cfg.min) * 100;
+
+    document.getElementById(`ch-${ch}-val`).textContent = val;
+    document.getElementById(`ch-${ch}-badge`).textContent = mode==='rgb'
+      ? val.toString(16).padStart(2,'0').toUpperCase()
+      : val;
+
+    // Track gradient
+    const gradFn = TRACK_GRADIENTS[mode][ch];
+    const grad = gradFn(val, chA, chB);
+    const track = document.getElementById(`track-${ch}`);
+    track.style.background = grad;
+
+    // Fill & thumb
+    const fillCol = ch==='a'?'rgba(255,107,107,0.7)':ch==='b'?'rgba(107,255,158,0.7)':'rgba(107,181,255,0.7)';
+    document.getElementById(`fill-${ch}`).style.cssText = `width:${pct}%;height:100%;border-radius:4px;background:${fillCol}`;
+    document.getElementById(`thumb-${ch}`).style.left = `${pct}%`;
+
+    // Channel color name
+    document.getElementById(`ch-${ch}-name`).textContent = channelColorName(ch, val, mode);
+  });
+}
+
+function applyHarmonyColor(r,g,b){
+  if(mode === 'rgb'){
+    chA=r; chB=g; chC=b;
+  } else if(mode==='hsl'){
+    const [h,s,l] = rgbToHsl(r,g,b);
+    chA=h; chB=s; chC=l;
+  } else if(mode==='cmyk'){
+    const [c,m,y] = rgbToCmyk(r,g,b);
+    chA=c; chB=m; chC=y;
+  }
+  document.getElementById('slider-a').value = chA;
+  document.getElementById('slider-b').value = chB;
+  document.getElementById('slider-c').value = chC;
+  render();
+}
+
+/* ════════════════════════════════════════════
+   SLIDER INPUT
+════════════════════════════════════════════ */
+function onSlider(ch){
+  const val = parseInt(document.getElementById(`slider-${ch}`).value);
+  if(ch==='a') chA=val;
+  else if(ch==='b') chB=val;
+  else chC=val;
+  render();
+}
+
+/* ════════════════════════════════════════════
+   MODE SWITCH
+════════════════════════════════════════════ */
+function setMode(m){
+  // Convert current RGB to new mode
+  const [r,g,b] = getRGB();
+  mode = m;
+
+  if(m === 'rgb'){
+    chA=r; chB=g; chC=b;
+  } else if(m === 'hsl'){
+    const [h,s,l] = rgbToHsl(r,g,b);
+    chA=h; chB=s; chC=l;
+  } else if(m === 'cmyk'){
+    const [c,cm,y] = rgbToCmyk(r,g,b);
+    chA=c; chB=cm; chC=y;
+  }
+
+  // Update slider ranges + labels
+  const cfg = MODE_CFG[m];
+  ['a','b','c'].forEach(ch => {
+    const sl = document.getElementById(`slider-${ch}`);
+    sl.min = cfg[ch].min;
+    sl.max = cfg[ch].max;
+    sl.value = ch==='a'?chA:ch==='b'?chB:chC;
+    document.getElementById(`ch-${ch}-label`).textContent = cfg[ch].label;
+  });
+
+  document.querySelectorAll('.mode-pill').forEach(p => p.classList.toggle('active', p.dataset.mode===m));
+  render();
+}
+
+/* ════════════════════════════════════════════
+   COPY
+════════════════════════════════════════════ */
+const CODE_MAP = {
+  hex:  'code-hex',
+  rgb:  'code-rgb',
+  hsl:  'code-hsl',
+  cmyk: 'code-cmyk',
+  hwb:  'code-hwb',
+  css:  'code-css',
+};
+
+function copyCode(fmt){
+  const text = document.getElementById(CODE_MAP[fmt]).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const card = document.getElementById('copy-'+fmt);
+    card.classList.add('copied');
+    const icon = card.querySelector('.copy-icon');
+    icon.textContent = '✓';
+    setTimeout(() => { card.classList.remove('copied'); icon.textContent = '⎘'; }, 1600);
+  });
+}
+
+/* ════════════════════════════════════════════
+   FULLSCREEN
+════════════════════════════════════════════ */
+function openFullscreen(){
+  const [r,g,b] = getRGB();
+  const hex = rgbToHex(r,g,b);
+  const name = nearestColorName(r,g,b);
+  const ov = document.getElementById('fsOverlay');
+  ov.style.background = hex;
+  document.getElementById('fsName').textContent = name;
+  document.getElementById('fsCode').textContent = hex;
+  ov.classList.add('show');
+}
+function closeFullscreen(){
+  document.getElementById('fsOverlay').classList.remove('show');
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeFullscreen(); });
+
+/* ════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════ */
+render();
+</script>
+</body>
+</html>

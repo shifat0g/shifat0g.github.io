@@ -1,0 +1,611 @@
+---
+permalink: /avatar
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Avatar Generator • Shifat</title>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0c0f;
+      --surface: #131318;
+      --surface2: #1a1a22;
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.13);
+      --accent: #7c6af7;
+      --accent-dim: rgba(124,106,247,0.15);
+      --accent-glow: rgba(124,106,247,0.25);
+      --green: #4ade80;
+      --text-1: #f0f0f5;
+      --text-2: #8888a0;
+      --text-3: #444458;
+      --font-sans: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-display: 'Playfair Display', serif;
+      --radius: 0.85rem;
+      --t: 0.2s;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+    padding-top: 88px;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text-1);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(124,106,247,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(99,102,241,0.04) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* Layout */
+    .container {
+      position: relative; z-index: 1;
+      max-width: 980px; margin: 0 auto;
+      padding: 100px 1.5rem 4rem;
+    }
+    .page-header { text-align: center; margin-bottom: 2.5rem; }
+    .page-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 5vw, 2.3rem); font-weight: 700;
+      letter-spacing: -0.02em; color: var(--text-1);
+    }
+    .page-sub { font-size: 0.72rem; color: var(--text-2); margin-top: 0.3rem; font-family: var(--font-mono); }
+
+    .main-grid {
+      display: grid; grid-template-columns: 1fr 320px;
+      gap: 1.4rem; align-items: start;
+    }
+
+    /* Canvas panel */
+    .canvas-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.8rem;
+      display: flex; flex-direction: column; align-items: center; gap: 1.3rem;
+      position: sticky; top: 90px;
+    }
+    .avatar-canvas-wrap {
+      border-radius: 0.85rem; overflow: hidden;
+      box-shadow: 0 6px 36px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,106,247,0.12);
+    }
+    #avatarCanvas {
+      display: block; image-rendering: pixelated;
+      width: 280px; height: 280px;
+    }
+    .canvas-actions {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;
+    }
+
+    /* Export size */
+    .export-label {
+      font-family: var(--font-mono); font-size: 0.58rem; color: var(--text-3);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.45rem;
+    }
+    .size-btns { display: flex; gap: 0.35rem; }
+    .size-btn {
+      flex: 1; font-family: var(--font-mono); font-size: 0.66rem;
+      padding: 0.38rem 0.5rem; border-radius: 0.45rem;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03); color: var(--text-2);
+      cursor: pointer; transition: all 0.2s; text-align: center;
+    }
+    .size-btn.active {
+      background: var(--accent-dim); border-color: rgba(124,106,247,0.3); color: var(--accent);
+    }
+
+    /* Controls panel */
+    .controls-panel { display: flex; flex-direction: column; gap: 1rem; }
+    .ctrl-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.1rem 1.2rem;
+    }
+    .ctrl-title {
+      font-family: var(--font-mono); font-size: 0.6rem; font-weight: 500;
+      color: var(--text-3); letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 0.85rem;
+    }
+
+    /* Style presets */
+    .presets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; }
+    .preset-btn {
+      aspect-ratio: 1; border-radius: 0.6rem; border: 2px solid transparent;
+      cursor: pointer; overflow: hidden; transition: all 0.2s; position: relative;
+    }
+    .preset-btn canvas { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
+    .preset-btn.active {
+      border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow);
+    }
+    .preset-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.72); font-size: 0.5rem; text-align: center;
+      padding: 2px 0; color: var(--text-2); font-family: var(--font-mono);
+    }
+
+    /* Palette */
+    .palette-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.3rem 0.5rem; border-radius: 0.45rem;
+      cursor: pointer; transition: background 0.15s; margin-bottom: 2px;
+    }
+    .palette-row.active { background: rgba(124,106,247,0.08); outline: 1px solid rgba(124,106,247,0.18); }
+    .palette-row:not(.active):hover { background: rgba(255,255,255,0.04); }
+    .palette-name { font-size: 0.68rem; color: var(--text-2); }
+    .color-chips { display: flex; gap: 0.28rem; }
+    .chip { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Sliders */
+    .slider-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.55rem; }
+    .slider-lbl { font-size: 0.62rem; color: var(--text-2); min-width: 76px; font-family: var(--font-mono); }
+    .slider-val { font-size: 0.62rem; color: var(--accent); font-family: var(--font-mono); min-width: 32px; text-align: right; }
+    input[type=range] {
+      flex: 1; -webkit-appearance: none; height: 3px;
+      border-radius: 2px; background: rgba(255,255,255,0.1); outline: none; cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%;
+      background: var(--accent); cursor: pointer;
+    }
+
+    /* Seed */
+    .seed-row { display: flex; gap: 0.45rem; align-items: center; }
+    .seed-input {
+      flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 0.5rem; color: var(--text-1); font-family: var(--font-mono);
+      font-size: 0.76rem; padding: 0.42rem 0.75rem; outline: none;
+      transition: border-color var(--t);
+    }
+    .seed-input:focus { border-color: rgba(124,106,247,0.4); }
+    .seed-hint { font-family: var(--font-mono); font-size: 0.56rem; color: var(--text-3); margin-top: 0.45rem; }
+
+    /* Buttons */
+    .btn {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-family: var(--font-sans); font-size: 0.76rem; font-weight: 500;
+      padding: 0.52rem 1rem; border-radius: 2rem; border: 1px solid;
+      cursor: pointer; transition: all var(--t); white-space: nowrap;
+    }
+    .btn-ghost { background: rgba(255,255,255,0.04); border-color: var(--border); color: var(--text-2); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.08); color: var(--text-1); }
+    .btn-accent { background: var(--accent-dim); border-color: rgba(124,106,247,0.35); color: var(--accent); }
+    .btn-accent:hover { background: rgba(124,106,247,0.22); box-shadow: 0 0 14px var(--accent-glow); }
+    .btn-dl { background: rgba(74,222,128,0.08); border-color: rgba(74,222,128,0.25); color: #4ade80; }
+    .btn-dl:hover { background: rgba(74,222,128,0.16); }
+
+    @media(max-width: 720px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .canvas-panel { position: static; }
+      #avatarCanvas { width: 240px; height: 240px; }
+    }
+  </style>
+  <!-- Instant mode restore -->
+  <script>
+    (function(){
+      var m = localStorage.getItem('shifat-mode') || 'light';
+      if (m === 'aurora') m = 'cyber';
+      document.documentElement.setAttribute('data-mode', m);
+    })();
+  </script>
+  <!-- Shared site CSS -->
+  <link rel="stylesheet" href="https://shifat0g.github.io/style.css" data-shared-css="1" />
+  <!-- Shared fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet" data-shared-fonts="1" />
+</head>
+<body>
+  <!-- Shared navbar + mode switcher -->
+  <script src="https://shifat0g.github.io/shared-nav.js"></script>
+
+
+
+
+<div class="container">
+  <div class="page-header">
+    <div class="page-title">Pixel Avatar Generator</div>
+    <div class="page-sub">Generate unique high-density pixel art avatars</div>
+  </div>
+
+  <div class="main-grid">
+    <!-- Left: canvas -->
+    <div class="canvas-panel">
+      <div class="avatar-canvas-wrap">
+        <canvas id="avatarCanvas" width="128" height="128"></canvas>
+      </div>
+      <div class="canvas-actions">
+        <button class="btn btn-accent" id="randomBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+          Randomize
+        </button>
+        <button class="btn btn-dl" id="downloadBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </button>
+        <button class="btn btn-ghost" id="copyBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy
+        </button>
+      </div>
+      <div style="width:100%">
+        <div class="export-label">Export Size</div>
+        <div class="size-btns">
+          <div class="size-btn" data-size="128">128px</div>
+          <div class="size-btn active" data-size="512">512px</div>
+          <div class="size-btn" data-size="1024">1024px</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: controls -->
+    <div class="controls-panel">
+
+      <div class="ctrl-card">
+        <div class="ctrl-title">Style</div>
+        <div class="presets-grid" id="presetGrid"></div>
+      </div>
+
+      <div class="ctrl-card">
+        <div class="ctrl-title">Seed</div>
+        <div class="seed-row">
+          <input class="seed-input" id="seedInput" type="text" placeholder="Name or number…" maxlength="40">
+          <button class="btn btn-ghost" id="applySeedBtn" style="padding:0.42rem 0.75rem;font-size:0.7rem">Apply</button>
+        </div>
+        <div class="seed-hint">Same seed → same avatar every time</div>
+      </div>
+
+      <div class="ctrl-card">
+        <div class="ctrl-title">Palette</div>
+        <div id="paletteOptions"></div>
+      </div>
+
+      <div class="ctrl-card">
+        <div class="ctrl-title">Options</div>
+        <div class="slider-row">
+          <span class="slider-lbl">Pixel Size</span>
+          <input type="range" id="pixelSlider" min="2" max="12" value="4">
+          <span class="slider-val" id="pixelVal">4</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-lbl">Symmetry</span>
+          <input type="range" id="symSlider" min="0" max="3" value="1" step="1">
+          <span class="slider-val" id="symVal">H</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-lbl">Density</span>
+          <input type="range" id="densSlider" min="20" max="80" value="55">
+          <span class="slider-val" id="densVal">55%</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-lbl">Bg Shade</span>
+          <input type="range" id="bgSlider" min="0" max="100" value="8">
+          <span class="slider-val" id="bgVal">8%</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Seeded PRNG ──
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function strToSeed(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) { h = Math.imul(31, h) + s.charCodeAt(i) | 0; }
+  return Math.abs(h);
+}
+
+const PALETTES = {
+  'Cyber':    ['#00f5ff','#0080ff','#7b00ff','#ff00c8','#ff6b00'],
+  'Aurora':   ['#2fbabd','#2670c4','#22d3ee','#4ade80','#a78bfa'],
+  'Ember':    ['#f59e0b','#ef4444','#ec4899','#f97316','#fbbf24'],
+  'Forest':   ['#4ade80','#2d8c5e','#6fddaa','#a3e635','#34d399'],
+  'Candy':    ['#f472b6','#a855f7','#818cf8','#38bdf8','#34d399'],
+  'Mono':     ['#e2e8f0','#94a3b8','#64748b','#475569','#cbd5e1'],
+  'Gold':     ['#fbbf24','#f59e0b','#d97706','#fde68a','#fff7ed'],
+  'Neon':     ['#39ff14','#ff073a','#ff6ec7','#0df','#ffff00'],
+};
+
+const STYLES = [
+  { id: 'classic',   label: 'Classic'   },
+  { id: 'geometric', label: 'Geometric' },
+  { id: 'alien',     label: 'Alien'     },
+  { id: 'robot',     label: 'Robot'     },
+  { id: 'glitch',    label: 'Glitch'    },
+  { id: 'mandala',   label: 'Mandala'   },
+];
+
+let activeStyle = 'classic';
+let activePalette = 'Aurora';
+let currentSeed = Math.floor(Math.random() * 99999);
+let exportSize = 512;
+// Default: smaller pixel size (4px) = higher density / more pixels
+let pixelSize = 4;
+let symMode = 1;
+let density = 0.55;
+let bgBrightness = 0.08;
+const symLabels = ['None','H','V','HV'];
+
+function drawAvatar(canvas, seed, style, palette, pxSize, sym, dens, bgB) {
+  const rng = mulberry32(seed);
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cols = Math.floor(W / pxSize);
+  const rows = Math.floor(H / pxSize);
+
+  const bg = ctx.createLinearGradient(0,0,W,H);
+  const b = bgB;
+  bg.addColorStop(0, `rgba(${Math.floor(b*40)},${Math.floor(b*30)},${Math.floor(b*60)},1)`);
+  bg.addColorStop(1, `rgba(${Math.floor(b*20)},${Math.floor(b*15)},${Math.floor(b*35)},1)`);
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,W,H);
+
+  const colors = PALETTES[palette] || PALETTES['Aurora'];
+  const grid = [];
+  for (let r = 0; r < rows; r++) { grid[r] = []; for (let c = 0; c < cols; c++) grid[r][c] = null; }
+
+  function pickColor() { return colors[Math.floor(rng() * colors.length)]; }
+
+  function setPixel(r, c, color, s) {
+    if (r < 0 || r >= rows || c < 0 || c >= cols) return;
+    grid[r][c] = color;
+    if (s === 1 || s === 3) { const mc = cols - 1 - c; if (mc !== c && mc >= 0 && mc < cols) grid[r][mc] = color; }
+    if (s === 2 || s === 3) { const mr = rows - 1 - r; if (mr !== r && mr >= 0 && mr < rows) grid[mr][c] = color; }
+    if (s === 3) { const mc = cols - 1 - c; const mr = rows - 1 - r; if (mc >= 0 && mc < cols && mr >= 0 && mr < rows) grid[mr][mc] = color; }
+  }
+
+  if (style === 'classic') {
+    const hx = Math.floor(cols * 0.2), hy = Math.floor(rows * 0.15);
+    const hw = Math.floor(cols * 0.6), hh = Math.floor(rows * 0.65);
+    const bodyColor = pickColor();
+    for (let r = hy; r < hy+hh; r++) for (let c = hx; c < hx+hw; c++) if (rng() < 0.92) setPixel(r, c, bodyColor, sym);
+    const eyeColor = pickColor();
+    const eyeY = hy + Math.floor(hh * 0.32);
+    const eyeLX = hx + Math.floor(hw * 0.22), eyeRX = hx + Math.floor(hw * 0.60);
+    for (let dr = 0; dr < 2; dr++) for (let dc = 0; dc < 2; dc++) { setPixel(eyeY+dr, eyeLX+dc, eyeColor, 0); setPixel(eyeY+dr, eyeRX+dc, eyeColor, 0); }
+    const mouthColor = pickColor();
+    const mY = hy + Math.floor(hh * 0.68), mX1 = hx + Math.floor(hw * 0.3), mX2 = hx + Math.floor(hw * 0.65);
+    for (let c = mX1; c <= mX2; c++) setPixel(mY, c, mouthColor, 0);
+    const hairColor = pickColor();
+    for (let c = hx; c < hx + hw; c++) for (let r = hy - 2; r < hy + 2; r++) if (rng() < 0.7) setPixel(r, c, hairColor, 0);
+    const detailColor = pickColor();
+    for (let i = 0; i < Math.floor(cols * rows * dens * 0.08); i++) {
+      const r = Math.floor(rng() * rows), c = Math.floor(rng() * cols);
+      if (rng() < 0.3) setPixel(r, c, detailColor, sym);
+    }
+  } else if (style === 'geometric') {
+    const numShapes = 4 + Math.floor(rng() * 5);
+    for (let s = 0; s < numShapes; s++) {
+      const color = pickColor();
+      const cx = Math.floor(rng() * cols), cy = Math.floor(rng() * rows);
+      const size = 2 + Math.floor(rng() * 8);
+      const shapeType = Math.floor(rng() * 3);
+      if (shapeType === 0) { for (let r = cy-size; r <= cy+size; r++) for (let c = cx-size; c <= cx+size; c++) if (rng() < dens) setPixel(r,c,color,sym); }
+      else if (shapeType === 1) { for (let r = cy-size; r <= cy+size; r++) for (let c = cx-size; c <= cx+size; c++) if (Math.abs(r-cy)+Math.abs(c-cx) <= size && rng() < dens) setPixel(r,c,color,sym); }
+      else { for (let i = -size; i <= size; i++) { if (rng() < dens) { setPixel(cy+i,cx,color,sym); setPixel(cy,cx+i,color,sym); } } }
+    }
+  } else if (style === 'alien') {
+    const base = pickColor(), eye = pickColor(), accent = pickColor();
+    const cx = Math.floor(cols/2), cy = Math.floor(rows/2);
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const dx = (c - cx) / (cols * 0.4), dy = (r - cy) / (rows * 0.45);
+      if (dx*dx + dy*dy < 1 && rng() < dens + 0.2) setPixel(r, c, base, sym);
+    }
+    for (let dr = -2; dr <= 2; dr++) for (let dc = -2; dc <= 2; dc++) if (dc*dc+dr*dr <= 4) {
+      setPixel(cy - 3 + dr, cx - 5 + dc, eye, 1);
+      setPixel(cy - 3 + dr, cx + 5 + dc, eye, 1);
+    }
+    for (let i = 0; i < 5; i++) {
+      let r = cy + Math.floor(rows * 0.3), c = cx - 6 + i * 3;
+      for (let j = 0; j < 8; j++) { setPixel(r+j, c + Math.floor(rng()*3-1), accent, 1); }
+    }
+    for (let i = 0; i < 6; i++) setPixel(Math.floor(rng()*rows), Math.floor(rng()*cols), accent, sym);
+  } else if (style === 'robot') {
+    const metal = pickColor(), panel = pickColor(), glow = pickColor();
+    const hx = Math.floor(cols*0.15), hy = Math.floor(rows*0.1), hw = Math.floor(cols*0.7), hh = Math.floor(rows*0.55);
+    for (let r = hy; r < hy+hh; r++) for (let c = hx; c < hx+hw; c++) setPixel(r,c,metal,0);
+    const vy = hy + Math.floor(hh*0.25), vx = hx + Math.floor(hw*0.1), vw = Math.floor(hw*0.8), vh = Math.floor(hh*0.3);
+    for (let r = vy; r < vy+vh; r++) for (let c = vx; c < vx+vw; c++) setPixel(r,c,panel,0);
+    for (let dr = 0; dr < 2; dr++) for (let dc = 0; dc < 2; dc++) { setPixel(vy+1+dr, vx+2+dc, glow, 0); setPixel(vy+1+dr, vx+vw-4+dc, glow, 0); }
+    for (let r = hy-4; r < hy; r++) setPixel(r, Math.floor(cols/2), metal, 0);
+    setPixel(hy-5, Math.floor(cols/2), glow, 0);
+    const by = hy + hh + 1, bh = Math.floor(rows*0.3), bx = hx + Math.floor(hw*0.1);
+    for (let r = by; r < by+bh; r++) for (let c = bx; c < bx+Math.floor(hw*0.8); c++) if ((r+c)%3 !== 0) setPixel(r,c,metal,0);
+    for (let i = 0; i < 4; i++) setPixel(by+2, bx+2+i*3, glow, 0);
+  } else if (style === 'glitch') {
+    const base = pickColor();
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (rng() < dens) setPixel(r,c,base,0);
+    for (let i = 0; i < 8; i++) {
+      const r = Math.floor(rng() * rows);
+      const shift = Math.floor(rng() * 6 - 3);
+      const color = pickColor();
+      for (let c = 0; c < cols; c++) { const nc = (c + shift + cols) % cols; if (grid[r][c]) setPixel(r, nc, color, 0); }
+    }
+    const gc = pickColor(), rc = pickColor();
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      if (grid[r][c] && rng() < 0.15) { setPixel(r, (c+1)%cols, rc, 0); setPixel(r, (c-1+cols)%cols, gc, 0); }
+    }
+    for (let i = 0; i < 3; i++) {
+      const br = Math.floor(rng()*rows), bc = Math.floor(rng()*cols), bw = 2+Math.floor(rng()*5), color = pickColor();
+      for (let r = br; r < br+2; r++) for (let c = bc; c < bc+bw; c++) setPixel(r,c,color,0);
+    }
+  } else if (style === 'mandala') {
+    const cr = rows/2, cc = cols/2;
+    const arms = 4 + Math.floor(rng() * 4) * 2;
+    for (let i = 0; i < Math.floor(cols * rows * dens * 0.15); i++) {
+      const r = rng() * rows/2, c = rng() * cols/2;
+      const color = pickColor();
+      const dr = r - cr/2, dc = c - cc/2;
+      const dist = Math.sqrt(dr*dr + dc*dc);
+      if (dist > 2 && dist < cr * 0.9) {
+        for (let a = 0; a < arms; a++) {
+          const angle = (a / arms) * Math.PI * 2;
+          const nr = Math.round(cr + dr*Math.cos(angle) - dc*Math.sin(angle));
+          const nc = Math.round(cc + dr*Math.sin(angle) + dc*Math.cos(angle));
+          setPixel(nr, nc, color, 0);
+        }
+      }
+    }
+    const cc2 = pickColor();
+    for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) setPixel(Math.floor(cr)+dr, Math.floor(cc)+dc, cc2, 0);
+  }
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (!grid[r][c]) continue;
+      ctx.fillStyle = grid[r][c];
+      const x = c * pxSize, y = r * pxSize;
+      const margin = pxSize > 4 ? 0.5 : 0;
+      ctx.fillRect(x + margin, y + margin, pxSize - margin*2, pxSize - margin*2);
+      if (pxSize > 3) {
+        ctx.fillStyle = 'rgba(255,255,255,0.1)';
+        ctx.fillRect(x + margin, y + margin, pxSize * 0.35, pxSize * 0.35);
+      }
+    }
+  }
+}
+
+const mainCanvas = document.getElementById('avatarCanvas');
+function redraw() {
+  drawAvatar(mainCanvas, currentSeed, activeStyle, activePalette, pixelSize, symMode, density, bgBrightness);
+}
+
+function buildPresets() {
+  const grid = document.getElementById('presetGrid');
+  grid.innerHTML = '';
+  STYLES.forEach(s => {
+    const wrap = document.createElement('div');
+    wrap.className = 'preset-btn' + (s.id === activeStyle ? ' active' : '');
+    const c = document.createElement('canvas');
+    c.width = 64; c.height = 64;
+    // Use fixed pixel size 4 for presets (higher density thumbnails)
+    drawAvatar(c, currentSeed, s.id, activePalette, 4, symMode, density, bgBrightness);
+    const lbl = document.createElement('div');
+    lbl.className = 'preset-label';
+    lbl.textContent = s.label;
+    wrap.appendChild(c); wrap.appendChild(lbl);
+    wrap.addEventListener('click', () => {
+      activeStyle = s.id;
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      wrap.classList.add('active');
+      redraw();
+    });
+    grid.appendChild(wrap);
+  });
+}
+
+function buildPalettes() {
+  const el = document.getElementById('paletteOptions');
+  el.innerHTML = '';
+  Object.entries(PALETTES).forEach(([name, colors]) => {
+    const row = document.createElement('div');
+    row.className = 'palette-row' + (name === activePalette ? ' active' : '');
+    const lbl = document.createElement('span');
+    lbl.className = 'palette-name';
+    lbl.textContent = name;
+    const chips = document.createElement('div');
+    chips.className = 'color-chips';
+    colors.forEach(col => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.style.background = col;
+      chips.appendChild(chip);
+    });
+    row.addEventListener('click', () => {
+      activePalette = name;
+      buildPalettes(); buildPresets(); redraw();
+    });
+    row.appendChild(lbl); row.appendChild(chips);
+    el.appendChild(row);
+  });
+}
+
+document.getElementById('pixelSlider').addEventListener('input', function() {
+  pixelSize = +this.value;
+  document.getElementById('pixelVal').textContent = pixelSize;
+  redraw(); buildPresets();
+});
+document.getElementById('symSlider').addEventListener('input', function() {
+  symMode = +this.value;
+  document.getElementById('symVal').textContent = symLabels[symMode];
+  redraw(); buildPresets();
+});
+document.getElementById('densSlider').addEventListener('input', function() {
+  density = +this.value / 100;
+  document.getElementById('densVal').textContent = this.value + '%';
+  redraw(); buildPresets();
+});
+document.getElementById('bgSlider').addEventListener('input', function() {
+  bgBrightness = +this.value / 100;
+  document.getElementById('bgVal').textContent = this.value + '%';
+  redraw();
+});
+
+document.getElementById('applySeedBtn').addEventListener('click', () => {
+  const val = document.getElementById('seedInput').value.trim();
+  currentSeed = val ? strToSeed(val) : Math.floor(Math.random() * 999999);
+  redraw(); buildPresets();
+});
+document.getElementById('seedInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('applySeedBtn').click();
+});
+document.getElementById('randomBtn').addEventListener('click', () => {
+  currentSeed = Math.floor(Math.random() * 999999);
+  document.getElementById('seedInput').value = '';
+  redraw(); buildPresets();
+});
+
+document.querySelectorAll('.size-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    exportSize = +btn.dataset.size;
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const exp = document.createElement('canvas');
+  exp.width = exportSize; exp.height = exportSize;
+  const scaledPx = Math.max(2, Math.round(pixelSize * (exportSize / 128)));
+  drawAvatar(exp, currentSeed, activeStyle, activePalette, scaledPx, symMode, density, bgBrightness);
+  const a = document.createElement('a');
+  a.download = `avatar-${currentSeed}.png`;
+  a.href = exp.toDataURL('image/png');
+  a.click();
+});
+
+document.getElementById('copyBtn').addEventListener('click', () => {
+  mainCanvas.toBlob(blob => {
+    navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(() => {
+      const b = document.getElementById('copyBtn');
+      b.textContent = '✓ Copied!';
+      setTimeout(() => { b.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy'; }, 1800);
+    });
+  });
+});
+
+buildPresets();
+buildPalettes();
+redraw();
+</script>
+</body>
+</html>

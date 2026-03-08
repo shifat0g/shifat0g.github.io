@@ -8,9 +8,7 @@ permalink: /quote
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quotes • Daily Motivation</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -27,6 +25,7 @@ permalink: /quote
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
+    padding-top: 88px;
       height: 100%;
       overflow: hidden;
       background: linear-gradient(135deg, #0a0a14 0%, #131327 100%);
@@ -43,40 +42,6 @@ permalink: /quote
         radial-gradient(circle at 80% 70%, rgba(100,200,255,0.05) 0%, transparent 35%);
       z-index: 0;
     }
-
-    /* Navbar */
-    .site-pill-nav {
-      position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
-      z-index: 9999; width: calc(100% - 2.5rem); max-width: 680px;
-    }
-    .site-pill-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      height: 48px; padding: 0 1rem;
-      border-radius: 100px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.10);
-      backdrop-filter: blur(22px) saturate(1.5);
-      -webkit-backdrop-filter: blur(22px) saturate(1.5);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
-    }
-    .site-pill-logo {
-      display: flex; align-items: center; gap: 0.5rem;
-      font-family: 'Cinzel Decorative', serif; font-size: 0.9rem; font-weight: 900;
-      color: rgba(255,255,255,0.95); text-decoration: none;
-      letter-spacing: 0.04em; text-shadow: 0 0 18px rgba(47,186,189,0.45);
-      transition: opacity 0.2s;
-    }
-    .site-pill-logo:hover { opacity: 0.7; }
-    .site-back-btn {
-      display: flex; align-items: center; gap: 0.4rem;
-      font-family: 'DM Mono', monospace; font-size: 0.62rem;
-      letter-spacing: 0.08em; color: rgba(255,255,255,0.5);
-      text-decoration: none; padding: 0.35rem 0.8rem;
-      border-radius: 100px; background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.10);
-      transition: background 0.2s, color 0.2s;
-    }
-    .site-back-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9); }
 
     /* Main layout — true 100vh, no scroll */
     .container {
@@ -213,33 +178,29 @@ permalink: /quote
       .container { gap: 0.5rem; }
     }
   </style>
+  <!-- Instant mode restore -->
+  <script>
+    (function(){
+      var m = localStorage.getItem('shifat-mode') || 'light';
+      if (m === 'aurora') m = 'cyber';
+      document.documentElement.setAttribute('data-mode', m);
+    })();
+  </script>
+  <!-- Shared site CSS -->
+  <link rel="stylesheet" href="https://shifat0g.github.io/style.css" data-shared-css="1" />
+  <!-- Shared fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet" data-shared-fonts="1" />
 </head>
 <body>
+  <!-- Shared navbar + mode switcher -->
+  <script src="https://shifat0g.github.io/shared-nav.js"></script>
+
 
   <div class="stars"></div>
 
-  <div class="site-pill-nav">
-    <div class="site-pill-inner">
-      <a href="/" class="site-pill-logo">
-        <svg width="20" height="20" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="18" cy="21" rx="10" ry="12" fill="#1a1a2e"/>
-          <ellipse cx="18" cy="22" rx="6" ry="8" fill="rgba(255,255,255,0.88)"/>
-          <ellipse cx="18" cy="10" rx="7.5" ry="7" fill="#1a1a2e"/>
-          <circle cx="15.2" cy="9" r="1.7" fill="white"/>
-          <circle cx="20.8" cy="9" r="1.7" fill="white"/>
-          <circle cx="15.6" cy="9.2" r="0.9" fill="#0a0e0b"/>
-          <circle cx="21.2" cy="9.2" r="0.9" fill="#0a0e0b"/>
-          <path d="M16.2 12.5 Q18 14.5 19.8 12.5 Q18 11.5 16.2 12.5Z" fill="#f59e0b"/>
-          <ellipse cx="14" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
-          <ellipse cx="22" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
-          <path d="M8 16 Q5 21 8 26 Q10 22 10 18Z" fill="#1a1a2e"/>
-          <path d="M28 16 Q31 21 28 26 Q26 22 26 18Z" fill="#1a1a2e"/>
-        </svg>
-        Shifat
-      </a>
-      <a href="/" class="site-back-btn">← Back</a>
-    </div>
-  </div>
+  
 
   <div class="container">
     <div class="header-block">

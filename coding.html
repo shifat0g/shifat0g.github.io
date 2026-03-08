@@ -1,0 +1,616 @@
+---
+permalink: /coding
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coding — Resources & Roadmaps</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+
+  <style>
+    :root {
+      --bg: #070b12;
+      --bg2: #0d1320;
+      --bg3: #111827;
+      --text: #e2eaf8;
+      --text-muted: #7a90b8;
+      --accent: #38bdf8;
+      --accent2: #818cf8;
+      --accent3: #34d399;
+      --card: rgba(13,19,32,0.7);
+      --border: rgba(56,189,248,0.12);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+    padding-top: 88px; background: var(--bg); color: var(--text); font-family: 'Outfit', system-ui, sans-serif; min-height: 100vh; overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 10% 20%, rgba(56,189,248,0.06) 0%, transparent 40%), radial-gradient(ellipse at 90% 80%, rgba(129,140,248,0.06) 0%, transparent 40%), radial-gradient(ellipse at 50% 50%, rgba(52,211,153,0.04) 0%, transparent 50%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* NAV */
+    .site-pill-nav { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 9999; width: calc(100% - 2.5rem); max-width: 720px; }
+    .site-pill-inner { display: flex; align-items: center; justify-content: space-between; height: 50px; padding: 0 1rem; border-radius: 100px; background: rgba(7,11,18,0.78); border: 1px solid rgba(56,189,248,0.18); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); box-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(56,189,248,0.06) inset; }
+    .site-pill-logo { display: flex; align-items: center; gap: 0.5rem; font-family: 'Cinzel Decorative', serif; font-size: 0.88rem; font-weight: 900; color: var(--accent); text-decoration: none; letter-spacing: 0.06em; text-shadow: 0 0 20px rgba(56,189,248,0.5); transition: opacity 0.2s; }
+    .site-pill-logo:hover { opacity: 0.75; }
+    .logo-icon { width: 28px; height: 28px; background: linear-gradient(135deg, #38bdf8, #818cf8); border-radius: 7px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(56,189,248,0.4); flex-shrink: 0; }
+    .logo-icon svg { width: 15px; height: 15px; }
+    .nav-links { display: flex; align-items: center; gap: 0.25rem; }
+    .nav-link { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.45); text-decoration: none; padding: 0.3rem 0.7rem; border-radius: 100px; transition: background 0.2s, color 0.2s; }
+    .nav-link:hover { background: rgba(56,189,248,0.1); color: var(--accent); }
+    .site-back-btn { display: flex; align-items: center; gap: 0.4rem; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.45); text-decoration: none; padding: 0.35rem 0.85rem; border-radius: 100px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); transition: background 0.2s, color 0.2s, border-color 0.2s; }
+    .site-back-btn:hover { background: rgba(56,189,248,0.08); color: var(--accent); border-color: rgba(56,189,248,0.25); }
+    @media (max-width: 520px) { .nav-links { display: none; } }
+
+    /* HERO */
+    .hero { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 100px 1.5rem 60px; gap: 1.5rem; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 1rem; border-radius: 100px; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2); font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; animation: fadeUp 0.8s ease both; }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent3); box-shadow: 0 0 6px var(--accent3); animation: pulse 2s ease infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+    .hero h1 { font-family: 'Outfit', sans-serif; font-size: clamp(3rem, 8vw, 6.5rem); font-weight: 800; line-height: 1.0; letter-spacing: -2px; animation: fadeUp 0.8s 0.1s ease both; }
+    .hero h1 .line1 { display: block; color: var(--text); }
+    .hero h1 .line2 { display: block; background: linear-gradient(90deg, #38bdf8, #818cf8, #34d399); -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200%; animation: shimmer 4s linear infinite; }
+    @keyframes shimmer { 0%{background-position:0%} 100%{background-position:200%} }
+    .hero-sub { font-size: clamp(0.9rem, 2vw, 1.15rem); color: var(--text-muted); font-weight: 400; max-width: 520px; line-height: 1.7; animation: fadeUp 0.8s 0.2s ease both; }
+    .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.8s 0.3s ease both; }
+    .btn-primary { padding: 0.8rem 2rem; font-size: 0.92rem; font-weight: 600; color: #070b12; background: linear-gradient(135deg, #38bdf8, #818cf8); border: none; border-radius: 50px; cursor: pointer; text-decoration: none; box-shadow: 0 8px 28px rgba(56,189,248,0.3); transition: transform 0.25s, box-shadow 0.25s; font-family: 'Outfit', sans-serif; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(56,189,248,0.45); }
+    .btn-secondary { padding: 0.8rem 2rem; font-size: 0.92rem; font-weight: 600; color: var(--text); background: rgba(255,255,255,0.04); border: 1px solid rgba(56,189,248,0.2); border-radius: 50px; cursor: pointer; text-decoration: none; transition: background 0.25s, border-color 0.25s; font-family: 'Outfit', sans-serif; }
+    .btn-secondary:hover { background: rgba(56,189,248,0.08); border-color: rgba(56,189,248,0.4); }
+    .hero-stats { display: flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.8s 0.4s ease both; }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.8rem; font-weight: 800; color: var(--accent); display: block; line-height: 1; }
+    .stat-label { font-size: 0.72rem; color: var(--text-muted); font-family: 'DM Mono', monospace; letter-spacing: 0.08em; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    /* SECTIONS */
+    .section { position: relative; z-index: 1; padding: 80px 1.5rem; max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+    .section-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -1px; color: var(--text); }
+    .section-title span { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .section-desc { color: var(--text-muted); margin-top: 0.6rem; font-size: 0.95rem; }
+
+    /* RESOURCE CARDS */
+    .resources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; }
+    .resource-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; backdrop-filter: blur(12px); transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s; display: flex; flex-direction: column; gap: 1rem; }
+    .resource-card:hover { border-color: rgba(56,189,248,0.35); transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(56,189,248,0.1) inset; }
+    .rc-header { display: flex; align-items: center; gap: 0.9rem; }
+    .rc-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .rc-icon i { font-size: 1.75rem; line-height: 1; display: block; }
+    .rc-icon svg { width: 28px; height: 28px; }
+    .rc-title { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+    .rc-type { font-family: 'DM Mono', monospace; font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+    .rc-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.6; flex: 1; }
+    .rc-links { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .rc-link { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; font-weight: 600; font-family: 'DM Mono', monospace; padding: 0.35rem 0.8rem; border-radius: 8px; text-decoration: none; transition: opacity 0.2s, transform 0.2s; border: 1px solid; }
+    .rc-link:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .theme-blue .rc-icon { background: rgba(56,189,248,0.1); }
+    .theme-blue .rc-link { color: #38bdf8; border-color: rgba(56,189,248,0.25); background: rgba(56,189,248,0.06); }
+    .theme-purple .rc-icon { background: rgba(129,140,248,0.1); }
+    .theme-purple .rc-link { color: #818cf8; border-color: rgba(129,140,248,0.25); background: rgba(129,140,248,0.06); }
+    .theme-green .rc-icon { background: rgba(52,211,153,0.1); }
+    .theme-green .rc-link { color: #34d399; border-color: rgba(52,211,153,0.25); background: rgba(52,211,153,0.06); }
+    .theme-orange .rc-icon { background: rgba(251,146,60,0.1); }
+    .theme-orange .rc-link { color: #fb923c; border-color: rgba(251,146,60,0.25); background: rgba(251,146,60,0.06); }
+    .theme-pink .rc-icon { background: rgba(244,114,182,0.1); }
+    .theme-pink .rc-link { color: #f472b6; border-color: rgba(244,114,182,0.25); background: rgba(244,114,182,0.06); }
+    .theme-yellow .rc-icon { background: rgba(250,204,21,0.1); }
+    .theme-yellow .rc-link { color: #facc15; border-color: rgba(250,204,21,0.25); background: rgba(250,204,21,0.06); }
+    .theme-red .rc-icon { background: rgba(248,113,113,0.1); }
+    .theme-red .rc-link { color: #f87171; border-color: rgba(248,113,113,0.25); background: rgba(248,113,113,0.06); }
+    .theme-teal .rc-icon { background: rgba(45,212,191,0.1); }
+    .theme-teal .rc-link { color: #2dd4bf; border-color: rgba(45,212,191,0.25); background: rgba(45,212,191,0.06); }
+    .theme-amber .rc-icon { background: rgba(245,158,11,0.1); }
+    .theme-amber .rc-link { color: #f59e0b; border-color: rgba(245,158,11,0.25); background: rgba(245,158,11,0.06); }
+
+    /* ROADMAP */
+    .roadmap-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem; }
+    .tab-btn { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.55rem 1.15rem; border-radius: 100px; border: 1px solid rgba(56,189,248,0.15); background: rgba(13,19,32,0.6); font-size: 0.8rem; font-weight: 600; font-family: 'Outfit', sans-serif; color: var(--text-muted); cursor: pointer; transition: all 0.25s; }
+    .tab-btn svg { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.65; transition: opacity 0.2s; }
+    .tab-btn:hover { color: var(--text); border-color: rgba(56,189,248,0.3); }
+    .tab-btn:hover svg { opacity: 1; }
+    .tab-btn.active { background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(129,140,248,0.15)); border-color: rgba(56,189,248,0.4); color: var(--accent); box-shadow: 0 0 16px rgba(56,189,248,0.15); }
+    .tab-btn.active svg { opacity: 1; }
+
+    .roadmap-content { display: none; }
+    .roadmap-content.active { display: block; animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    .roadmap-path { display: flex; flex-direction: column; position: relative; }
+    .roadmap-path::before { content: ''; position: absolute; left: 27px; top: 28px; bottom: 28px; width: 2px; background: linear-gradient(to bottom, #38bdf8, #818cf8, #34d399); opacity: 0.3; }
+    @media (max-width: 600px) { .roadmap-path::before { left: 19px; } }
+
+    .roadmap-step { display: flex; gap: 1.5rem; align-items: flex-start; padding: 1.2rem 0; position: relative; }
+    .step-num { width: 56px; height: 56px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 0.85rem; font-weight: 700; border: 2px solid; position: relative; z-index: 1; transition: box-shadow 0.3s; }
+    .roadmap-step:hover .step-num { box-shadow: 0 0 20px currentColor; }
+    @media (max-width: 600px) { .step-num { width: 40px; height: 40px; font-size: 0.7rem; } .roadmap-step { gap: 1rem; } }
+
+    .step-body { flex: 1; padding-top: 0.6rem; }
+    .step-phase { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.25rem; }
+    .step-title { font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
+    .step-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 0.75rem; }
+    .step-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .step-tag { font-family: 'DM Mono', monospace; font-size: 0.65rem; padding: 0.25rem 0.65rem; border-radius: 6px; background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.15); color: var(--text-muted); }
+
+    .step-color-blue .step-num { color: #38bdf8; border-color: rgba(56,189,248,0.4); background: rgba(56,189,248,0.08); }
+    .step-color-blue .step-phase { color: #38bdf8; }
+    .step-color-purple .step-num { color: #818cf8; border-color: rgba(129,140,248,0.4); background: rgba(129,140,248,0.08); }
+    .step-color-purple .step-phase { color: #818cf8; }
+    .step-color-green .step-num { color: #34d399; border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.08); }
+    .step-color-green .step-phase { color: #34d399; }
+    .step-color-orange .step-num { color: #fb923c; border-color: rgba(251,146,60,0.4); background: rgba(251,146,60,0.08); }
+    .step-color-orange .step-phase { color: #fb923c; }
+    .step-color-pink .step-num { color: #f472b6; border-color: rgba(244,114,182,0.4); background: rgba(244,114,182,0.08); }
+    .step-color-pink .step-phase { color: #f472b6; }
+    .step-color-teal .step-num { color: #2dd4bf; border-color: rgba(45,212,191,0.4); background: rgba(45,212,191,0.08); }
+    .step-color-teal .step-phase { color: #2dd4bf; }
+    .step-color-yellow .step-num { color: #facc15; border-color: rgba(250,204,21,0.4); background: rgba(250,204,21,0.08); }
+    .step-color-yellow .step-phase { color: #facc15; }
+
+    .divider { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .divider-line { height: 1px; background: linear-gradient(90deg, transparent, rgba(56,189,248,0.2), transparent); }
+
+    footer { position: relative; z-index: 1; text-align: center; padding: 3rem 1.5rem; color: var(--text-muted); font-size: 0.8rem; font-family: 'DM Mono', monospace; letter-spacing: 0.06em; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @media (max-width: 768px) { .resources-grid { grid-template-columns: 1fr; } }
+  </style>
+  <!-- Instant mode restore -->
+  <script>
+    (function(){
+      var m = localStorage.getItem('shifat-mode') || 'light';
+      if (m === 'aurora') m = 'cyber';
+      document.documentElement.setAttribute('data-mode', m);
+    })();
+  </script>
+  <!-- Shared site CSS -->
+  <link rel="stylesheet" href="https://shifat0g.github.io/style.css" data-shared-css="1" />
+  <!-- Shared fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet" data-shared-fonts="1" />
+</head>
+<body>
+  <!-- Shared navbar + mode switcher -->
+  <script src="https://shifat0g.github.io/shared-nav.js"></script>
+
+
+  <nav class="site-pill-nav">
+    <div class="site-pill-inner">
+      <a href="#" class="site-pill-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#070b12" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+        </div>
+        Shifat
+      </a>
+      <div class="nav-links">
+        <a href="#resources" class="nav-link">RESOURCES</a>
+        <a href="#roadmaps" class="nav-link">ROADMAPS</a>
+      </div>
+      <a href="https://shifat0g.github.io" class="site-back-btn">← Back</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge"><span class="badge-dot"></span>Free Learning Resources &amp; Roadmaps</div>
+    <h1><span class="line1">Learn to</span><span class="line2">Code.</span></h1>
+    <p class="hero-sub">Curated free resources, structured roadmaps, and essential links to help you go from beginner to professional — all in one place.</p>
+    <div class="hero-cta">
+      <a href="#resources" class="btn-primary">Explore Resources</a>
+      <a href="#roadmaps" class="btn-secondary">View Roadmaps</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Free Resources</span></div>
+      <div class="stat"><span class="stat-num">8</span><span class="stat-label">Career Roadmaps</span></div>
+      <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Free to Use</span></div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <section class="section" id="resources">
+    <div class="section-header reveal">
+      <div class="section-tag">// Free Learning Links</div>
+      <h2 class="section-title">Get <span>Coding Resources</span> Here</h2>
+      <p class="section-desc">The best free platforms to learn every major technology — handpicked and expanded.</p>
+    </div>
+    <div class="resources-grid">
+
+      <div class="resource-card theme-orange reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-html5-plain colored"></i></div>
+          <div><div class="rc-title">HTML</div><div class="rc-type">Markup Language</div></div>
+        </div>
+        <p class="rc-desc">Learn the building blocks of every web page. Structure content, create forms, embed media and more.</p>
+        <div class="rc-links">
+          <a href="https://www.w3schools.com/html/" target="_blank" class="rc-link">W3Schools ↗</a>
+          <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" class="rc-link">MDN Docs ↗</a>
+          <a href="https://www.freecodecamp.org/learn/2022/responsive-web-design/" target="_blank" class="rc-link">freeCodeCamp ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-blue reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-css3-plain colored"></i></div>
+          <div><div class="rc-title">CSS</div><div class="rc-type">Styling Language</div></div>
+        </div>
+        <p class="rc-desc">Style and animate your websites. Master Flexbox, Grid, transitions, and responsive design.</p>
+        <div class="rc-links">
+          <a href="https://www.codecademy.com/learn/learn-css" target="_blank" class="rc-link">Codecademy ↗</a>
+          <a href="https://css-tricks.com" target="_blank" class="rc-link">CSS-Tricks ↗</a>
+          <a href="https://flexboxfroggy.com" target="_blank" class="rc-link">Flexbox Froggy ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-yellow reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-javascript-plain colored"></i></div>
+          <div><div class="rc-title">JavaScript</div><div class="rc-type">Programming Language</div></div>
+        </div>
+        <p class="rc-desc">The language of the web. Add interactivity, fetch data, build apps — runs everywhere.</p>
+        <div class="rc-links">
+          <a href="https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/" target="_blank" class="rc-link">freeCodeCamp ↗</a>
+          <a href="https://javascript.info" target="_blank" class="rc-link">javascript.info ↗</a>
+          <a href="https://eloquentjavascript.net" target="_blank" class="rc-link">Eloquent JS ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-blue reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-react-original colored"></i></div>
+          <div><div class="rc-title">React</div><div class="rc-type">UI Framework</div></div>
+        </div>
+        <p class="rc-desc">The most popular frontend library for building fast, component-based user interfaces.</p>
+        <div class="rc-links">
+          <a href="https://react.dev" target="_blank" class="rc-link">react.dev ↗</a>
+          <a href="https://scrimba.com/learn/learnreact" target="_blank" class="rc-link">Scrimba ↗</a>
+          <a href="https://www.freecodecamp.org/learn/front-end-development-libraries/" target="_blank" class="rc-link">freeCodeCamp ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-blue reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-python-plain colored"></i></div>
+          <div><div class="rc-title">Python</div><div class="rc-type">Programming Language</div></div>
+        </div>
+        <p class="rc-desc">Beginner-friendly and incredibly powerful. Used in AI, automation, web backends, and data science.</p>
+        <div class="rc-links">
+          <a href="https://learnpython.org" target="_blank" class="rc-link">learnpython.org ↗</a>
+          <a href="https://docs.python.org/3/tutorial/" target="_blank" class="rc-link">Official Docs ↗</a>
+          <a href="https://www.kaggle.com/learn/python" target="_blank" class="rc-link">Kaggle ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-orange reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-java-plain colored"></i></div>
+          <div><div class="rc-title">Java</div><div class="rc-type">Programming Language</div></div>
+        </div>
+        <p class="rc-desc">Enterprise backend, Android development, and system-level applications. OOP powerhouse.</p>
+        <div class="rc-links">
+          <a href="https://www.sololearn.com/learn/courses/java-introduction" target="_blank" class="rc-link">SoloLearn ↗</a>
+          <a href="https://www.w3schools.com/java/" target="_blank" class="rc-link">W3Schools ↗</a>
+          <a href="https://exercism.org/tracks/java" target="_blank" class="rc-link">Exercism ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-purple reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-php-plain colored"></i></div>
+          <div><div class="rc-title">PHP</div><div class="rc-type">Backend Language</div></div>
+        </div>
+        <p class="rc-desc">Server-side scripting for dynamic web applications. Powers WordPress and millions of sites.</p>
+        <div class="rc-links">
+          <a href="https://www.php.net/manual/en/" target="_blank" class="rc-link">php.net ↗</a>
+          <a href="https://www.w3schools.com/php/" target="_blank" class="rc-link">W3Schools ↗</a>
+          <a href="https://laracasts.com" target="_blank" class="rc-link">Laracasts ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-teal reveal">
+        <div class="rc-header">
+          <div class="rc-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <circle cx="12" cy="11" r="1.8" fill="#2dd4bf" stroke="none"/>
+              <line x1="12" y1="13" x2="12" y2="16" stroke="#2dd4bf" stroke-width="2"/>
+            </svg>
+          </div>
+          <div><div class="rc-title">Cybersecurity</div><div class="rc-type">Security</div></div>
+        </div>
+        <p class="rc-desc">Learn ethical hacking, penetration testing, network security, and how to protect systems.</p>
+        <div class="rc-links">
+          <a href="https://tryhackme.com" target="_blank" class="rc-link">TryHackMe ↗</a>
+          <a href="https://www.hackthebox.com" target="_blank" class="rc-link">HackTheBox ↗</a>
+          <a href="https://www.cybrary.it" target="_blank" class="rc-link">Cybrary ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-pink reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-c-plain colored"></i></div>
+          <div><div class="rc-title">C</div><div class="rc-type">Systems Language</div></div>
+        </div>
+        <p class="rc-desc">The foundation of modern computing. Understand memory, pointers, and low-level systems.</p>
+        <div class="rc-links">
+          <a href="https://learn-c.org" target="_blank" class="rc-link">learn-c.org ↗</a>
+          <a href="https://www.w3schools.com/c/" target="_blank" class="rc-link">W3Schools ↗</a>
+          <a href="https://cs50.harvard.edu" target="_blank" class="rc-link">CS50 ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-red reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-cplusplus-plain colored"></i></div>
+          <div><div class="rc-title">C++</div><div class="rc-type">Systems Language</div></div>
+        </div>
+        <p class="rc-desc">Performance-critical applications, game engines, and competitive programming. OOP meets low-level.</p>
+        <div class="rc-links">
+          <a href="https://learncpp.com" target="_blank" class="rc-link">learncpp.com ↗</a>
+          <a href="https://cppreference.com" target="_blank" class="rc-link">cppreference ↗</a>
+          <a href="https://www.sololearn.com/learn/courses/c-plus-plus-introduction" target="_blank" class="rc-link">SoloLearn ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-amber reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-amazonwebservices-plain-wordmark colored"></i></div>
+          <div><div class="rc-title">AWS / Cloud</div><div class="rc-type">Cloud Platform</div></div>
+        </div>
+        <p class="rc-desc">Host apps, manage servers, and build scalable cloud infrastructure with the world's largest cloud provider.</p>
+        <div class="rc-links">
+          <a href="https://aws.amazon.com/training/digital/" target="_blank" class="rc-link">AWS Skill Builder ↗</a>
+          <a href="https://cloudacademy.com" target="_blank" class="rc-link">Cloud Academy ↗</a>
+          <a href="https://acloudguru.com" target="_blank" class="rc-link">A Cloud Guru ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-purple reveal">
+        <div class="rc-header">
+          <div class="rc-icon">
+            <!-- Neural network / brain icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="8" cy="19" r="2"/><circle cx="16" cy="19" r="2"/>
+              <line x1="12" y1="7" x2="7" y2="11"/><line x1="12" y1="7" x2="17" y2="11"/>
+              <line x1="7" y1="14" x2="9" y2="17"/><line x1="17" y1="14" x2="15" y2="17"/>
+              <line x1="7" y1="12" x2="17" y2="12"/>
+            </svg>
+          </div>
+          <div><div class="rc-title">AI / Machine Learning</div><div class="rc-type">AI &amp; Data Science</div></div>
+        </div>
+        <p class="rc-desc">Build intelligent systems. Learn neural networks, data modeling, NLP, and computer vision.</p>
+        <div class="rc-links">
+          <a href="https://www.coursera.org/specializations/machine-learning-introduction" target="_blank" class="rc-link">Coursera ↗</a>
+          <a href="https://fast.ai" target="_blank" class="rc-link">fast.ai ↗</a>
+          <a href="https://www.kaggle.com/learn" target="_blank" class="rc-link">Kaggle ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-orange reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-git-plain colored"></i></div>
+          <div><div class="rc-title">Git &amp; Version Control</div><div class="rc-type">Dev Tools</div></div>
+        </div>
+        <p class="rc-desc">Track, manage, and collaborate on code. Essential for every developer on any project.</p>
+        <div class="rc-links">
+          <a href="https://learngitbranching.js.org" target="_blank" class="rc-link">learngitbranching ↗</a>
+          <a href="https://docs.github.com/en/get-started" target="_blank" class="rc-link">GitHub Docs ↗</a>
+          <a href="https://www.atlassian.com/git/tutorials" target="_blank" class="rc-link">Atlassian ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-blue reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-postgresql-plain colored"></i></div>
+          <div><div class="rc-title">SQL &amp; Databases</div><div class="rc-type">Data</div></div>
+        </div>
+        <p class="rc-desc">Query, store, and manage structured data. SQL is required for virtually every backend role.</p>
+        <div class="rc-links">
+          <a href="https://sqlbolt.com" target="_blank" class="rc-link">sqlbolt.com ↗</a>
+          <a href="https://mode.com/sql-tutorial/" target="_blank" class="rc-link">Mode Tutorial ↗</a>
+          <a href="https://www.w3schools.com/sql/" target="_blank" class="rc-link">W3Schools ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-green reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-flutter-plain colored"></i></div>
+          <div><div class="rc-title">Flutter / Dart</div><div class="rc-type">Mobile Dev</div></div>
+        </div>
+        <p class="rc-desc">Build beautiful cross-platform mobile apps for Android and iOS from a single codebase.</p>
+        <div class="rc-links">
+          <a href="https://flutter.dev/learn" target="_blank" class="rc-link">flutter.dev ↗</a>
+          <a href="https://dart.dev/tutorials" target="_blank" class="rc-link">dart.dev ↗</a>
+          <a href="https://www.appbrewery.co/p/flutter-development-bootcamp-with-dart" target="_blank" class="rc-link">App Brewery ↗</a>
+        </div>
+      </div>
+
+      <div class="resource-card theme-teal reveal">
+        <div class="rc-header">
+          <div class="rc-icon"><i class="devicon-rust-plain" style="color:#2dd4bf; font-size:1.75rem;"></i></div>
+          <div><div class="rc-title">Rust</div><div class="rc-type">Systems Language</div></div>
+        </div>
+        <p class="rc-desc">Blazing fast, memory-safe systems programming. The most loved language for a reason.</p>
+        <div class="rc-links">
+          <a href="https://doc.rust-lang.org/book/" target="_blank" class="rc-link">The Rust Book ↗</a>
+          <a href="https://rustlings.cool" target="_blank" class="rc-link">Rustlings ↗</a>
+          <a href="https://exercism.org/tracks/rust" target="_blank" class="rc-link">Exercism ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <section class="section" id="roadmaps">
+    <div class="section-header reveal">
+      <div class="section-tag">// Structured Learning Paths</div>
+      <h2 class="section-title">Career <span>Roadmaps</span></h2>
+      <p class="section-desc">Step-by-step guides on what to learn, in what order, for your chosen career path.</p>
+    </div>
+
+    <div class="roadmap-tabs reveal">
+      <button class="tab-btn active" onclick="switchTab('web',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Web Dev
+      </button>
+      <button class="tab-btn" onclick="switchTab('mobile',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        Mobile Apps
+      </button>
+      <button class="tab-btn" onclick="switchTab('backend',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        Backend
+      </button>
+      <button class="tab-btn" onclick="switchTab('ai',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="6" height="6"/><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+        AI / ML
+      </button>
+      <button class="tab-btn" onclick="switchTab('devops',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+        DevOps
+      </button>
+      <button class="tab-btn" onclick="switchTab('cybersec',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Cybersecurity
+      </button>
+      <button class="tab-btn" onclick="switchTab('gamedev',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+        Game Dev
+      </button>
+      <button class="tab-btn" onclick="switchTab('datascience',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+        Data Science
+      </button>
+    </div>
+
+    <div class="roadmap-content active" id="tab-web">
+      <div class="roadmap-path">
+        <div class="roadmap-step step-color-blue"><div class="step-num">01</div><div class="step-body"><div class="step-phase">Foundation</div><div class="step-title">The Basics: HTML &amp; CSS</div><div class="step-desc">Start by learning how web pages are structured (HTML) and styled (CSS). Build static pages, understand the box model, Flexbox, and Grid. Make your pages responsive for mobile.</div><div class="step-tags"><span class="step-tag">HTML5</span><span class="step-tag">CSS3</span><span class="step-tag">Flexbox</span><span class="step-tag">Grid</span><span class="step-tag">Responsive Design</span></div></div></div>
+        <div class="roadmap-step step-color-yellow"><div class="step-num">02</div><div class="step-body"><div class="step-phase">Interactivity</div><div class="step-title">JavaScript Fundamentals</div><div class="step-desc">Add behavior and interactivity. Learn variables, functions, DOM manipulation, events, fetch API for data, and ES6+ modern syntax.</div><div class="step-tags"><span class="step-tag">Variables</span><span class="step-tag">Functions</span><span class="step-tag">DOM</span><span class="step-tag">Events</span><span class="step-tag">Fetch API</span><span class="step-tag">ES6+</span></div></div></div>
+        <div class="roadmap-step step-color-blue"><div class="step-num">03</div><div class="step-body"><div class="step-phase">Tools</div><div class="step-title">Git, npm &amp; Tooling</div><div class="step-desc">Learn version control with Git and GitHub. Understand package managers (npm/yarn), build tools like Vite, and browser developer tools.</div><div class="step-tags"><span class="step-tag">Git</span><span class="step-tag">GitHub</span><span class="step-tag">npm</span><span class="step-tag">Vite</span><span class="step-tag">DevTools</span></div></div></div>
+        <div class="roadmap-step step-color-purple"><div class="step-num">04</div><div class="step-body"><div class="step-phase">Framework</div><div class="step-title">React (or Vue / Svelte)</div><div class="step-desc">Learn a modern UI framework. React is the industry standard. Understand components, state, hooks, props, React Router, and data fetching patterns.</div><div class="step-tags"><span class="step-tag">React</span><span class="step-tag">Components</span><span class="step-tag">Hooks</span><span class="step-tag">State</span><span class="step-tag">React Router</span></div></div></div>
+        <div class="roadmap-step step-color-green"><div class="step-num">05</div><div class="step-body"><div class="step-phase">Styling Systems</div><div class="step-title">Tailwind CSS &amp; CSS-in-JS</div><div class="step-desc">Use utility-first CSS with Tailwind for rapid development, or explore CSS Modules and styled-components for component-scoped styles.</div><div class="step-tags"><span class="step-tag">Tailwind CSS</span><span class="step-tag">CSS Modules</span><span class="step-tag">Styled Components</span></div></div></div>
+        <div class="roadmap-step step-color-orange"><div class="step-num">06</div><div class="step-body"><div class="step-phase">Full-Stack</div><div class="step-title">Next.js &amp; SSR / SSG</div><div class="step-desc">Take React to the next level with Next.js. Learn server-side rendering, static site generation, API routes, and deployment on Vercel or Netlify.</div><div class="step-tags"><span class="step-tag">Next.js</span><span class="step-tag">SSR</span><span class="step-tag">SSG</span><span class="step-tag">API Routes</span><span class="step-tag">Vercel</span></div></div></div>
+        <div class="roadmap-step step-color-pink"><div class="step-num">07</div><div class="step-body"><div class="step-phase">Professional Skills</div><div class="step-title">Performance, Testing &amp; Deployment</div><div class="step-desc">Write tests with Jest and React Testing Library, optimize with Lighthouse, learn CI/CD pipelines, and deploy to cloud platforms.</div><div class="step-tags"><span class="step-tag">Jest</span><span class="step-tag">Testing Library</span><span class="step-tag">Lighthouse</span><span class="step-tag">CI/CD</span><span class="step-tag">Docker</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="roadmap-content" id="tab-mobile">
+      <div class="roadmap-path">
+        <div class="roadmap-step step-color-blue"><div class="step-num">01</div><div class="step-body"><div class="step-phase">Foundation</div><div class="step-title">Choose Your Path: Native vs Cross-Platform</div><div class="step-desc">Decide: Flutter (cross-platform), React Native (JS cross-platform), Android (Kotlin), or iOS (Swift). Flutter and React Native are recommended for beginners targeting both platforms.</div><div class="step-tags"><span class="step-tag">Flutter</span><span class="step-tag">React Native</span><span class="step-tag">Kotlin</span><span class="step-tag">Swift</span></div></div></div>
+        <div class="roadmap-step step-color-green"><div class="step-num">02</div><div class="step-body"><div class="step-phase">Core Skills</div><div class="step-title">Programming Language Fundamentals</div><div class="step-desc">For Flutter, learn Dart. For React Native, master JavaScript/TypeScript. For Android, learn Kotlin. For iOS, learn Swift. Focus on OOP, async patterns, and error handling.</div><div class="step-tags"><span class="step-tag">Dart</span><span class="step-tag">Kotlin</span><span class="step-tag">Swift</span><span class="step-tag">OOP</span><span class="step-tag">Async/Await</span></div></div></div>
+        <div class="roadmap-step step-color-purple"><div class="step-num">03</div><div class="step-body"><div class="step-phase">UI &amp; Navigation</div><div class="step-title">Building Screens &amp; Navigation</div><div class="step-desc">Learn to build layouts, handle navigation between screens, manage state (Provider, Riverpod, Redux), and create smooth animations.</div><div class="step-tags"><span class="step-tag">Widgets</span><span class="step-tag">Navigation</span><span class="step-tag">State Management</span><span class="step-tag">Animations</span></div></div></div>
+        <div class="roadmap-step step-color-orange"><div class="step-num">04</div><div class="step-body"><div class="step-phase">Data &amp; APIs</div><div class="step-title">Networking &amp; Local Storage</div><div class="step-desc">Fetch data from REST APIs, handle JSON, manage local storage with SQLite or Hive, and understand app lifecycle and background tasks.</div><div class="step-tags"><span class="step-tag">REST API</span><span class="step-tag">HTTP</span><span class="step-tag">SQLite</span><span class="step-tag">Firebase</span></div></div></div>
+        <div class="roadmap-step step-color-teal"><div class="step-num">05</div><div class="step-body"><div class="step-phase">Platform Features</div><div class="step-title">Device Features &amp; Permissions</div><div class="step-desc">Access camera, GPS, push notifications, biometrics, and other native device features. Handle permissions properly for both Android and iOS.</div><div class="step-tags"><span class="step-tag">Camera</span><span class="step-tag">GPS</span><span class="step-tag">Push Notifications</span><span class="step-tag">Permissions</span></div></div></div>
+        <div class="roadmap-step step-color-pink"><div class="step-num">06</div><div class="step-body"><div class="step-phase">Publishing</div><div class="step-title">Testing &amp; Publishing to Stores</div><div class="step-desc">Write unit/widget tests, set up CI/CD with Fastlane or GitHub Actions, and publish your app to the Google Play Store and Apple App Store.</div><div class="step-tags"><span class="step-tag">Unit Testing</span><span class="step-tag">Fastlane</span><span class="step-tag">Play Store</span><span class="step-tag">App Store</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="roadmap-content" id="tab-backend">
+      <div class="roadmap-path">
+        <div class="roadmap-step step-color-green"><div class="step-num">01</div><div class="step-body"><div class="step-phase">Foundation</div><div class="step-title">Choose a Language: Node.js, Python, or Go</div><div class="step-desc">Node.js (JavaScript), Python (Django/FastAPI), Go, or Java (Spring Boot) are the top backend choices. Node.js + Express is great for beginners already knowing JS.</div><div class="step-tags"><span class="step-tag">Node.js</span><span class="step-tag">Python</span><span class="step-tag">Go</span><span class="step-tag">Java</span><span class="step-tag">PHP</span></div></div></div>
+        <div class="roadmap-step step-color-blue"><div class="step-num">02</div><div class="step-body"><div class="step-phase">APIs</div><div class="step-title">Building REST &amp; GraphQL APIs</div><div class="step-desc">Design and build APIs: HTTP methods, status codes, authentication (JWT, OAuth), rate limiting, and API versioning. Learn Postman for testing.</div><div class="step-tags"><span class="step-tag">REST API</span><span class="step-tag">GraphQL</span><span class="step-tag">JWT</span><span class="step-tag">OAuth</span><span class="step-tag">Postman</span></div></div></div>
+        <div class="roadmap-step step-color-purple"><div class="step-num">03</div><div class="step-body"><div class="step-phase">Databases</div><div class="step-title">SQL &amp; NoSQL Databases</div><div class="step-desc">Learn relational databases (PostgreSQL, MySQL) and NoSQL (MongoDB, Redis). Understand ORMs, indexing, transactions, and query optimization.</div><div class="step-tags"><span class="step-tag">PostgreSQL</span><span class="step-tag">MySQL</span><span class="step-tag">MongoDB</span><span class="step-tag">Redis</span><span class="step-tag">Prisma</span></div></div></div>
+        <div class="roadmap-step step-color-orange"><div class="step-num">04</div><div class="step-body"><div class="step-phase">Infrastructure</div><div class="step-title">Hosting, Docker &amp; Deployment</div><div class="step-desc">Containerize apps with Docker, deploy to cloud (AWS/GCP/Heroku), manage environment variables, set up reverse proxies with Nginx.</div><div class="step-tags"><span class="step-tag">Docker</span><span class="step-tag">Nginx</span><span class="step-tag">AWS / GCP</span><span class="step-tag">Heroku</span></div></div></div>
+        <div class="roadmap-step step-color-teal"><div class="step-num">05</div><div class="step-body"><div class="step-phase">Advanced</div><div class="step-title">Queues, Caching &amp; Microservices</div><div class="step-desc">Learn message queues (RabbitMQ, Kafka), implement caching strategies, explore microservices architecture, and understand event-driven design.</div><div class="step-tags"><span class="step-tag">Redis Cache</span><span class="step-tag">RabbitMQ</span><span class="step-tag">Kafka</span><span class="step-tag">Microservices</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="roadmap-content" id="tab-ai">
+      <div class="roadmap-path">
+        <div class="roadmap-step step-color-purple"><div class="step-num">01</div><div class="step-body"><div class="step-phase">Prerequisites</div><div class="step-title">Math &amp; Python Fundamentals</div><div class="step-desc">Master Python, then brush up on linear algebra, calculus, probability and statistics. Khan Academy and 3Blue1Brown are excellent free resources for math.</div><div class="step-tags"><span class="step-tag">Python</span><span class="step-tag">NumPy</span><span class="step-tag">Linear Algebra</span><span class="step-tag">Statistics</span><span class="step-tag">Calculus</span></div></div></div>
+        <div class="roadmap-step step-color-blue"><div class="step-num">02</div><div class="step-body"><div class="step-phase">Data</div><div class="step-title">Data Manipulation &amp; Visualization</div><div class="step-desc">Learn to clean, explore, and visualize data with pandas, matplotlib, seaborn, and Jupyter notebooks. Data prep is 80% of ML work.</div><div class="step-tags"><span class="step-tag">Pandas</span><span class="step-tag">Matplotlib</span><span class="step-tag">Seaborn</span><span class="step-tag">Jupyter</span></div></div></div>
+        <div class="roadmap-step step-color-green"><div class="step-num">03</div><div class="step-body"><div class="step-phase">Classical ML</div><div class="step-title">Machine Learning Algorithms</div><div class="step-desc">Learn supervised/unsupervised algorithms: regression, classification, clustering, decision trees, SVMs, and ensemble methods with scikit-learn.</div><div class="step-tags"><span class="step-tag">scikit-learn</span><span class="step-tag">Regression</span><span class="step-tag">Classification</span><span class="step-tag">Random Forest</span></div></div></div>
+        <div class="roadmap-step step-color-orange"><div class="step-num">04</div><div class="step-body"><div class="step-phase">Deep Learning</div><div class="step-title">Neural Networks with PyTorch / TensorFlow</div><div class="step-desc">Build CNNs for images, RNNs/Transformers for sequences. Learn backpropagation, optimizers, regularization, and GPU training.</div><div class="step-tags"><span class="step-tag">PyTorch</span><span class="step-tag">TensorFlow</span><span class="step-tag">CNN</span><span class="step-tag">Transformers</span></div></div></div>
+        <div class="roadmap-step step-color-pink"><div class="step-num">05</div><div class="step-body"><div class="step-phase">Specialization</div><div class="step-title">NLP, Computer Vision, or Generative AI</div><div class="step-desc">Pick a specialization: NLP (Hugging Face, LLMs), Computer Vision (YOLO, Stable Diffusion), or Reinforcement Learning. Build and deploy real models.</div><div class="step-tags"><span class="step-tag">Hugging Face</span><span class="step-tag">LangChain</span><span class="step-tag">OpenCV</span><span class="step-tag">MLflow</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="roadmap-content" id="tab-devops">
+      <div class="roadmap-path">
+        <div class="roadmap-step step-color-blue"><div class="step-num">01</div><div class="step-body"><div class="step-phase">Foundation</div><div class="step-title">Linux &amp; Command Line</div><div class="step-desc">Every DevOps role requires Linux proficiency. Learn shell scripting, file permissions, process management, networking commands, and Bash scripting.</div><div class="step-tags"><span class="step-tag">Linux</span><span class="step-tag">Bash</span><span class="step-tag">Shell Scripting</span><span class="step-tag">SSH</span><span class="step-tag">Cron</span></div></div></div>
+        <div class="roadmap-step step-color-orange"><div class="step-num">02</div><div class="step-body"><div class="step-phase">Containers</div><div class="step-title">Docker &amp; Container Fundamentals</div><div class="step-desc">Containerize applications, write Dockerfiles, manage images, use Docker Compose for multi-container apps, and understand container networking.</div><div class="step-tags"><span class="step-tag">Docker</span><span class="step-tag">Docker Compose</span><span class="step-tag">Container Registry</span></div></div></div>
+        <div class="roadmap-step step-color-purple"><div class="step-num">03</div><div class="step-body"><div class="step-phase">Orchestration</div><div class="step-title">Kubernetes</div><div class="step-desc">Orchestrate containers at scale. Learn pods, deployments, services, ingress, ConfigMaps, secrets, and Helm charts for Kubernetes package management.</div><div class="step-tags"><span class="step-tag">Kubernetes</span><span class="step-tag">Helm</span><span class="step-tag">Pods</span><span class="step-tag">Services</span></div></div></div>
+        <div class="roadmap-step step-color-green"><div class="step-num">04</div><div class="step-body"><div class="step-phase">CI/CD</div><div class="step-title">Automation &amp; Pipelines</div><div class="step-desc">Build automated pipelines with GitHub Actions, Jenkins, or GitLab CI. Automate testing, building, and deployment on every code push.</div><div class="step-tags"><span class="step-tag">GitHub Actions</span><span class="step-tag">Jenkins</span><span class="step-tag">ArgoCD</span><span class="step-tag">Terraform</span></div></div></div>
+        <div class="roadmap-step step-color-teal"><div class="step-num">05</div><div class="step-body"><div class="step-phase">Cloud</div><div class="step-title">Cloud Platforms (AWS / GCP / Azure)</div><div class="step-desc">Learn a major cloud provider. Master EC2, S3, RDS, Lambda, VPCs, IAM, and cloud-native services. Aim for a cloud certification.</div><div class="step-tags"><span class="step-tag">AWS</span><span class="step-tag">GCP</span><span class="step-tag">Azure</span><span class="step-tag">Terraform</span><span class="step-tag">Ansible</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="roadmap-content" id="tab-cybersec">
+      <div class="roadmap-path">
+        <div class="roadmap-step step-color-teal"><div class="step-num">01</div><div class="step-body"><div class="step-phase">Fundamentals</div><div class="step-title">Networking &amp; OS Fundamentals</div><div class="step-desc">Understand TCP/IP, DNS, HTTP/S, firewalls, and VPNs. Learn Linux deeply — most security tools and servers run on it.</div><div class="step-tags"><span class="step-tag">TCP/IP</span><span class="step-tag">DNS</span><span class="step-tag">HTTP</span><span class="step-tag">Linux</span><span class="step-tag">Firewalls</span></div></div></div>
+        <div class="roadmap-step step-color-blue"><div class="step-num">02</div><div class="step-body"><div class="step-phase">Core Concepts</div><div class="step-title">Cryptography &amp; Security Principles</div><div class="step-desc">Learn encryption (AES, RSA, TLS), hashing, digital signatures, PKI, and the CIA triad (Confidentiality, Integrity, Availability).</div><div class="step-tags"><span class="step-tag">Encryption</span><span class="step-tag">TLS/SSL</span><span class="step-tag">Hashing</span><span class="step-tag">PKI</span></div></div></div>
+        <div class="roadmap-step step-color-orange"><div class="step-num">03</div><div class="step-body"><div class="step-phase">Offensive</div><div class="step-title">Ethical Hacking &amp; Penetration Testing</div><div class="step-desc">Practice legally on TryHackMe and HackTheBox. Learn reconnaissance, scanning, exploitation, privilege escalation, and post-exploitation.</div><div class="step-tags"><span class="step-tag">Nmap</span><span class="step-tag">Metasploit</span><span class="step-tag">Burp Suite</span><span class="step-tag">OWASP Top 10</span></div></div></div>
+        <div class="roadmap-step step-color-purple"><div class="step-num">04</div><div class="step-body"><div class="step-phase">Defensive</div><div class="step-title">Blue Team: Detection &amp; Response</div><div class="step-desc">Learn SIEM tools, log analysis, incident response, threat hunting, and SOC operations. Practice with Splunk, Wireshark, and log analysis.</div><div class="step-tags"><span class="step-tag">Wireshark</span><span class="step-tag">Splunk</span><span class="step-tag">IDS/IPS</span><span class="step-tag">SIEM</span></div></div></div>
+        <div class="roadmap-step step-color-pink"><div class="step-num">05</div><div class="step-body"><div class="step-phase">Certifications</div><div class="step-title">Get Certified: CompTIA, CEH, OSCP</div><div class="step-desc">Validate your skills. Start with CompTIA Security+, then CEH. Advanced: OSCP is the gold standard for penetration testers.</div><div class="step-tags"><span class="step-tag">CompTIA Security+</span><span class="step-tag">CEH</span><span class="step-tag">OSCP</span><span class="step-tag">CISSP</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="roadmap-content" id="tab-gamedev">
+      <div class="roadmap-path">
+        <div class="roadmap-step step-color-orange"><div class="step-num">01</div><div class="step-body"><div class="step-phase">Foundation</div><div class="step-title">Choose Your Engine: Unity or Unreal</div><div class="step-desc">Unity (C#) is best for beginners and mobile games. Unreal Engine (C++ / Blueprints) is best for high-fidelity 3D. Godot (GDScript) is a great free alternative.</div><div class="step-tags"><span class="step-tag">Unity</span><span class="step-tag">Unreal Engine</span><span class="step-tag">Godot</span><span class="step-tag">C#</span><span class="step-tag">C++</span></div></div></div>
+        <div class="roadmap-step step-color-purple"><div class="step-num">02</div><div class="step-body"><div class="step-phase">Game Concepts</div><div class="step-title">Game Loop, Physics &amp; Input</div><div class="step-desc">Understand the game loop, delta time, physics simulation (colliders, rigidbody), handling player input, and scene management.</div><div class="step-tags"><span class="step-tag">Game Loop</span><span class="step-tag">Rigidbody</span><span class="step-tag">Colliders</span><span class="step-tag">Input System</span></div></div></div>
+        <div class="roadmap-step step-color-blue"><div class="step-num">03</div><div class="step-body"><div class="step-phase">Graphics &amp; Sound</div><div class="step-title">2D/3D Art, Animation &amp; Audio</div><div class="step-desc">Work with sprites, tilemaps, 3D models, shaders, lighting, particle systems, and integrate sound effects and background music.</div><div class="step-tags"><span class="step-tag">Sprites</span><span class="step-tag">Animation</span><span class="step-tag">Shaders</span><span class="step-tag">Audio</span></div></div></div>
+        <div class="roadmap-step step-color-green"><div class="step-num">04</div><div class="step-body"><div class="step-phase">Game Systems</div><div class="step-title">AI, UI, Save Systems &amp; Multiplayer</div><div class="step-desc">Implement enemy AI (pathfinding, state machines), HUD/UI systems, save/load functionality, and optionally add multiplayer with Photon or Mirror.</div><div class="step-tags"><span class="step-tag">Pathfinding</span><span class="step-tag">State Machines</span><span class="step-tag">Save System</span><span class="step-tag">Multiplayer</span></div></div></div>
+        <div class="roadmap-step step-color-teal"><div class="step-num">05</div><div class="step-body"><div class="step-phase">Launch</div><div class="step-title">Optimizing &amp; Publishing Your Game</div><div class="step-desc">Profile and optimize performance, prepare builds for PC/mobile/console, and publish on Steam, itch.io, Google Play, or the App Store.</div><div class="step-tags"><span class="step-tag">Profiler</span><span class="step-tag">Build Settings</span><span class="step-tag">Steam</span><span class="step-tag">itch.io</span></div></div></div>
+      </div>
+    </div>
+
+    <div class="roadmap-content" id="tab-datascience">
+      <div class="roadmap-path">
+        <div class="roadmap-step step-color-blue"><div class="step-num">01</div><div class="step-body"><div class="step-phase">Foundation</div><div class="step-title">Python &amp; Statistics Basics</div><div class="step-desc">Learn Python fundamentals and core statistics: mean, median, variance, distributions, hypothesis testing, and correlation. These underpin everything in data science.</div><div class="step-tags"><span class="step-tag">Python</span><span class="step-tag">Statistics</span><span class="step-tag">Probability</span><span class="step-tag">Distributions</span></div></div></div>
+        <div class="roadmap-step step-color-green"><div class="step-num">02</div><div class="step-body"><div class="step-phase">Data Work</div><div class="step-title">Data Collection, Cleaning &amp; EDA</div><div class="step-desc">Collect data from APIs, databases, and web scraping. Clean messy data with pandas and explore it through visual analysis (EDA).</div><div class="step-tags"><span class="step-tag">Pandas</span><span class="step-tag">NumPy</span><span class="step-tag">Web Scraping</span><span class="step-tag">EDA</span><span class="step-tag">SQL</span></div></div></div>
+        <div class="roadmap-step step-color-orange"><div class="step-num">03</div><div class="step-body"><div class="step-phase">Visualization</div><div class="step-title">Data Visualization &amp; Dashboards</div><div class="step-desc">Communicate data insights visually. Learn matplotlib, seaborn, Plotly, and build interactive dashboards with Tableau, Power BI, or Streamlit.</div><div class="step-tags"><span class="step-tag">Matplotlib</span><span class="step-tag">Plotly</span><span class="step-tag">Tableau</span><span class="step-tag">Streamlit</span></div></div></div>
+        <div class="roadmap-step step-color-purple"><div class="step-num">04</div><div class="step-body"><div class="step-phase">Modeling</div><div class="step-title">Machine Learning for Data Science</div><div class="step-desc">Apply ML models to real datasets: regression, classification, clustering. Learn cross-validation, feature engineering, and model evaluation metrics.</div><div class="step-tags"><span class="step-tag">scikit-learn</span><span class="step-tag">XGBoost</span><span class="step-tag">Feature Engineering</span><span class="step-tag">Cross-Validation</span></div></div></div>
+        <div class="roadmap-step step-color-pink"><div class="step-num">05</div><div class="step-body"><div class="step-phase">Portfolio</div><div class="step-title">Build Projects &amp; Get Certified</div><div class="step-desc">Publish projects on Kaggle and GitHub. Compete in Kaggle competitions. Get certified with Google Data Analytics or IBM Data Science Professional certifications.</div><div class="step-tags"><span class="step-tag">Kaggle</span><span class="step-tag">GitHub Portfolio</span><span class="step-tag">Google Certificate</span><span class="step-tag">IBM Certificate</span></div></div></div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <footer>
+    <p>Built with ♥ by <a href="https://shifat0g.github.io" target="_blank">Shifat</a> &nbsp;·&nbsp; All resources are free to use</p>
+  </footer>
+
+  <script>
+    function switchTab(id, btn) {
+      document.querySelectorAll('.roadmap-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 60);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
