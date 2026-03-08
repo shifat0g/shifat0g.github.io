@@ -11,9 +11,8 @@
   </script>
   <script>
     (function(){
-      var m = localStorage.getItem('shifat-mode') || 'light';
-      if (m === 'aurora') m = 'cyber';
-      document.documentElement.setAttribute('data-mode', m);
+      var t = localStorage.getItem('shifat-theme') || 'ocean';
+      document.documentElement.setAttribute('data-theme', t);
     })();
   </script>
   <meta charset="UTF-8" />
@@ -26,58 +25,81 @@
 </head>
 <body>
 
-  <!-- ── Mode Switcher Pill ── -->
-  <div class="mode-switcher" id="modeSwitcher" role="group" aria-label="Choose color mode">
-    <button class="mode-btn" id="modeLight" data-mode="light" aria-pressed="false" title="Light mode">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-      <span>Light</span>
-    </button>
-    <button class="mode-btn" id="modeDark" data-mode="dark" aria-pressed="false" title="Dark mode">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      <span>Dark</span>
-    </button>
-    <button class="mode-btn" id="modeCyber" data-mode="cyber" aria-pressed="false" title="Cyber mode">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      <span>Cyber</span>
-    </button>
-  </div>
-
   <!-- ── Pill Navbar ── -->
   <header class="pill-nav">
     <div class="pill-inner">
       <a href="#" class="pill-logo">
         <svg width="22" height="22" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Body -->
           <ellipse cx="18" cy="21" rx="10" ry="12" fill="#1a1a2e"/>
-          <!-- White belly -->
           <ellipse cx="18" cy="22" rx="6" ry="8" fill="rgba(255,255,255,0.88)"/>
-          <!-- Head -->
           <ellipse cx="18" cy="10" rx="7.5" ry="7" fill="#1a1a2e"/>
-          <!-- Eyes -->
           <circle cx="15.2" cy="9" r="1.7" fill="white"/>
           <circle cx="20.8" cy="9" r="1.7" fill="white"/>
           <circle cx="15.6" cy="9.2" r="0.9" fill="#0a0e0b"/>
           <circle cx="21.2" cy="9.2" r="0.9" fill="#0a0e0b"/>
-          <!-- Eye shine -->
           <circle cx="15.9" cy="8.7" r="0.4" fill="white"/>
           <circle cx="21.5" cy="8.7" r="0.4" fill="white"/>
-          <!-- Beak -->
           <path d="M16.2 12.5 Q18 14.5 19.8 12.5 Q18 11.5 16.2 12.5Z" fill="#f59e0b"/>
-          <!-- Feet -->
           <ellipse cx="14" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
           <ellipse cx="22" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
-          <!-- Wings -->
           <path d="M8 16 Q5 21 8 26 Q10 22 10 18Z" fill="#1a1a2e"/>
           <path d="M28 16 Q31 21 28 26 Q26 22 26 18Z" fill="#1a1a2e"/>
-          <!-- Accent glow tint on belly -->
           <ellipse cx="18" cy="22" rx="4" ry="5" fill="rgba(47,186,189,0.08)"/>
         </svg>
         <span>Shifat</span>
       </a>
-      <button class="pill-btn" id="menuBtn" aria-label="Open menu">
-        <span class="hbar"></span>
-        <span class="hbar"></span>
-      </button>
+      <div class="pill-inner-right">
+        <!-- Theme Pill -->
+        <div class="theme-pill" id="themePill">
+          <button class="theme-pill-trigger" id="themePillTrigger" aria-label="Change theme">
+            <span class="theme-pill-dots" id="themePillDots">
+              <span class="theme-pill-dot" id="tpd1"></span>
+              <span class="theme-pill-dot" id="tpd2"></span>
+              <span class="theme-pill-dot" id="tpd3"></span>
+            </span>
+            <span>Theme</span>
+          </button>
+          <div class="theme-pill-dropdown" id="themePillDropdown">
+            <button class="tswatch" data-theme="ocean">
+              <span class="sdots"><span class="sd" style="background:#1a3a6e"></span><span class="sd" style="background:#2670c4"></span><span class="sd" style="background:#22d3ee"></span></span>
+              <span class="slabel">Ocean</span>
+            </button>
+            <button class="tswatch" data-theme="ember">
+              <span class="sdots"><span class="sd" style="background:#6e1a1a"></span><span class="sd" style="background:#c44d26"></span><span class="sd" style="background:#f59e0b"></span></span>
+              <span class="slabel">Ember</span>
+            </button>
+            <button class="tswatch" data-theme="dusk">
+              <span class="sdots"><span class="sd" style="background:#a85754"></span><span class="sd" style="background:#4ebf5d"></span><span class="sd" style="background:#3badaa"></span></span>
+              <span class="slabel">Dusk</span>
+            </button>
+            <button class="tswatch" data-theme="forest">
+              <span class="sdots"><span class="sd" style="background:#1a4731"></span><span class="sd" style="background:#2d8c5e"></span><span class="sd" style="background:#6fddaa"></span></span>
+              <span class="slabel">Forest</span>
+            </button>
+            <button class="tswatch" data-theme="arctic">
+              <span class="sdots"><span class="sd" style="background:#536e57"></span><span class="sd" style="background:#5a7f91"></span><span class="sd" style="background:#2fbabd"></span></span>
+              <span class="slabel">Arctic</span>
+            </button>
+            <button class="tswatch" data-theme="violet">
+              <span class="sdots"><span class="sd" style="background:#3b1f6e"></span><span class="sd" style="background:#7c3aed"></span><span class="sd" style="background:#c084fc"></span></span>
+              <span class="slabel">Violet</span>
+            </button>
+            <button class="tswatch" data-theme="rose">
+              <span class="sdots"><span class="sd" style="background:#5c1130"></span><span class="sd" style="background:#be185d"></span><span class="sd" style="background:#fb7185"></span></span>
+              <span class="slabel">Rose</span>
+            </button>
+            <button class="tswatch" data-theme="gold">
+              <span class="sdots"><span class="sd" style="background:#3d2a0a"></span><span class="sd" style="background:#92500e"></span><span class="sd" style="background:#fbbf24"></span></span>
+              <span class="slabel">Gold</span>
+            </button>
+          </div>
+        </div>
+        <!-- Hamburger -->
+        <button class="pill-btn" id="menuBtn" aria-label="Open menu">
+          <span class="hbar"></span>
+          <span class="hbar"></span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -88,72 +110,15 @@
 
       <div class="overlay-cols">
 
-        <!-- Left col: nav links + theme -->
+        <!-- Left col: nav links -->
         <div class="overlay-col">
           <p class="overlay-label">Navigate</p>
           <nav class="overlay-nav">
-            <a href="#about"      class="overlay-link" data-delay="0"><span class="onum"></span>About</a>
+            <a href="#about"       class="overlay-link" data-delay="0"><span class="onum"></span>About Me</a>
             <a href="#tools-games" class="overlay-link" data-delay="1"><span class="onum"></span>Tools & Games</a>
-            <a href="#connect"    class="overlay-link" data-delay="2"><span class="onum"></span>Connect</a>
-            <a href="#community"  class="overlay-link" data-delay="3"><span class="onum"></span>Community</a>
-            <a href="#projects"   class="overlay-link" data-delay="4"><span class="onum"></span>Projects</a>
-
-            <button class="overlay-link theme-trigger" id="themeToggleBtn" data-delay="5">
-              <span class="onum"></span>
-              Theme 🎨
-              <span class="theme-caret" id="themeCaret">▾</span>
-            </button>
-
-            <div class="theme-panel" id="themePanel">
-              <button class="tswatch" data-theme="ember">
-                <span class="sdots">
-                <span class="sd" style="background:#6e1a1a"></span>
-                <span class="sd" style="background:#c44d26"></span>
-                <span class="sd" style="background:#f59e0b"></span>
-                </span>
-                <span class="slabel">Ember</span>
-              </button>
-              <button class="tswatch" data-theme="dusk">
-                <span class="sdots">
-                  <span class="sd" style="background:#a85754"></span>
-                  <span class="sd" style="background:#4ebf5d"></span>
-                  <span class="sd" style="background:#3badaa"></span>
-                </span>
-                <span class="slabel">Dusk</span>
-              </button>
-              <button class="tswatch active" data-theme="ocean">
-                <span class="sdots">
-                  <span class="sd" style="background:#1a3a6e"></span>
-                  <span class="sd" style="background:#2670c4"></span>
-                  <span class="sd" style="background:#22d3ee"></span>
-                </span>
-                <span class="slabel">Ocean</span>
-              </button>
-              <button class="tswatch" data-theme="forest">
-                <span class="sdots">
-                  <span class="sd" style="background:#1a4731"></span>
-                  <span class="sd" style="background:#2d8c5e"></span>
-                  <span class="sd" style="background:#6fddaa"></span>
-                </span>
-                <span class="slabel">Forest</span>
-              </button>
-              <button class="tswatch" data-theme="arctic">
-                 <span class="sdots">
-                 <span class="sd" style="background:#536e57"></span>
-                 <span class="sd" style="background:#5a7f91"></span>
-                 <span class="sd" style="background:#2fbabd"></span>
-                 </span>
-                 <span class="slabel">Arctic</span>
-              </button>
-              <button class="tswatch" data-theme="violet">
-                <span class="sdots">
-                  <span class="sd" style="background:#3b1f6e"></span>
-                  <span class="sd" style="background:#7c3aed"></span>
-                  <span class="sd" style="background:#c084fc"></span>
-                </span>
-                <span class="slabel">Violet</span>
-              </button>
-            </div>
+            <a href="#connect"     class="overlay-link" data-delay="2"><span class="onum"></span>Connect</a>
+            <a href="#community"   class="overlay-link" data-delay="3"><span class="onum"></span>Community</a>
+            <a href="#projects"    class="overlay-link" data-delay="4"><span class="onum"></span>Projects</a>
           </nav>
         </div>
 
@@ -161,17 +126,16 @@
         <div class="overlay-col">
           <p class="overlay-label">Quick Links</p>
           <nav class="overlay-extras">
-            <a href="/color"         class="overlay-extra" data-delay="0"><span>Color Combination</span><span class="earrow">↗</span></a>
+            <a href="/color"          class="overlay-extra" data-delay="0"><span>Color Combination</span><span class="earrow">↗</span></a>
             <a href="/calculator"     class="overlay-extra" data-delay="1"><span>Calculator</span><span class="earrow">↗</span></a>
-            <a href="/tools"         class="overlay-extra" data-delay="2"><span>Tools</span><span class="earrow">↗</span></a>
+            <a href="/tools"          class="overlay-extra" data-delay="2"><span>Tools</span><span class="earrow">↗</span></a>
             <a href="/Micro-expenses" class="overlay-extra" data-delay="3"><span>Micro Expenses</span><span class="earrow">↗</span></a>
             <a href="/coding"         class="overlay-extra" data-delay="4"><span>Coding</span><span class="earrow">↗</span></a>
-            <a href="/tictactoe"                                 class="overlay-extra" data-delay="5"><span>Tic Tac Toe</span><span class="earrow">↗</span></a>
-            <a href="/2048"                                      class="overlay-extra" data-delay="6"><span>2048</span><span class="earrow">↗</span></a>
-            <a href="https://shifat0g.github.io/shop/"          class="overlay-extra" data-delay="7"><span>Demo Shop</span><span class="earrow">↗</span></a>
-            <a href="/quote"                                      class="overlay-extra" data-delay="8"><span>Quotes for You</span><span class="earrow">↗</span></a>
-            
-            <a href="/avatar"         class="overlay-extra" data-delay="10"><span>Avatar Generator</span><span class="earrow">↗</span></a>
+            <a href="/tictactoe"      class="overlay-extra" data-delay="5"><span>Tic Tac Toe</span><span class="earrow">↗</span></a>
+            <a href="/2048"           class="overlay-extra" data-delay="6"><span>2048</span><span class="earrow">↗</span></a>
+            <a href="https://shifat0g.github.io/shop/" class="overlay-extra" data-delay="7"><span>Demo Shop</span><span class="earrow">↗</span></a>
+            <a href="/quote"          class="overlay-extra" data-delay="8"><span>Quotes for You</span><span class="earrow">↗</span></a>
+            <a href="/avatar"         class="overlay-extra" data-delay="9"><span>Avatar Generator</span><span class="earrow">↗</span></a>
           </nav>
         </div>
 
@@ -190,16 +154,16 @@
       <div class="hline"></div>
     </header>
 
-    <!-- About -->
-    <section class="section" id="about">
-      <span class="section-tag">About</span>
+    <!-- About Me -->
+    <section class="section scroll-reveal" id="about">
+      <span class="section-tag">About Me</span>
       <p class="about-text">
         Exploring web3 and crypto since 2022. I have worked as an Ambassador, supported and created contents for different projects. Maintained community and organized different campaigns. I know basic coding.🐧
       </p>
     </section>
 
     <!-- Tools & Games -->
-    <section class="section" id="tools-games">
+    <section class="section scroll-reveal" id="tools-games">
       <span class="section-tag">Try out different Tools &amp; Games</span>
 
       <!-- Tools subsection -->
@@ -208,9 +172,8 @@
         <p class="section-intro">Try out different tools</p>
         <div class="tg-grid">
 
-          <a href="/color" class="tg-card" target="_blank" rel="noopener">
+          <a href="/color" class="tg-card scroll-reveal reveal-d1" target="_blank" rel="noopener">
             <div class="tg-card-icon">
-              <!-- Modern color palette: gradient arc + dots -->
               <svg viewBox="0 0 24 24" fill="none" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 3C7.03 3 3 7.03 3 12s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.25)" stroke-width="1.3"/>
                 <circle cx="6.5"  cy="11.5" r="1.5" fill="#f87171"/>
@@ -226,9 +189,8 @@
             </div>
           </a>
 
-          <a href="/calculator" class="tg-card" target="_blank" rel="noopener">
+          <a href="/calculator" class="tg-card scroll-reveal reveal-d2" target="_blank" rel="noopener">
             <div class="tg-card-icon">
-              <!-- Modern minimal calculator -->
               <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="4" y="2" width="16" height="20" rx="3.5" fill="rgba(47,186,189,0.08)" stroke="rgba(47,186,189,0.65)" stroke-width="1.4"/>
                 <rect x="7" y="5" width="10" height="3.5" rx="1.2" fill="rgba(47,186,189,0.25)"/>
@@ -246,9 +208,8 @@
             </div>
           </a>
 
-          <a href="/tools" class="tg-card" target="_blank" rel="noopener">
+          <a href="/tools" class="tg-card scroll-reveal reveal-d3" target="_blank" rel="noopener">
             <div class="tg-card-icon">
-              <!-- Modern wrench + sparkle tools icon -->
               <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" stroke="rgba(96,165,250,0.85)" stroke-width="1.5" fill="rgba(96,165,250,0.08)"/>
               </svg>
@@ -259,9 +220,8 @@
             </div>
           </a>
 
-          <a href="/coding" class="tg-card" target="_blank" rel="noopener">
+          <a href="/coding" class="tg-card scroll-reveal reveal-d4" target="_blank" rel="noopener">
             <div class="tg-card-icon">
-              <!-- Modern terminal with blinking cursor feel -->
               <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="3" width="20" height="16" rx="3" fill="rgba(74,222,128,0.06)" stroke="rgba(74,222,128,0.6)" stroke-width="1.3"/>
                 <circle cx="5.5" cy="6.5" r="0.8" fill="rgba(248,113,113,0.8)"/>
@@ -277,9 +237,8 @@
             </div>
           </a>
 
-          <a href="/Micro-Expenses" class="tg-card" target="_blank" rel="noopener">
+          <a href="/Micro-Expenses" class="tg-card scroll-reveal reveal-d5" target="_blank" rel="noopener">
             <div class="tg-card-icon">
-              <!-- Modern wallet with coin -->
               <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="1" y="6" width="22" height="15" rx="3" fill="rgba(251,191,36,0.07)" stroke="rgba(251,191,36,0.7)" stroke-width="1.4"/>
                 <path d="M1 10h22" stroke="rgba(251,191,36,0.4)" stroke-width="1.2"/>
@@ -294,10 +253,8 @@
             </div>
           </a>
 
-
-          <a href="/avatar" class="tg-card" target="_blank" rel="noopener">
+          <a href="/avatar" class="tg-card scroll-reveal reveal-d1" target="_blank" rel="noopener">
             <div class="tg-card-icon">
-              <!-- Avatar generator / face builder icon -->
               <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="8" r="4.5" fill="rgba(251,113,133,0.1)" stroke="rgba(251,113,133,0.75)" stroke-width="1.4"/>
                 <circle cx="10.5" cy="7.2" r="0.7" fill="rgba(251,113,133,0.9)"/>
@@ -322,9 +279,8 @@
         <p class="section-intro">Try out different games</p>
         <div class="tg-grid">
 
-          <a href="/tictactoe" class="tg-card" target="_blank" rel="noopener">
+          <a href="/tictactoe" class="tg-card scroll-reveal reveal-d1" target="_blank" rel="noopener">
             <div class="tg-card-icon">
-              <!-- Tic Tac Toe grid -->
               <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="8" y1="2" x2="8" y2="22" stroke="rgba(255,255,255,0.3)" stroke-width="1.4"/>
                 <line x1="16" y1="2" x2="16" y2="22" stroke="rgba(255,255,255,0.3)" stroke-width="1.4"/>
@@ -341,9 +297,8 @@
             </div>
           </a>
 
-          <a href="/2048" class="tg-card" target="_blank" rel="noopener">
+          <a href="/2048" class="tg-card scroll-reveal reveal-d2" target="_blank" rel="noopener">
             <div class="tg-card-icon">
-              <!-- 2048 number grid -->
               <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
                 <rect x="2" y="2" width="9" height="9" rx="2" fill="rgba(251,191,36,0.7)"/>
                 <rect x="13" y="2" width="9" height="9" rx="2" fill="rgba(251,191,36,0.4)"/>
@@ -364,37 +319,12 @@
         </div>
       </div>
 
-      <!-- Demo Experiments subsection -->
-      <div class="tg-subsection">
-        <p class="tg-label">Demo Experiments</p>
-        <div class="tg-grid">
-
-          <a href="https://shifat0g.github.io/shop/" class="tg-card tg-card--wide" target="_blank" rel="noopener">
-            <div class="tg-card-icon">
-              <!-- Shopping bag -->
-              <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill="rgba(255,255,255,0.06)" stroke="rgba(167,139,250,0.8)" stroke-width="1.5"/>
-                <line x1="3" y1="6" x2="21" y2="6" stroke="rgba(167,139,250,0.5)" stroke-width="1.4"/>
-                <path d="M16 10a4 4 0 01-8 0" stroke="rgba(167,139,250,0.7)" stroke-width="1.4" fill="none"/>
-              </svg>
-            </div>
-            <div class="tg-card-body">
-              <span class="tg-card-name">Demo Shopping Website</span>
-              <span class="tg-card-arrow">↗</span>
-            </div>
-          </a>
-
-        </div>
-      </div>
-
       <!-- Self Help subsection -->
       <div class="tg-subsection">
         <p class="tg-label">Self Help</p>
         <div class="tg-grid">
-
-          <a href="/quote" class="tg-card tg-card--tall" target="_blank" rel="noopener">
+          <a href="/quote" class="tg-card tg-card--tall scroll-reveal" target="_blank" rel="noopener">
             <div class="tg-card-icon tg-card-icon--lg">
-              <!-- Quote / book icon -->
               <svg viewBox="0 0 24 24" fill="none" width="28" height="28" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" fill="rgba(251,191,36,0.12)" stroke="rgba(251,191,36,0.75)" stroke-width="1.5"/>
                 <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" fill="rgba(251,191,36,0.12)" stroke="rgba(251,191,36,0.75)" stroke-width="1.5"/>
@@ -406,52 +336,53 @@
               <span class="tg-card-arrow tg-card-arrow--lg">↗</span>
             </div>
           </a>
-
         </div>
       </div>
 
     </section>
-    <section class="section" id="connect">
+
+    <!-- Connect -->
+    <section class="section scroll-reveal" id="connect">
       <span class="section-tag">Connect</span>
       <p class="section-intro">Find me across the internet</p>
       <div class="links-grid">
 
-        <a href="https://x.com/shifat0g" class="link-card" data-platform="x">
+        <a href="https://x.com/shifat0g" class="link-card scroll-reveal reveal-d1" data-platform="x">
           <div class="link-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           </div>
           <div class="link-info"><span class="link-name">X (Twitter)</span><span class="link-arrow">↗</span></div>
         </a>
 
-        <a href="https://t.me/shifat0g" class="link-card" data-platform="telegram">
+        <a href="https://t.me/shifat0g" class="link-card scroll-reveal reveal-d2" data-platform="telegram">
           <div class="link-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
           </div>
           <div class="link-info"><span class="link-name">Telegram</span><span class="link-arrow">↗</span></div>
         </a>
 
-        <a href="https://discord.gg/CwBRgm7R" class="link-card" data-platform="discord">
+        <a href="https://discord.gg/CwBRgm7R" class="link-card scroll-reveal reveal-d3" data-platform="discord">
           <div class="link-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.087.119 18.116.137 18.132a19.93 19.93 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
           </div>
           <div class="link-info"><span class="link-name">Discord</span><span class="link-arrow">↗</span></div>
         </a>
 
-        <a href="https://github.com/shifat0g" class="link-card" data-platform="github">
+        <a href="https://github.com/shifat0g" class="link-card scroll-reveal reveal-d4" data-platform="github">
           <div class="link-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
           </div>
           <div class="link-info"><span class="link-name">GitHub</span><span class="link-arrow">↗</span></div>
         </a>
 
-        <a href="https://farcaster.xyz/shifat.eth" class="link-card" data-platform="farcaster">
+        <a href="https://farcaster.xyz/shifat.eth" class="link-card scroll-reveal reveal-d5" data-platform="farcaster">
           <div class="link-icon">
-            <img src="farcaster.jpg" alt="Farcaster" width="20" height="20" style="border-radius:4px;object-fit:cover;display:block;"/>
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M11.643.031C5.287.031.07 5.249.07 11.606s5.218 11.575 11.574 11.575c6.357 0 11.575-5.218 11.575-11.575C23.218 5.249 18 .031 11.643.031zM8.31 7.219h6.667v1.01h-2.736v8.552H11.11V8.229H8.31V7.219zm-1.786 1.448h1.231v7.104H6.524V8.667zm10.952 0v7.104H16.24V8.667h1.226z"/></svg>
           </div>
           <div class="link-info"><span class="link-name">Farcaster</span><span class="link-arrow">↗</span></div>
         </a>
 
-        <a href="https://open.spotify.com/user/31ekvjurmvqdmb32n43znyj7rq6u?si=BhGleQm-QUqMeMKd0mcYsg" class="link-card" data-platform="spotify">
+        <a href="https://open.spotify.com/user/31ekvjurmvqdmb32n43znyj7rq6u?si=BhGleQm-QUqMeMKd0mcYsg" class="link-card scroll-reveal reveal-d1" data-platform="spotify">
           <div class="link-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
           </div>
@@ -462,26 +393,26 @@
     </section>
 
     <!-- Community -->
-    <section class="section" id="community">
+    <section class="section scroll-reveal" id="community">
       <span class="section-tag">Community</span>
       <p class="section-intro">Join Web3 Decoder Community</p>
       <div class="links-grid">
 
-        <a href="https://t.me/web3decoder" class="link-card" data-platform="telegram">
+        <a href="https://t.me/web3decoder" class="link-card scroll-reveal reveal-d1" data-platform="telegram">
           <div class="link-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
           </div>
           <div class="link-info"><span class="link-name">Telegram Channel</span><span class="link-arrow">↗</span></div>
         </a>
 
-        <a href="https://t.me/w3dchat" class="link-card" data-platform="telegram">
+        <a href="https://t.me/w3dchat" class="link-card scroll-reveal reveal-d2" data-platform="telegram">
           <div class="link-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
           </div>
           <div class="link-info"><span class="link-name">Community Group</span><span class="link-arrow">↗</span></div>
         </a>
 
-        <a href="https://x.com/Web3DecoderX" class="link-card" data-platform="x">
+        <a href="https://x.com/Web3DecoderX" class="link-card scroll-reveal reveal-d3" data-platform="x">
           <div class="link-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           </div>
@@ -492,11 +423,11 @@
     </section>
 
     <!-- Projects -->
-    <section class="section" id="projects">
+    <section class="section scroll-reveal" id="projects">
       <span class="section-tag">Projects</span>
       <p class="section-intro">Projects I worked on or currently working</p>
       <div class="projects-list">
-        <a href="https://moonbootslabs.com/" class="project-item">
+        <a href="https://moonbootslabs.com/" class="project-item scroll-reveal">
           <div class="project-meta">
             <span class="project-year">Started in 2023</span>
             <h3 class="project-title">Moonboots Labs</h3>
@@ -508,11 +439,11 @@
     </section>
 
     <!-- Games -->
-    <section class="section" id="games">
+    <section class="section scroll-reveal" id="games">
       <span class="section-tag">Games</span>
       <p class="section-intro">Different games I play</p>
       <div class="games-list">
-        <div class="game-item">
+        <div class="game-item scroll-reveal">
           <div class="game-icon">
             <img src="geni.jpeg" alt="Genshin Impact" style="width:34px;height:34px;object-fit:cover;border-radius:50%;display:block;"/>
           </div>
@@ -533,13 +464,33 @@
       </div>
     </section>
 
+    <!-- Demo Experiments (moved above footer) -->
+    <section class="section scroll-reveal" id="demo-experiments">
+      <span class="section-tag">Demo Experiments</span>
+      <div class="tg-grid">
+        <a href="https://shifat0g.github.io/shop/" class="tg-card tg-card--wide scroll-reveal" target="_blank" rel="noopener">
+          <div class="tg-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" fill="rgba(255,255,255,0.06)" stroke="rgba(167,139,250,0.8)" stroke-width="1.5"/>
+              <line x1="3" y1="6" x2="21" y2="6" stroke="rgba(167,139,250,0.5)" stroke-width="1.4"/>
+              <path d="M16 10a4 4 0 01-8 0" stroke="rgba(167,139,250,0.7)" stroke-width="1.4" fill="none"/>
+            </svg>
+          </div>
+          <div class="tg-card-body">
+            <span class="tg-card-name">Demo Shopping Website</span>
+            <span class="tg-card-arrow">↗</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
     <footer class="site-footer" id="footer">
-      <div class="footer-tagline">
+      <div class="footer-tagline scroll-reveal">
         <span>That's all for now</span>
       </div>
 
       <!-- Feedback Box -->
-      <div class="feedback-box" id="feedback">
+      <div class="feedback-box scroll-reveal" id="feedback">
         <div class="feedback-box-header">
           <div class="feedback-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -579,12 +530,11 @@
         (function() {
           const SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbzctHhw5WTcvCih3t-DQ1TAegtGwBnAmPVFPc8J21rARegdMOItlje014Jln0kzjeXp/exec';
           const VALID_TYPES = ['Feedback', 'Suggestion', 'Question'];
-          const COOLDOWN_MS = 30000; // 30 seconds between submissions
+          const COOLDOWN_MS = 30000;
           let selectedType  = 'Feedback';
           let isSubmitting  = false;
           let lastSubmitAt  = 0;
 
-          // Type buttons
           document.querySelectorAll('.ftype-btn').forEach(btn => {
             btn.addEventListener('click', () => {
               document.querySelectorAll('.ftype-btn').forEach(b => b.classList.remove('active'));
@@ -593,89 +543,43 @@
             });
           });
 
-          // Char count
           const textarea = document.getElementById('feedbackMsg');
           const counter  = document.getElementById('feedbackCount');
           textarea.addEventListener('input', () => {
             counter.textContent = textarea.value.length;
           });
 
-          // Submit
           document.getElementById('feedbackSubmit').addEventListener('click', async () => {
             if (isSubmitting) return;
-
             const message = textarea.value.trim();
             const status  = document.getElementById('feedbackStatus');
             const btnText = document.getElementById('feedbackBtnText');
             const btn     = document.getElementById('feedbackSubmit');
-
-            // Validate message
-            if (!message) {
-              status.textContent = 'Please write something first.';
-              status.className = 'feedback-status error';
-              return;
-            }
-            if (message.length > 1000) {
-              status.textContent = 'Message too long (max 1000 characters).';
-              status.className = 'feedback-status error';
-              return;
-            }
-
-            // Validate type
-            if (!VALID_TYPES.includes(selectedType)) {
-              status.textContent = 'Invalid type selected.';
-              status.className = 'feedback-status error';
-              return;
-            }
-
-            // Cooldown check
+            if (!message) { status.textContent = 'Please write something first.'; status.className = 'feedback-status error'; return; }
+            if (message.length > 1000) { status.textContent = 'Message too long (max 1000 characters).'; status.className = 'feedback-status error'; return; }
+            if (!VALID_TYPES.includes(selectedType)) { status.textContent = 'Invalid type selected.'; status.className = 'feedback-status error'; return; }
             const now = Date.now();
-            if (now - lastSubmitAt < COOLDOWN_MS) {
-              const secsLeft = Math.ceil((COOLDOWN_MS - (now - lastSubmitAt)) / 1000);
-              status.textContent = `Please wait ${secsLeft}s before sending again.`;
-              status.className = 'feedback-status error';
-              return;
-            }
-
-            isSubmitting = true;
-            btn.disabled = true;
-            btnText.textContent = 'Sending...';
-            status.textContent = '';
-            status.className = 'feedback-status';
-
+            if (now - lastSubmitAt < COOLDOWN_MS) { const secsLeft = Math.ceil((COOLDOWN_MS - (now - lastSubmitAt)) / 1000); status.textContent = `Please wait ${secsLeft}s before sending again.`; status.className = 'feedback-status error'; return; }
+            isSubmitting = true; btn.disabled = true; btnText.textContent = 'Sending...'; status.textContent = ''; status.className = 'feedback-status';
             try {
               const form = new FormData();
               form.append('type', selectedType);
               form.append('message', message);
-              await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: form
-              });
+              await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: form });
               lastSubmitAt = Date.now();
-              status.textContent = '✓ Sent! Thank you for your feedback.';
-              status.className = 'feedback-status success';
-              textarea.value = '';
-              counter.textContent = '0';
-              btnText.textContent = 'Send Anonymously';
+              status.textContent = '✓ Sent! Thank you for your feedback.'; status.className = 'feedback-status success';
+              textarea.value = ''; counter.textContent = '0'; btnText.textContent = 'Send Anonymously';
             } catch (err) {
-              status.textContent = 'Something went wrong. Please try again.';
-              status.className = 'feedback-status error';
-              btnText.textContent = 'Send Anonymously';
-            } finally {
-              isSubmitting = false;
-              btn.disabled = false;
-            }
+              status.textContent = 'Something went wrong. Please try again.'; status.className = 'feedback-status error'; btnText.textContent = 'Send Anonymously';
+            } finally { isSubmitting = false; btn.disabled = false; }
           });
         })();
       </script>
 
       <div class="hline"></div>
 
-      <!-- Footer body: two columns -->
+      <!-- Footer body -->
       <div class="footer-body">
-
-        <!-- Left: personal social links -->
         <div class="footer-col">
           <p class="footer-col-label">Connect</p>
           <nav class="footer-links">
@@ -698,7 +602,6 @@
           </nav>
         </div>
 
-        <!-- Right: community links -->
         <div class="footer-col">
           <p class="footer-col-label">Community</p>
           <nav class="footer-links">
@@ -716,12 +619,10 @@
             </a>
           </nav>
         </div>
-
       </div>
 
       <div class="hline"></div>
 
-      <!-- Bottom bar: penguin + copyright -->
       <div class="footer-bottom">
         <svg class="footer-penguin" width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <ellipse cx="18" cy="21" rx="10" ry="12" fill="#1a1a2e"/>
@@ -747,187 +648,6 @@
 
   </main>
 
-
-  <script>
-    /* ── Menu ── */
-    const menuBtn      = document.getElementById('menuBtn');
-    const navOverlay   = document.getElementById('navOverlay');
-    const overlayClose = document.getElementById('overlayClose');
-
-    function openMenu() {
-      navOverlay.classList.add('open');
-      menuBtn.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      document.querySelectorAll('.overlay-link').forEach(el => {
-        el.style.transitionDelay = (0.07 + (+el.dataset.delay || 0) * 0.06) + 's';
-      });
-      document.querySelectorAll('.overlay-extra').forEach(el => {
-        el.style.transitionDelay = (0.10 + (+el.dataset.delay || 0) * 0.05) + 's';
-      });
-    }
-
-    function closeMenu() {
-      navOverlay.classList.remove('open');
-      menuBtn.classList.remove('active');
-      document.body.style.overflow = '';
-      document.querySelectorAll('.overlay-link, .overlay-extra').forEach(el => {
-        el.style.transitionDelay = '0s';
-      });
-    }
-
-    menuBtn.addEventListener('click', () => navOverlay.classList.contains('open') ? closeMenu() : openMenu());
-    overlayClose.addEventListener('click', closeMenu);
-    navOverlay.addEventListener('click', e => { if (e.target === navOverlay) closeMenu(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
-    document.querySelectorAll('a.overlay-link, .overlay-extra').forEach(el => el.addEventListener('click', closeMenu));
-
-    /* ── Theme panel toggle ── */
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
-    const themePanel     = document.getElementById('themePanel');
-    const themeCaret     = document.getElementById('themeCaret');
-
-    themeToggleBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      const open = themePanel.classList.toggle('open');
-      themeCaret.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
-    });
-
-    /* ── Aurora color themes ── */
-    const AURORA_THEMES = {
-      arctic: ['#536e57','#5a7f91','#2fbabd'],
-      dusk:   ['#a85754','#4ebf5d','#3badaa'],
-      ocean:  ['#1a3a6e','#2670c4','#22d3ee'],
-      forest: ['#1a4731','#2d8c5e','#6fddaa'],
-      ember:  ['#6e1a1a','#c44d26','#f59e0b'],
-      violet: ['#3b1f6e','#7c3aed','#c084fc'],
-    };
-
-    /* Accent colors derived from each theme's third (highlight) color */
-    const THEME_ACCENTS = {
-      arctic: { accent: '#2fbabd', soft: 'rgba(47,186,189,0.22)', activeBg: 'rgba(47,186,189,0.2)', activeBorder: 'rgba(47,186,189,0.5)' },
-      dusk:   { accent: '#3badaa', soft: 'rgba(59,173,170,0.22)', activeBg: 'rgba(59,173,170,0.2)', activeBorder: 'rgba(59,173,170,0.5)' },
-      ocean:  { accent: '#22d3ee', soft: 'rgba(34,211,238,0.22)', activeBg: 'rgba(34,211,238,0.18)', activeBorder: 'rgba(34,211,238,0.5)' },
-      forest: { accent: '#6fddaa', soft: 'rgba(111,221,170,0.22)', activeBg: 'rgba(111,221,170,0.18)', activeBorder: 'rgba(111,221,170,0.5)' },
-      ember:  { accent: '#f59e0b', soft: 'rgba(245,158,11,0.22)', activeBg: 'rgba(245,158,11,0.18)', activeBorder: 'rgba(245,158,11,0.5)' },
-      violet: { accent: '#c084fc', soft: 'rgba(192,132,252,0.22)', activeBg: 'rgba(192,132,252,0.18)', activeBorder: 'rgba(192,132,252,0.5)' },
-    };
-
-    function applyTheme(key) {
-      if (!AURORA_THEMES[key]) return;
-
-      /* Update swatch active state immediately */
-      document.querySelectorAll('.tswatch').forEach(b => b.classList.remove('active'));
-      const swatchEl = document.querySelector(`.tswatch[data-theme="${key}"]`);
-      if (swatchEl) swatchEl.classList.add('active');
-
-      /* Save preference */
-      localStorage.setItem('shifat-theme', key);
-
-      /* Apply accent CSS variables to root for cyber mode */
-      const t = THEME_ACCENTS[key];
-      if (t && document.documentElement.getAttribute('data-mode') === 'cyber') {
-        const root = document.documentElement;
-        root.style.setProperty('--accent', t.accent);
-        root.style.setProperty('--accent-soft', t.soft);
-        root.style.setProperty('--mode-btn-active-bg', t.activeBg);
-        root.style.setProperty('--mode-btn-active-border', t.activeBorder);
-        root.style.setProperty('--mode-btn-active-color', t.accent);
-        root.style.setProperty('--ai-user-bubble', t.activeBg);
-        root.style.setProperty('--ai-user-bubble-border', t.activeBorder);
-        root.style.setProperty('--overlay-label', t.soft);
-        root.style.setProperty('--footer-label', t.soft);
-      }
-    }
-
-    document.querySelectorAll('.tswatch').forEach(btn => {
-      btn.addEventListener('click', () => {
-        /* Ripple effect */
-        btn.classList.remove('rippling');
-        void btn.offsetWidth;
-        btn.classList.add('rippling');
-        btn.addEventListener('animationend', () => btn.classList.remove('rippling'), { once: true });
-
-        applyTheme(btn.dataset.theme);
-      });
-    });
-
-    /* ── Mode switcher: light / dark / cyber ── */
-    function applyMode(mode) {
-      document.documentElement.setAttribute('data-mode', mode);
-
-      /* Clear any inline theme overrides when leaving cyber mode */
-      if (mode !== 'cyber') {
-        const root = document.documentElement;
-        ['--accent','--accent-soft','--mode-btn-active-bg','--mode-btn-active-border',
-         '--mode-btn-active-color','--ai-user-bubble','--ai-user-bubble-border',
-         '--overlay-label','--footer-label'].forEach(p => root.style.removeProperty(p));
-      }
-
-      document.querySelectorAll('.mode-btn').forEach(b => {
-        const active = b.dataset.mode === mode;
-        b.classList.toggle('active', active);
-        b.setAttribute('aria-pressed', String(active));
-      });
-
-      localStorage.setItem('shifat-mode', mode);
-
-      /* When entering cyber mode, apply the saved color theme */
-      if (mode === 'cyber') {
-        const savedTheme = localStorage.getItem('shifat-theme') || 'ocean';
-        applyTheme(savedTheme);
-      }
-    }
-
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        /* Ripple effect */
-        btn.classList.remove('rippling');
-        void btn.offsetWidth; // reflow
-        btn.classList.add('rippling');
-        btn.addEventListener('animationend', () => btn.classList.remove('rippling'), { once: true });
-
-        applyMode(btn.dataset.mode);
-      });
-    });
-
-    /* On load: restore saved mode (default = light for first-time visitors) */
-    let savedMode = localStorage.getItem('shifat-mode') || 'light';
-    /* Migrate old 'aurora' value to 'cyber' */
-    if (savedMode === 'aurora') savedMode = 'cyber';
-    applyMode(savedMode);
-  </script>
-
-  <script>
-    /* ── Heading: fade+rise on load/scroll ── */
-    (function() {
-      var heading = document.getElementById('siteHeading');
-      if (!heading) return;
-      function revealHeading() {
-        var rect = heading.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.92) {
-          heading.classList.add('revealed');
-          window.removeEventListener('scroll', revealHeading);
-        }
-      }
-      window.addEventListener('load', function() {
-        setTimeout(revealHeading, 80);
-      });
-      window.addEventListener('scroll', revealHeading, { passive: true });
-    })();
-  </script>
-  <script>
-    document.getElementById('uidCopyBtn').addEventListener('click', function() {
-      const uid = document.querySelector('.game-uid-display').textContent.trim();
-      navigator.clipboard.writeText(uid).then(() => {
-        this.classList.add('copied');
-        this.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-        setTimeout(() => {
-          this.classList.remove('copied');
-          this.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
-        }, 1600);
-      });
-    });
-  </script>
   <!-- Back to top button -->
   <button class="back-to-top" id="backToTop" aria-label="Back to top">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -935,23 +655,10 @@
     </svg>
   </button>
 
-  <script>
-    /* ── Back to top ── */
-    const backToTop = document.getElementById('backToTop');
-    window.addEventListener('scroll', () => {
-      backToTop.classList.toggle('visible', window.scrollY > 400);
-    }, { passive: true });
-    backToTop.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  </script>
-
   <!-- ── AI Assistant Widget ── -->
-  <!-- Trigger button -->
   <button class="ai-trigger" id="aiTrigger" aria-label="Ask AI">
     <span class="ai-trigger-icon">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2a8 8 0 0 1 8 8c0 5-8 13-8 13S4 15 4 10a8 8 0 0 1 8-8z" opacity="0"/>
         <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" opacity="0.15" fill="currentColor" stroke="none"/>
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -959,10 +666,7 @@
     </span>
   </button>
 
-  <!-- Chat panel -->
   <div class="ai-panel" id="aiPanel" role="dialog" aria-label="AI Assistant">
-
-    <!-- Header -->
     <div class="ai-header">
       <div class="ai-header-avatar">
         <svg width="18" height="18" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -986,30 +690,15 @@
       </div>
       <button class="ai-close" id="aiClose" aria-label="Close">✕</button>
     </div>
-
-    <!-- Messages -->
-    <div class="ai-messages" id="aiMessages">
-      <!-- Welcome message injected by JS -->
-    </div>
-
-    <!-- Quick chips -->
+    <div class="ai-messages" id="aiMessages"></div>
     <div class="ai-chips" id="aiChips">
       <span class="ai-chips-label">Quick questions</span>
       <button class="ai-chip" data-q="Who is Shifat?">Who is Shifat?</button>
       <button class="ai-chip" data-q="What projects has Shifat built?">His projects</button>
       <button class="ai-chip" data-q="What are Shifat's social media links?">Social links</button>
     </div>
-
-    <!-- Input -->
     <div class="ai-input-row">
-      <textarea
-        class="ai-input"
-        id="aiInput"
-        placeholder="Ask anything…"
-        rows="1"
-        maxlength="800"
-        aria-label="Message"
-      ></textarea>
+      <textarea class="ai-input" id="aiInput" placeholder="Ask anything…" rows="1" maxlength="800" aria-label="Message"></textarea>
       <button class="ai-send" id="aiSend" aria-label="Send" disabled>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="22" y1="2" x2="11" y2="13"/>
@@ -1020,10 +709,180 @@
   </div>
 
   <script>
+    /* ═══════════════════════════════════════
+       THEME SYSTEM — 8 themes, no light/dark
+    ═══════════════════════════════════════ */
+    const THEMES = {
+      ocean:  { accent:'#22d3ee', soft:'rgba(34,211,238,0.22)', activeBg:'rgba(34,211,238,0.18)', activeBorder:'rgba(34,211,238,0.5)', dots:['#1a3a6e','#2670c4','#22d3ee'] },
+      ember:  { accent:'#f59e0b', soft:'rgba(245,158,11,0.22)',  activeBg:'rgba(245,158,11,0.18)',  activeBorder:'rgba(245,158,11,0.5)',  dots:['#6e1a1a','#c44d26','#f59e0b'] },
+      dusk:   { accent:'#3badaa', soft:'rgba(59,173,170,0.22)',  activeBg:'rgba(59,173,170,0.18)',  activeBorder:'rgba(59,173,170,0.5)',  dots:['#a85754','#4ebf5d','#3badaa'] },
+      forest: { accent:'#6fddaa', soft:'rgba(111,221,170,0.22)', activeBg:'rgba(111,221,170,0.18)', activeBorder:'rgba(111,221,170,0.5)', dots:['#1a4731','#2d8c5e','#6fddaa'] },
+      arctic: { accent:'#2fbabd', soft:'rgba(47,186,189,0.22)',  activeBg:'rgba(47,186,189,0.2)',   activeBorder:'rgba(47,186,189,0.5)',  dots:['#536e57','#5a7f91','#2fbabd'] },
+      violet: { accent:'#c084fc', soft:'rgba(192,132,252,0.22)', activeBg:'rgba(192,132,252,0.18)', activeBorder:'rgba(192,132,252,0.5)', dots:['#3b1f6e','#7c3aed','#c084fc'] },
+      rose:   { accent:'#fb7185', soft:'rgba(251,113,133,0.22)', activeBg:'rgba(251,113,133,0.18)', activeBorder:'rgba(251,113,133,0.5)', dots:['#5c1130','#be185d','#fb7185'] },
+      gold:   { accent:'#fbbf24', soft:'rgba(251,191,36,0.22)',  activeBg:'rgba(251,191,36,0.18)',  activeBorder:'rgba(251,191,36,0.5)',  dots:['#3d2a0a','#92500e','#fbbf24'] },
+    };
+
+    function applyTheme(key) {
+      if (!THEMES[key]) return;
+      const t = THEMES[key];
+      const root = document.documentElement;
+      root.style.setProperty('--accent', t.accent);
+      root.style.setProperty('--accent-soft', t.soft);
+      root.style.setProperty('--mode-btn-active-bg', t.activeBg);
+      root.style.setProperty('--mode-btn-active-border', t.activeBorder);
+      root.style.setProperty('--mode-btn-active-color', t.accent);
+      root.style.setProperty('--ai-user-bubble', t.activeBg);
+      root.style.setProperty('--ai-user-bubble-border', t.activeBorder);
+      root.style.setProperty('--overlay-label', t.soft);
+      root.style.setProperty('--footer-label', t.soft);
+      root.style.setProperty('--card-glow', t.soft.replace('0.22','0.12'));
+      root.style.setProperty('--pill-logo-shadow', `0 0 18px ${t.soft}`);
+      root.style.setProperty('--feedback-border', t.soft.replace('0.22','0.18'));
+      root.style.setProperty('--feedback-header-bg', t.soft.replace('0.22','0.04'));
+      root.style.setProperty('--feedback-header-border', t.soft.replace('0.22','0.1'));
+
+      /* Update pill preview dots */
+      const d1 = document.getElementById('tpd1');
+      const d2 = document.getElementById('tpd2');
+      const d3 = document.getElementById('tpd3');
+      if (d1 && d2 && d3) {
+        d1.style.background = t.dots[0];
+        d2.style.background = t.dots[1];
+        d3.style.background = t.dots[2];
+      }
+
+      /* Update active swatch */
+      document.querySelectorAll('.tswatch').forEach(b => b.classList.toggle('active', b.dataset.theme === key));
+
+      localStorage.setItem('shifat-theme', key);
+    }
+
+    /* Init on load */
+    const savedTheme = localStorage.getItem('shifat-theme') || 'ocean';
+    applyTheme(savedTheme);
+
+    /* Swatch clicks (in dropdown) */
+    document.querySelectorAll('.tswatch').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.classList.remove('rippling');
+        void btn.offsetWidth;
+        btn.classList.add('rippling');
+        btn.addEventListener('animationend', () => btn.classList.remove('rippling'), { once: true });
+        applyTheme(btn.dataset.theme);
+        /* close dropdown */
+        document.getElementById('themePillDropdown').classList.remove('open');
+        document.getElementById('themePillTrigger').classList.remove('open');
+      });
+    });
+
+    /* Theme pill toggle */
+    const themePillTrigger  = document.getElementById('themePillTrigger');
+    const themePillDropdown = document.getElementById('themePillDropdown');
+    themePillTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = themePillDropdown.classList.toggle('open');
+      themePillTrigger.classList.toggle('open', isOpen);
+    });
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('themePill').contains(e.target)) {
+        themePillDropdown.classList.remove('open');
+        themePillTrigger.classList.remove('open');
+      }
+    });
+
+    /* ═══════════════════════════════════════
+       MENU
+    ═══════════════════════════════════════ */
+    const menuBtn      = document.getElementById('menuBtn');
+    const navOverlay   = document.getElementById('navOverlay');
+    const overlayClose = document.getElementById('overlayClose');
+
+    function openMenu() {
+      navOverlay.classList.add('open');
+      menuBtn.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      document.querySelectorAll('.overlay-link').forEach(el => {
+        el.style.transitionDelay = (0.07 + (+el.dataset.delay || 0) * 0.06) + 's';
+      });
+      document.querySelectorAll('.overlay-extra').forEach(el => {
+        el.style.transitionDelay = (0.10 + (+el.dataset.delay || 0) * 0.05) + 's';
+      });
+    }
+    function closeMenu() {
+      navOverlay.classList.remove('open');
+      menuBtn.classList.remove('active');
+      document.body.style.overflow = '';
+      document.querySelectorAll('.overlay-link, .overlay-extra').forEach(el => {
+        el.style.transitionDelay = '0s';
+      });
+    }
+    menuBtn.addEventListener('click', () => navOverlay.classList.contains('open') ? closeMenu() : openMenu());
+    overlayClose.addEventListener('click', closeMenu);
+    navOverlay.addEventListener('click', e => { if (e.target === navOverlay) closeMenu(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenu(); themePillDropdown.classList.remove('open'); themePillTrigger.classList.remove('open'); } });
+    document.querySelectorAll('a.overlay-link, .overlay-extra').forEach(el => el.addEventListener('click', closeMenu));
+  </script>
+
+  <script>
+    /* ═══════════════════════════════════════
+       SCROLL REVEAL — Vintage slide-in
+    ═══════════════════════════════════════ */
+    (function() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+      /* Heading reveal */
+      const heading = document.getElementById('siteHeading');
+      if (heading) {
+        function revealHeading() {
+          var rect = heading.getBoundingClientRect();
+          if (rect.top < window.innerHeight * 0.92) {
+            heading.classList.add('revealed');
+            window.removeEventListener('scroll', revealHeading);
+          }
+        }
+        window.addEventListener('load', function() { setTimeout(revealHeading, 80); });
+        window.addEventListener('scroll', revealHeading, { passive: true });
+      }
+    })();
+  </script>
+
+  <script>
+    /* ── UID Copy ── */
+    document.getElementById('uidCopyBtn').addEventListener('click', function() {
+      const uid = document.querySelector('.game-uid-display').textContent.trim();
+      navigator.clipboard.writeText(uid).then(() => {
+        this.classList.add('copied');
+        this.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+        setTimeout(() => {
+          this.classList.remove('copied');
+          this.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+        }, 1600);
+      });
+    });
+  </script>
+
+  <script>
+    /* ── Back to top ── */
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 400);
+    }, { passive: true });
+    backToTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  </script>
+
+  <script>
   (function() {
     'use strict';
-
-    /* ── Config ── */
     const WORKER_URL = 'https://gemini.shifat0g.workers.dev/api/chat';
     const MY_INFO = `You are a highly capable AI assistant embedded on Shifat's personal website. You have two roles:
 
@@ -1077,24 +936,13 @@ Bio: Exploring Web3 and crypto since 2022. Worked as an Ambassador, created cont
 
 Be warm, concise, and genuinely helpful. Format responses clearly — use line breaks for lists. For code, wrap in backticks. Never say you "can't" do something a capable AI can do.`;
 
-    /* ── State ── */
     const HISTORY_KEY = 'shifat_ai_history';
-    const MAX_HISTORY = 20; // pairs = 40 entries max
-
-    function loadHistory() {
-      try {
-        const raw = localStorage.getItem(HISTORY_KEY);
-        return raw ? JSON.parse(raw) : [];
-      } catch { return []; }
-    }
-    function saveHistory(h) {
-      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch {}
-    }
+    const MAX_HISTORY = 20;
+    function loadHistory() { try { const raw = localStorage.getItem(HISTORY_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; } }
+    function saveHistory(h) { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch {} }
 
     const history = loadHistory();
     let isTyping = false;
-
-    /* ── Elements ── */
     const trigger  = document.getElementById('aiTrigger');
     const panel    = document.getElementById('aiPanel');
     const closeBtn = document.getElementById('aiClose');
@@ -1103,203 +951,83 @@ Be warm, concise, and genuinely helpful. Format responses clearly — use line b
     const sendBtn  = document.getElementById('aiSend');
     const chips    = document.getElementById('aiChips');
 
-    /* ── Toggle ── */
     function openPanel() {
-      panel.classList.add('open');
-      trigger.classList.add('open');
+      panel.classList.add('open'); trigger.classList.add('open');
       trigger.setAttribute('aria-expanded', 'true');
       setTimeout(() => input.focus(), 320);
       if (messages.children.length === 0) showWelcome();
     }
     function closePanel() {
-      panel.classList.remove('open');
-      trigger.classList.remove('open');
+      panel.classList.remove('open'); trigger.classList.remove('open');
       trigger.setAttribute('aria-expanded', 'false');
     }
-    trigger.addEventListener('click', () =>
-      panel.classList.contains('open') ? closePanel() : openPanel()
-    );
+    trigger.addEventListener('click', () => panel.classList.contains('open') ? closePanel() : openPanel());
     closeBtn.addEventListener('click', closePanel);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open')) closePanel(); });
 
-    /* Close on Escape */
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
-    });
+    function showWelcome() { appendBotMessage("Hey there! 👋 I'm Shifat's assistant. Ask me anything about Shifat, or just anything in general — I'm here to help!"); }
 
-    /* ── Welcome message ── */
-    function showWelcome() {
-      appendBotMessage("Hey there! 👋 I'm Shifat's assistant. Ask me anything about Shifat, or just anything in general — I'm here to help!");
-    }
-
-    /* ── Append messages ── */
     function appendUserMessage(text) {
-      const wrap = document.createElement('div');
-      wrap.className = 'ai-msg user';
-      const bubble = document.createElement('div');
-      bubble.className = 'ai-bubble';
-      bubble.textContent = text;
-      wrap.appendChild(bubble);
-      messages.appendChild(wrap);
-      scrollBottom();
+      const wrap = document.createElement('div'); wrap.className = 'ai-msg user';
+      const bubble = document.createElement('div'); bubble.className = 'ai-bubble'; bubble.textContent = text;
+      wrap.appendChild(bubble); messages.appendChild(wrap); scrollBottom();
     }
-
     function appendBotMessage(text) {
-      const wrap = document.createElement('div');
-      wrap.className = 'ai-msg bot';
-      const bubble = document.createElement('div');
-      bubble.className = 'ai-bubble';
-      bubble.innerHTML = linkify(escapeHtml(text));
-      wrap.appendChild(bubble);
-      messages.appendChild(wrap);
-      scrollBottom();
-      return wrap;
+      const wrap = document.createElement('div'); wrap.className = 'ai-msg bot';
+      const bubble = document.createElement('div'); bubble.className = 'ai-bubble'; bubble.innerHTML = linkify(escapeHtml(text));
+      wrap.appendChild(bubble); messages.appendChild(wrap); scrollBottom(); return wrap;
     }
-
     function showTyping() {
-      const wrap = document.createElement('div');
-      wrap.className = 'ai-msg bot';
-      wrap.id = 'aiTypingWrap';
-      const dots = document.createElement('div');
-      dots.className = 'ai-typing';
-      dots.innerHTML = '<span></span><span></span><span></span>';
-      wrap.appendChild(dots);
-      messages.appendChild(wrap);
-      scrollBottom();
+      const wrap = document.createElement('div'); wrap.className = 'ai-msg bot'; wrap.id = 'aiTypingWrap';
+      const dots = document.createElement('div'); dots.className = 'ai-typing'; dots.innerHTML = '<span></span><span></span><span></span>';
+      wrap.appendChild(dots); messages.appendChild(wrap); scrollBottom();
     }
+    function removeTyping() { const el = document.getElementById('aiTypingWrap'); if (el) el.remove(); }
+    function scrollBottom() { requestAnimationFrame(() => { messages.scrollTop = messages.scrollHeight; }); }
+    function escapeHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function linkify(str) { return str.replace(/(https?:\/\/[^\s<>"]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>'); }
 
-    function removeTyping() {
-      const el = document.getElementById('aiTypingWrap');
-      if (el) el.remove();
-    }
-
-    function scrollBottom() {
-      requestAnimationFrame(() => {
-        messages.scrollTop = messages.scrollHeight;
-      });
-    }
-
-    /* ── Helpers ── */
-    function escapeHtml(str) {
-      return str
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;');
-    }
-    function linkify(str) {
-      return str.replace(/(https?:\/\/[^\s<>"]+)/g,
-        '<a href="$1" target="_blank" rel="noopener">$1</a>');
-    }
-
-    /* ── Send message ── */
     async function sendMessage(text) {
-      text = text.trim();
-      if (!text || isTyping) return;
-
-      /* Hide chips after first real send */
+      text = text.trim(); if (!text || isTyping) return;
       chips.style.display = 'none';
-
-      appendUserMessage(text);
-      input.value = '';
-      input.style.height = 'auto';
-      sendBtn.disabled = true;
-      isTyping = true;
-      showTyping();
-
-      /* Current UTC time injected for time questions */
+      appendUserMessage(text); input.value = ''; input.style.height = 'auto';
+      sendBtn.disabled = true; isTyping = true; showTyping();
       const nowUtc = new Date().toUTCString();
-
-      /* Build full conversation for Gemini
-         Format: strict alternating user/model turns */
       const systemMsg = MY_INFO + `\n\nCurrent UTC time: ${nowUtc}`;
-
-      /* Flatten history into alternating pairs safely */
       const safeHistory = [];
       for (let i = 0; i + 1 < history.length; i += 2) {
-        safeHistory.push({ role: 'user',  text: history[i].text });
+        safeHistory.push({ role: 'user', text: history[i].text });
         safeHistory.push({ role: 'model', text: history[i+1].text });
       }
-
-      const msgs = [
-        { role: 'user',  text: systemMsg },
-        { role: 'model', text: 'Got it. Ready to help.' },
-        ...safeHistory,
-        { role: 'user',  text: text }
-      ];
-
+      const msgs = [{ role: 'user', text: systemMsg },{ role: 'model', text: 'Got it. Ready to help.' },...safeHistory,{ role: 'user', text: text }];
       try {
-        const res = await fetch('https://gemini.shifat0g.workers.dev/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: msgs, model: 'gemini-2.5-flash' })
-        });
-
-        let data;
-        try { data = await res.json(); } catch(e) { throw new Error('Bad JSON response'); }
-
-        if (!res.ok) {
-          if (res.status === 429) {
-            throw new Error('Rate limit reached. Please wait a few seconds and try again.');
-          }
-          const errMsg = data?.error?.message || data?.error || `HTTP ${res.status}`;
-          throw new Error(errMsg);
-        }
-
-        const reply = data.result
-          || data.candidates?.[0]?.content?.parts?.[0]?.text
-          || data.raw?.candidates?.[0]?.content?.parts?.[0]?.text
-          || 'No response received. Please try again.';
-
-        removeTyping();
-        appendBotMessage(reply);
-
-        /* Save to history */
-        history.push({ role: 'user',  text: text });
-        history.push({ role: 'model', text: reply });
+        const res = await fetch('https://gemini.shifat0g.workers.dev/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: msgs, model: 'gemini-2.5-flash' }) });
+        let data; try { data = await res.json(); } catch(e) { throw new Error('Bad JSON response'); }
+        if (!res.ok) { if (res.status === 429) throw new Error('Rate limit reached. Please wait a few seconds and try again.'); const errMsg = data?.error?.message || data?.error || `HTTP ${res.status}`; throw new Error(errMsg); }
+        const reply = data.result || data.candidates?.[0]?.content?.parts?.[0]?.text || data.raw?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received. Please try again.';
+        removeTyping(); appendBotMessage(reply);
+        history.push({ role: 'user', text: text }); history.push({ role: 'model', text: reply });
         while (history.length > MAX_HISTORY * 2) history.splice(0, 2);
         saveHistory(history);
-
       } catch (err) {
         removeTyping();
         let msg;
-        if (err.message && err.message.includes('Rate limit')) {
-          msg = '⏳ Rate limit reached — the AI is busy. Please wait a moment and try again.';
-        } else if (err.message && err.message !== 'Failed to fetch') {
-          msg = `Error: ${err.message}`;
-        } else {
-          msg = 'Could not reach the AI. Check your internet and try again.';
-        }
+        if (err.message && err.message.includes('Rate limit')) { msg = '⏳ Rate limit reached — the AI is busy. Please wait a moment and try again.'; }
+        else if (err.message && err.message !== 'Failed to fetch') { msg = `Error: ${err.message}`; }
+        else { msg = 'Could not reach the AI. Check your internet and try again.'; }
         appendBotMessage(msg);
       }
-
-      isTyping = false;
-      sendBtn.disabled = input.value.trim().length === 0;
+      isTyping = false; sendBtn.disabled = input.value.trim().length === 0;
     }
 
-    /* ── Input events ── */
     input.addEventListener('input', function() {
-      /* Auto-grow */
       this.style.height = 'auto';
       this.style.height = Math.min(this.scrollHeight, 110) + 'px';
       sendBtn.disabled = this.value.trim().length === 0 || isTyping;
     });
-
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        if (!sendBtn.disabled) sendMessage(input.value);
-      }
-    });
-
+    input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!sendBtn.disabled) sendMessage(input.value); } });
     sendBtn.addEventListener('click', () => sendMessage(input.value));
-
-    /* ── Quick chips ── */
-    chips.querySelectorAll('.ai-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        sendMessage(chip.dataset.q);
-      });
-    });
-
+    chips.querySelectorAll('.ai-chip').forEach(chip => { chip.addEventListener('click', () => { sendMessage(chip.dataset.q); }); });
   })();
   </script>
 </body>
