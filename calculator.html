@@ -1,13 +1,11 @@
----
-permalink: /calculator
----
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Calculator — Shifat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 /* ── Variables — Premium Dark Glass ── */
@@ -39,7 +37,6 @@ permalink: /calculator
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{
-    padding-top: 88px;
   width:100%;height:100%;
   background:var(--bg);
   color:var(--text-1);
@@ -516,25 +513,8 @@ body::after{
 .bmr-cell-label{font-family:var(--font-m);font-size:0.52rem;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase;}
 .bmr-cell-val{font-family:var(--font-m);font-size:0.88rem;color:var(--text-1);margin-top:2px;}
 </style>
-  <!-- Instant mode restore -->
-  <script>
-    (function(){
-      var m = localStorage.getItem('shifat-mode') || 'light';
-      if (m === 'aurora') m = 'cyber';
-      document.documentElement.setAttribute('data-mode', m);
-    })();
-  </script>
-  <!-- Shared site CSS -->
-  <link rel="stylesheet" href="https://shifat0g.github.io/style.css" data-shared-css="1" />
-  <!-- Shared fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet" data-shared-fonts="1" />
 </head>
 <body>
-  <!-- Shared navbar + mode switcher -->
-  <script src="https://shifat0g.github.io/shared-nav.js"></script>
-
 <div class="app">
 
   <!-- ── Back nav ── -->
