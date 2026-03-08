@@ -351,6 +351,20 @@ img{max-width:100%;display:block;}
              color 0.18s ease,text-shadow 0.18s ease;
 }
 .htagline.revealed{opacity:1;transform:translateY(0) scale(1);}
+.main-site-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:1rem;
+  padding:6px 14px;border-radius:999px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.12);
+  color:var(--text-2);font-size:0.8rem;font-family:var(--font-m);
+  text-decoration:none;letter-spacing:0.02em;
+  transition:background 0.18s,border-color 0.18s,color 0.18s,box-shadow 0.18s;
+}
+.main-site-pill:hover{
+  background:var(--accent-soft);border-color:var(--accent);
+  color:var(--accent);box-shadow:0 0 14px var(--accent-soft);
+}
 .section{margin-bottom:3.5rem;}
 .section-tag{
   display:inline-block;font-family:var(--font-d);font-size:1.05rem;font-weight:600;
