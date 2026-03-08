@@ -94,35 +94,29 @@ img{max-width:100%;display:block;}
 ════════════════════════════════════════ */
 .scroll-reveal{
   opacity:0;
-  transform:translateY(36px) scale(0.98);
-  filter:blur(3px);
+  transform:translateY(32px) scale(0.98);
   transition:opacity 0.75s cubic-bezier(0.16,1,0.3,1),
-             transform 0.75s cubic-bezier(0.16,1,0.3,1),
-             filter 0.6s cubic-bezier(0.16,1,0.3,1);
-  will-change:opacity,transform,filter;
+             transform 0.75s cubic-bezier(0.16,1,0.3,1);
+  will-change:opacity,transform;
 }
 .scroll-reveal.revealed{
   opacity:1;
   transform:translateY(0) scale(1);
-  filter:blur(0px);
 }
-.scroll-reveal.from-left{transform:translateX(-40px) scale(0.98);filter:blur(3px);}
-.scroll-reveal.from-left.revealed{transform:translateX(0) scale(1);filter:blur(0px);}
-.scroll-reveal.from-right{transform:translateX(40px) scale(0.98);filter:blur(3px);}
-.scroll-reveal.from-right.revealed{transform:translateX(0) scale(1);filter:blur(0px);}
+.scroll-reveal.from-left{transform:translateX(-36px) scale(0.98);}
+.scroll-reveal.from-left.revealed{transform:translateX(0) scale(1);}
+.scroll-reveal.from-right{transform:translateX(36px) scale(0.98);}
+.scroll-reveal.from-right.revealed{transform:translateX(0) scale(1);}
 /* Card-specific pop animation */
 .scroll-reveal.card-pop{
   opacity:0;
-  transform:translateY(28px) scale(0.94);
-  filter:blur(4px);
+  transform:translateY(24px) scale(0.94);
   transition:opacity 0.65s cubic-bezier(0.16,1,0.3,1),
-             transform 0.65s cubic-bezier(0.34,1.56,0.64,1),
-             filter 0.5s cubic-bezier(0.16,1,0.3,1);
+             transform 0.65s cubic-bezier(0.34,1.56,0.64,1);
 }
 .scroll-reveal.card-pop.revealed{
   opacity:1;
   transform:translateY(0) scale(1);
-  filter:blur(0px);
 }
 .reveal-d1{transition-delay:0.06s;}
 .reveal-d2{transition-delay:0.13s;}
@@ -131,11 +125,9 @@ img{max-width:100%;display:block;}
 .reveal-d5{transition-delay:0.34s;}
 /* Section-level stagger */
 .section.scroll-reveal{
-  transform:translateY(28px) scale(0.99);
-  filter:blur(2px);
+  transform:translateY(24px) scale(0.99);
   transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1),
-             transform 0.9s cubic-bezier(0.16,1,0.3,1),
-             filter 0.7s cubic-bezier(0.16,1,0.3,1);
+             transform 0.9s cubic-bezier(0.16,1,0.3,1);
 }
 
 @keyframes pageEntry{
