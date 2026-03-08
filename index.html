@@ -9,6 +9,13 @@
     gtag('js', new Date());
     gtag('config', 'G-5QW7VBRTGK');
   </script>
+  <!-- Prevent flash of wrong mode -->
+  <script>
+    (function(){
+      var m = localStorage.getItem('shifat-mode') || 'aurora';
+      document.documentElement.setAttribute('data-mode', m);
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-visual" />
   <title>Shifat's Personal Website</title>
@@ -21,6 +28,22 @@
 
   <!-- Aurora Background -->
   <div id="aurora-wrap"></div>
+
+  <!-- ── Mode Switcher Pill ── -->
+  <div class="mode-switcher" id="modeSwitcher" role="group" aria-label="Choose color mode">
+    <button class="mode-btn" id="modeLight" data-mode="light" aria-pressed="false" title="Light mode">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <span>Light</span>
+    </button>
+    <button class="mode-btn" id="modeDark" data-mode="dark" aria-pressed="false" title="Dark mode">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span>Dark</span>
+    </button>
+    <button class="mode-btn" id="modeAurora" data-mode="aurora" aria-pressed="true" title="Aurora mode">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" opacity="0.3" fill="currentColor" stroke="none"/><path d="M4 12c0-4.42 3.58-8 8-8"/><path d="M8 12c0-2.21 1.79-4 4-4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>
+      <span>Aurora</span>
+    </button>
+  </div>
 
   <!-- ── Pill Navbar ── -->
   <header class="pill-nav">
@@ -903,7 +926,7 @@ void main(){
       themeCaret.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
     });
 
-    /* ── Theme swatches ── */
+    /* ── Aurora color themes (only used in aurora mode) ── */
     const THEMES = {
       arctic: ['#536e57','#5a7f91','#2fbabd'],
       dusk:   ['#a85754','#4ebf5d','#3badaa'],
@@ -923,20 +946,15 @@ void main(){
     function applyTheme(key) {
       const colors = THEMES[key];
       if (!colors) return;
-
-      // update aurora via OGL
       const poll = setInterval(() => {
         if (window._aurora) {
           clearInterval(poll);
           window._aurora.program.uniforms.uColorStops.value = colors.map(hexToRGB);
         }
       }, 50);
-
-      // mark active swatch
       document.querySelectorAll('.tswatch').forEach(b => b.classList.remove('active'));
       const el = document.querySelector(`.tswatch[data-theme="${key}"]`);
       if (el) el.classList.add('active');
-
       localStorage.setItem('shifat-theme', key);
     }
 
@@ -944,9 +962,36 @@ void main(){
       btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
     });
 
-    // Restore saved theme on load
-    const saved = localStorage.getItem('shifat-theme') || 'ocean';
-applyTheme(saved);
+    /* ── Mode switcher (light / dark / aurora) ── */
+    function applyMode(mode) {
+      document.documentElement.setAttribute('data-mode', mode);
+      document.querySelectorAll('.mode-btn').forEach(b => {
+        const isActive = b.dataset.mode === mode;
+        b.classList.toggle('active', isActive);
+        b.setAttribute('aria-pressed', String(isActive));
+      });
+      localStorage.setItem('shifat-mode', mode);
+
+      // If switching to aurora, restore the saved aurora color theme
+      if (mode === 'aurora') {
+        const savedTheme = localStorage.getItem('shifat-theme') || 'ocean';
+        applyTheme(savedTheme);
+      }
+    }
+
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyMode(btn.dataset.mode));
+    });
+
+    // Restore saved mode on load (aurora = default)
+    const savedMode = localStorage.getItem('shifat-mode') || 'aurora';
+    applyMode(savedMode);
+
+    // Also restore aurora color theme if in aurora mode
+    if (savedMode === 'aurora') {
+      const savedTheme = localStorage.getItem('shifat-theme') || 'ocean';
+      applyTheme(savedTheme);
+    }
   </script>
 
   <script>
