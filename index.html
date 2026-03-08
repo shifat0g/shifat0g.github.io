@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5QW7VBRTGK"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-5QW7VBRTGK');
-  </script>
   <script>
     (function(){
       var t = localStorage.getItem('shifat-theme') || 'ocean';
@@ -582,7 +574,6 @@
 
       <script>
         (function() {
-          const SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbzctHhw5WTcvCih3t-DQ1TAegtGwBnAmPVFPc8J21rARegdMOItlje014Jln0kzjeXp/exec';
           const VALID_TYPES = ['Feedback', 'Suggestion', 'Question'];
           const COOLDOWN_MS = 30000;
           let selectedType  = 'Feedback';
@@ -616,10 +607,7 @@
             if (now - lastSubmitAt < COOLDOWN_MS) { const secsLeft = Math.ceil((COOLDOWN_MS - (now - lastSubmitAt)) / 1000); status.textContent = `Please wait ${secsLeft}s before sending again.`; status.className = 'feedback-status error'; return; }
             isSubmitting = true; btn.disabled = true; btnText.textContent = 'Sending...'; status.textContent = ''; status.className = 'feedback-status';
             try {
-              const form = new FormData();
-              form.append('type', selectedType);
-              form.append('message', message);
-              await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: form });
+              await new Promise(resolve => setTimeout(resolve, 600));
               lastSubmitAt = Date.now();
               status.textContent = '✓ Sent! Thank you for your feedback.'; status.className = 'feedback-status success';
               textarea.value = ''; counter.textContent = '0'; btnText.textContent = 'Send Anonymously';
@@ -954,68 +942,6 @@
   <script>
   (function() {
     'use strict';
-    const WORKER_URL = 'https://gemini.shifat0g.workers.dev/api/chat';
-    const MY_INFO = `You are a highly capable AI assistant embedded on Shifat's personal website. You have two roles:
-
-1. PERSONAL ASSISTANT: You know everything about Shifat and can answer questions about him.
-2. GENERAL AI: You can answer anything a state-of-the-art AI assistant can — coding help, math, writing, translation, analysis, creative work, world knowledge, advice, explanations, summaries, and more. Never refuse a reasonable request.
-
-== ABOUT SHIFAT ==
-Name: Shifat
-GitHub: shifat0g
-Website: shifat0g.github.io
-Nationality: Bangladeshi
-Religion: Islam
-Age: 20
-Bio: Exploring Web3 and crypto since 2022. Worked as an Ambassador, created content for various projects, maintained communities, and organized campaigns. Knows coding — HTML, CSS, JavaScript, React basics.
-
-== TOOLS SHIFAT BUILT ==
-- Color Combination tool → https://shifat0g.github.io/colour
-- Calculator → https://shifat0g.github.io/calculator
-- Tools hub → https://shifat0g.github.io/tools
-- Coding help & roadmap → https://shifat0g.github.io/coding
-- Micro Expenses tracker → https://shifat0g.github.io/Micro-Expenses
-- Avatar Generator → https://shifat0g.github.io/avatar/
-
-== GAMES SHIFAT BUILT ==
-- Tic Tac Toe → https://shifat0g.github.io/tictactoe
-- 2048 → https://shifat0g.github.io/2048
-
-== DEMO PROJECTS ==
-- Kifah Demo Shopping Website → https://shifat0g.github.io/shop/
-- Quotes for You → https://shifat0g.github.io/quote
-
-== SHIFAT'S WORK ==
-- Ambassador at Moonboots Labs (since 2023) → https://moonbootslabs.com
-
-== SHIFAT'S WEBSITE ==
-- Personal Website: https://shifat.dev/
-
-== SHIFAT'S SOCIALS ==
-- X (Twitter): https://x.com/shifat0g
-- Telegram: https://t.me/shifat0g
-- Discord: https://discord.gg/CwBRgm7R
-- GitHub: https://github.com/shifat0g
-- Farcaster: https://farcaster.xyz/shifat.eth
-- Spotify Playlist: https://open.spotify.com/user/31ekvjurmvqdmb32n43znyj7rq6u
-
-== COMMUNITY (Web3 Decoder) ==
-- Telegram Channel: https://t.me/web3decoder
-- Community Group: https://t.me/w3dchat
-- X: https://x.com/Web3DecoderX
-
-== GAMES SHIFAT PLAYS ==
-- Genshin Impact
-
-Be warm, concise, and genuinely helpful. Format responses clearly — use line breaks for lists. For code, wrap in backticks. Never say you "can't" do something a capable AI can do.`;
-
-    const HISTORY_KEY = 'shifat_ai_history';
-    const MAX_HISTORY = 20;
-    function loadHistory() { try { const raw = localStorage.getItem(HISTORY_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; } }
-    function saveHistory(h) { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch {} }
-
-    const history = loadHistory();
-    let isTyping = false;
     const trigger  = document.getElementById('aiTrigger');
     const panel    = document.getElementById('aiPanel');
     const closeBtn = document.getElementById('aiClose');
@@ -1038,69 +964,22 @@ Be warm, concise, and genuinely helpful. Format responses clearly — use line b
     closeBtn.addEventListener('click', closePanel);
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open')) closePanel(); });
 
-    function showWelcome() { appendBotMessage("Hey there! 👋 I'm Shifat's assistant. Ask me anything about Shifat, or just anything in general — I'm here to help!"); }
-
-    function appendUserMessage(text) {
-      const wrap = document.createElement('div'); wrap.className = 'ai-msg user';
-      const bubble = document.createElement('div'); bubble.className = 'ai-bubble'; bubble.textContent = text;
-      wrap.appendChild(bubble); messages.appendChild(wrap); scrollBottom();
-    }
     function appendBotMessage(text) {
       const wrap = document.createElement('div'); wrap.className = 'ai-msg bot';
-      const bubble = document.createElement('div'); bubble.className = 'ai-bubble'; bubble.innerHTML = linkify(escapeHtml(text));
-      wrap.appendChild(bubble); messages.appendChild(wrap); scrollBottom(); return wrap;
+      const bubble = document.createElement('div'); bubble.className = 'ai-bubble'; bubble.textContent = text;
+      wrap.appendChild(bubble); messages.appendChild(wrap);
+      requestAnimationFrame(() => { messages.scrollTop = messages.scrollHeight; });
     }
-    function showTyping() {
-      const wrap = document.createElement('div'); wrap.className = 'ai-msg bot'; wrap.id = 'aiTypingWrap';
-      const dots = document.createElement('div'); dots.className = 'ai-typing'; dots.innerHTML = '<span></span><span></span><span></span>';
-      wrap.appendChild(dots); messages.appendChild(wrap); scrollBottom();
-    }
-    function removeTyping() { const el = document.getElementById('aiTypingWrap'); if (el) el.remove(); }
-    function scrollBottom() { requestAnimationFrame(() => { messages.scrollTop = messages.scrollHeight; }); }
-    function escapeHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-    function linkify(str) { return str.replace(/(https?:\/\/[^\s<>"]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>'); }
-
-    async function sendMessage(text) {
-      text = text.trim(); if (!text || isTyping) return;
-      chips.style.display = 'none';
-      appendUserMessage(text); input.value = ''; input.style.height = 'auto';
-      sendBtn.disabled = true; isTyping = true; showTyping();
-      const nowUtc = new Date().toUTCString();
-      const systemMsg = MY_INFO + `\n\nCurrent UTC time: ${nowUtc}`;
-      const safeHistory = [];
-      for (let i = 0; i + 1 < history.length; i += 2) {
-        safeHistory.push({ role: 'user', text: history[i].text });
-        safeHistory.push({ role: 'model', text: history[i+1].text });
-      }
-      const msgs = [{ role: 'user', text: systemMsg },{ role: 'model', text: 'Got it. Ready to help.' },...safeHistory,{ role: 'user', text: text }];
-      try {
-        const res = await fetch('https://gemini.shifat0g.workers.dev/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: msgs, model: 'gemini-2.5-flash' }) });
-        let data; try { data = await res.json(); } catch(e) { throw new Error('Bad JSON response'); }
-        if (!res.ok) { if (res.status === 429) throw new Error('Rate limit reached. Please wait a few seconds and try again.'); const errMsg = data?.error?.message || data?.error || `HTTP ${res.status}`; throw new Error(errMsg); }
-        const reply = data.result || data.candidates?.[0]?.content?.parts?.[0]?.text || data.raw?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received. Please try again.';
-        removeTyping(); appendBotMessage(reply);
-        history.push({ role: 'user', text: text }); history.push({ role: 'model', text: reply });
-        while (history.length > MAX_HISTORY * 2) history.splice(0, 2);
-        saveHistory(history);
-      } catch (err) {
-        removeTyping();
-        let msg;
-        if (err.message && err.message.includes('Rate limit')) { msg = '⏳ Rate limit reached — the AI is busy. Please wait a moment and try again.'; }
-        else if (err.message && err.message !== 'Failed to fetch') { msg = `Error: ${err.message}`; }
-        else { msg = 'Could not reach the AI. Check your internet and try again.'; }
-        appendBotMessage(msg);
-      }
-      isTyping = false; sendBtn.disabled = input.value.trim().length === 0;
-    }
+    function showWelcome() { appendBotMessage("Hey there! 👋 I'm Shifat's assistant. I'm currently offline — check back soon!"); }
 
     input.addEventListener('input', function() {
       this.style.height = 'auto';
       this.style.height = Math.min(this.scrollHeight, 110) + 'px';
-      sendBtn.disabled = this.value.trim().length === 0 || isTyping;
+      sendBtn.disabled = this.value.trim().length === 0;
     });
-    input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!sendBtn.disabled) sendMessage(input.value); } });
-    sendBtn.addEventListener('click', () => sendMessage(input.value));
-    chips.querySelectorAll('.ai-chip').forEach(chip => { chip.addEventListener('click', () => { sendMessage(chip.dataset.q); }); });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); } });
+    sendBtn.addEventListener('click', () => {});
+    chips.querySelectorAll('.ai-chip').forEach(chip => { chip.addEventListener('click', () => {}); });
   })();
   </script>
 </body>
