@@ -10,7 +10,7 @@ permalink: /quote
   <title>Quotes • Daily Motivation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400&family=Cinzel+Decorative:wght@900&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -27,8 +27,7 @@ permalink: /quote
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
-      height: 100%;
-      overflow: hidden;
+      min-height: 100%;
       background: linear-gradient(135deg, #0a0a14 0%, #131327 100%);
       color: var(--text);
       font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -78,14 +77,131 @@ permalink: /quote
     }
     .site-back-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9); }
 
-    /* Main layout — true 100vh, no scroll */
+    /* Source Selector Bar */
+    .source-bar {
+      position: relative;
+      z-index: 10;
+      width: min(95%, 850px);
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
+
+    .source-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(120,100,255,0.2);
+      border-radius: 100px;
+      padding: 0.3rem 0.4rem 0.3rem 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      user-select: none;
+    }
+    .source-pill:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(180,140,255,0.35);
+    }
+    .source-pill-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+    }
+    .source-pill-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      flex: 1;
+    }
+    .source-pill-arrow {
+      display: flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: rgba(192,132,252,0.12);
+      color: var(--accent);
+      transition: transform 0.25s, background 0.2s;
+      flex-shrink: 0;
+    }
+    .source-pill.open .source-pill-arrow { transform: rotate(180deg); }
+
+    .source-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0; right: 0;
+      background: rgba(20, 12, 40, 0.97);
+      border: 1px solid rgba(120,100,255,0.2);
+      border-radius: 16px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.55);
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.35s cubic-bezier(0.23,1,0.32,1), opacity 0.25s ease;
+      pointer-events: none;
+    }
+    .source-dropdown.open {
+      max-height: 400px;
+      opacity: 1;
+      pointer-events: all;
+    }
+    .source-option {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.9rem 1.1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .source-option:last-child { border-bottom: none; }
+    .source-option:hover { background: rgba(192,132,252,0.08); }
+    .source-option.active { background: rgba(192,132,252,0.12); }
+    .source-option-icon {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .source-option-info { flex: 1; }
+    .source-option-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.92);
+    }
+    .source-option-desc {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 0.15rem;
+      font-family: 'DM Mono', monospace;
+    }
+    .source-option-badge {
+      font-size: 0.65rem;
+      font-family: 'DM Mono', monospace;
+      padding: 0.2rem 0.55rem;
+      border-radius: 100px;
+      background: rgba(192,132,252,0.15);
+      color: var(--accent);
+      border: 1px solid rgba(192,132,252,0.25);
+      flex-shrink: 0;
+    }
+    .source-option-badge.green {
+      background: rgba(74,222,128,0.12);
+      color: #4ade80;
+      border-color: rgba(74,222,128,0.25);
+    }
+
+    /* Main layout */
     .container {
       position: relative; z-index: 1;
-      height: 100vh;
+      min-height: 100vh;
       display: flex; flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 110px 1.5rem 1rem;
+      padding: 110px 1.5rem 2rem;
       gap: 0;
     }
 
@@ -114,10 +230,19 @@ permalink: /quote
       opacity: 0.85;
     }
 
+    /* Source bar spacing */
+    .source-bar-wrapper {
+      width: min(95%, 850px);
+      margin-bottom: clamp(0.7rem, 1.5vh, 1.2rem);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 100;
+    }
+
     .quote-box {
       position: relative;
       width: min(95%, 850px);
-      min-height: 320px;
+      min-height: 260px;
       padding: clamp(1.5rem, 3vh, 2.5rem) clamp(1.2rem, 3vw, 2.5rem);
       background: var(--card);
       border-radius: 20px;
@@ -134,25 +259,89 @@ permalink: /quote
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 0.6rem;
     }
     .quote-box.visible { opacity: 1; transform: translateY(0); }
 
+    /* Loading spinner */
+    .loading-spinner {
+      display: none;
+      width: 32px; height: 32px;
+      border: 2px solid rgba(192,132,252,0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: auto;
+    }
+    .loading-spinner.active { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .quote-content { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+    .quote-content.hidden { display: none; }
+
+    .arabic-text {
+      font-family: 'Amiri', serif;
+      font-size: clamp(1.4rem, 3.5vw, 2.1rem);
+      line-height: 1.8;
+      text-align: center;
+      direction: rtl;
+      color: rgba(230,217,255,0.95);
+      letter-spacing: 0.02em;
+      margin-bottom: 0.3rem;
+    }
+    .arabic-divider {
+      width: 40%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(192,132,252,0.3), transparent);
+      margin: 0.2rem auto;
+    }
+
     .quote {
-      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-size: clamp(1.1rem, 2.5vw, 1.7rem);
       font-weight: 400;
-      line-height: 1.52;
+      line-height: 1.55;
       text-align: center;
       letter-spacing: -0.1px;
-      margin-bottom: 0.75rem;
       font-family: 'Playfair Display', serif;
+      color: var(--text);
     }
     .author {
       text-align: center;
-      font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+      font-size: clamp(0.72rem, 1.4vw, 0.9rem);
       font-weight: 500;
       color: var(--accent);
       opacity: 0.9;
     }
+    .source-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.07em;
+      color: rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 100px;
+      padding: 0.25rem 0.75rem;
+    }
+    .source-tag-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+
+    /* Error state */
+    .error-msg {
+      display: none;
+      text-align: center;
+      font-size: 0.82rem;
+      color: rgba(255,150,150,0.8);
+      padding: 0.5rem;
+    }
+    .error-msg.show { display: block; }
 
     /* Actions rows */
     .actions-wrapper {
@@ -183,6 +372,7 @@ permalink: /quote
     }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(90,62,224,0.45); }
     .btn:active { transform: translateY(0) scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     /* Share buttons */
     .share-btn {
@@ -199,8 +389,6 @@ permalink: /quote
     .share-btn:hover { transform: translateY(-2px); }
     .share-btn-x:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); color: white; }
     .share-btn-tg:hover { background: rgba(42,174,226,0.15); border-color: rgba(42,174,226,0.35); color: #40b3e0; }
-
-
 
     @media (max-width: 480px) {
       .quote-box { padding: 1.4rem 1.1rem; }
@@ -220,58 +408,135 @@ permalink: /quote
 
   <div class="site-pill-nav">
     <div class="site-pill-inner">
-      <a href="/" class="site-pill-logo">
-        <svg width="20" height="20" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="18" cy="21" rx="10" ry="12" fill="#1a1a2e"/>
-          <ellipse cx="18" cy="22" rx="6" ry="8" fill="rgba(255,255,255,0.88)"/>
-          <ellipse cx="18" cy="10" rx="7.5" ry="7" fill="#1a1a2e"/>
-          <circle cx="15.2" cy="9" r="1.7" fill="white"/>
-          <circle cx="20.8" cy="9" r="1.7" fill="white"/>
-          <circle cx="15.6" cy="9.2" r="0.9" fill="#0a0e0b"/>
-          <circle cx="21.2" cy="9.2" r="0.9" fill="#0a0e0b"/>
-          <path d="M16.2 12.5 Q18 14.5 19.8 12.5 Q18 11.5 16.2 12.5Z" fill="#f59e0b"/>
-          <ellipse cx="14" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
-          <ellipse cx="22" cy="32.5" rx="3.5" ry="1.5" fill="#f59e0b"/>
-          <path d="M8 16 Q5 21 8 26 Q10 22 10 18Z" fill="#1a1a2e"/>
-          <path d="M28 16 Q31 21 28 26 Q26 22 26 18Z" fill="#1a1a2e"/>
+      <a href="https://shifat.dev/" class="site-pill-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Crescent moon -->
+          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" fill="url(#moonGrad)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+          <!-- Star -->
+          <path d="M17.5 6.5l.5 1.5 1.5.5-1.5.5-.5 1.5-.5-1.5-1.5-.5 1.5-.5z" fill="#f9d87a"/>
+          <defs>
+            <linearGradient id="moonGrad" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#c084fc"/>
+              <stop offset="100%" stop-color="#7c3aed"/>
+            </linearGradient>
+          </defs>
         </svg>
         Shifat
       </a>
-      <a href="/" class="site-back-btn">← Back</a>
+      <a href="https://shifat.dev/" class="site-back-btn">← Back</a>
     </div>
   </div>
 
   <div class="container">
     <div class="header-block">
       <h1>Quotes</h1>
-      <div class="subtitle">One powerful thought can change your whole day.</div>
+      <div class="subtitle">Wisdom from the Quran & Sunnah.</div>
+    </div>
+
+    <!-- Source Selector -->
+    <div class="source-bar-wrapper">
+      <div class="source-bar">
+        <div class="source-pill" id="sourcePill">
+          <span class="source-pill-label">Source</span>
+          <span class="source-pill-name" id="sourcePillName">Random</span>
+          <span class="source-pill-arrow">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+        <div class="source-dropdown" id="sourceDropdown">
+          <div class="source-option active" data-source="random">
+            <span class="source-option-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#a78bfa">
+                <path d="M16 3h5v5M4 20l16-16M21 16v5h-5M15 15l6 6M4 4l5 5"/>
+              </svg>
+            </span>
+            <div class="source-option-info">
+              <div class="source-option-name">Random</div>
+              <div class="source-option-desc">Mix from all sources</div>
+            </div>
+            <span class="source-option-badge green">all</span>
+          </div>
+          <div class="source-option" data-source="quran">
+            <span class="source-option-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#c084fc">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+            </span>
+            <div class="source-option-info">
+              <div class="source-option-name">Quran</div>
+              <div class="source-option-desc">alquran.cloud · Arabic + English</div>
+            </div>
+            <span class="source-option-badge">API</span>
+          </div>
+          <div class="source-option" data-source="hadith">
+            <span class="source-option-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#f9a8d4">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </span>
+            <div class="source-option-info">
+              <div class="source-option-name">Hadith</div>
+              <div class="source-option-desc">hadith-api · Bukhari & Muslim</div>
+            </div>
+            <span class="source-option-badge">API</span>
+          </div>
+          <div class="source-option" data-source="quranquotes">
+            <span class="source-option-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#fbbf24">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </span>
+            <div class="source-option-info">
+              <div class="source-option-name">Quran Quotes</div>
+              <div class="source-option-desc">quranquotes.vercel.app · English</div>
+            </div>
+            <span class="source-option-badge">API</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="quote-box" id="quoteBox">
-      <div class="quote" id="quoteText">Click the button below to fuel your mindset…</div>
-      <div class="author" id="authorText"></div>
+      <div class="loading-spinner" id="loadingSpinner"></div>
+      <div class="quote-content hidden" id="quoteContent">
+        <div class="arabic-text" id="arabicText" style="display:none"></div>
+        <div class="arabic-divider" id="arabicDivider" style="display:none"></div>
+        <div class="quote" id="quoteText">Click generate to begin…</div>
+        <div class="author" id="authorText"></div>
+        <div class="source-tag" id="sourceTag" style="display:none">
+          <span class="source-tag-dot"></span>
+          <span id="sourceTagText"></span>
+        </div>
+      </div>
+      <div class="error-msg" id="errorMsg">Failed to load quote. Please try again.</div>
     </div>
 
     <div class="actions-wrapper">
       <!-- Row 1: Generate + Save Image -->
       <div class="actions-row">
-        <button class="btn" id="generateBtn">Generate 😇</button>
-        <button class="btn" id="saveBtn">Save Image 📷</button>
+        <button class="btn" id="generateBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:6px;margin-top:-2px"><path d="M16 3h5v5M4 20l16-16M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+          Generate
+        </button>
+        <button class="btn" id="saveBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:6px;margin-top:-2px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Save Image
+        </button>
       </div>
 
-      <!-- Row 2: Format pill + X + Telegram -->
+      <!-- Row 2: X + Telegram -->
       <div class="actions-row">
-        <!-- X Share -->
         <button class="share-btn share-btn-x" id="shareX" title="Share on X">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.808 10.736 20.473 3h-1.596l-5.789 6.727L8.31 3H3l7.014 10.21L3 21h1.596l6.133-7.127L15.69 21H21l-7.192-10.264Zm-2.172 2.522-.711-1.017L5.18 4.182h2.435l4.566 6.528.711 1.017 5.934 8.483h-2.435l-4.755-6.952Z"/>
           </svg>
         </button>
-
-        <!-- Telegram Share -->
         <button class="share-btn share-btn-tg" id="shareTg" title="Share on Telegram">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
       </div>
@@ -279,387 +544,242 @@ permalink: /quote
   </div>
 
 <script>
-const quotes = [
-  { text: "The pain of discipline is temporary. The pain of regret lasts forever.", author: "Unknown" },
-  { text: "You don't find willpower. You build it one small decision at a time.", author: null },
-  { text: "Most people overestimate what they can do in one year and underestimate what they can do in ten.", author: "Bill Gates" },
-  { text: "Comfort is the killer of greatness.", author: null },
-  { text: "If it was easy, everyone would do it.", author: null },
-  { text: "Your mind will quit a thousand times before your body does.", author: null },
-  { text: "Don't wait for motivation. Create it with action.", author: null },
-  { text: "Small steps every day beat big intentions once a year.", author: null },
-  { text: "The version of you that wins is the one who shows up when it sucks.", author: null },
-  { text: "You become what you repeatedly do.", author: "Aristotle (paraphrased)" },
-  { text: "Stop waiting for the perfect moment. It doesn't exist.", author: null },
-  { text: "What you do today can improve all your tomorrows.", author: "Ralph Marston" },
-  { text: "Fall in love with consistency, not intensity.", author: null },
-  { text: "You are one habit away from a completely different life.", author: null },
-  { text: "Growth and comfort do not coexist.", author: "Ginni Rometty" },
-  { text: "You didn't come this far just to come this far.", author: null },
-  { text: "Do something today that your future self will thank you for.", author: null },
-  { text: "The moment you accept total responsibility is the moment you claim total power.", author: null },
-  { text: "Your life changes the day you decide it's no longer acceptable.", author: null },
-  { text: "Energy flows where focus goes.", author: null },
-  { text: "You become unstoppable the day you stop caring who approves.", author: null },
-  { text: "Don't fear failure. Fear being in the same place next year.", author: null },
-  { text: "Champions train when nobody is watching.", author: null },
-  { text: "The pain you feel today is the strength you feel tomorrow.", author: null },
-  { text: "Everything is hard before it becomes easy.", author: null },
-  { text: "Build in silence. Shock them with your results.", author: null },
-  { text: "You are allowed to be both a masterpiece and a work in progress.", author: null },
-  { text: "Your only limit is the one you accept.", author: null },
-  { text: "Discipline turns dreams into habits, and habits into identity.", author: null },
-  { text: "Stop scrolling. Start building.", author: null },
-  { text: "You're not tired, you're uninspired.", author: null },
-  { text: "The future belongs to the disciplined, not the talented.", author: null },
-  { text: "Every master was once a disaster.", author: null },
-  { text: "Make your comeback story legendary.", author: null },
-  { text: "Your excuses are louder than your goals.", author: null },
-  { text: "Progress is progress even if it's slow.", author: null },
-  { text: "Don't downgrade your dream to match your reality. Upgrade your mindset.", author: null },
-  { text: "You're closer than you were yesterday.", author: null },
-  { text: "Become obsessed or stay average.", author: null },
-  { text: "The comeback is always stronger than the setback.", author: null },
-  { text: "You don't drown by falling in water. You drown by staying there.", author: null },
-  { text: "Effort is the raw material of greatness.", author: null },
-  { text: "What you feed grows. Starve doubt, feed courage.", author: null },
-  { text: "Great things never come from comfort zones.", author: null },
-  { text: "Be the energy you want to attract.", author: null },
-  { text: "One year of focused effort beats ten years of scattered interest.", author: null },
-  { text: "Your future self is watching you right now through memories.", author: null },
-  { text: "Consistency compounds. So does neglect.", author: null },
-  { text: "The person who wins is usually just the one who didn't quit.", author: null },
-  { text: "You're not behind — you're just getting started.", author: null },
-  { text: "What would the most disciplined version of you do right now?", author: null },
-  { text: "Small wins stack into big transformations.", author: null },
-  { text: "Keep the promises you make to yourself.", author: null },
-  { text: "The hardest part is usually just starting.", author: null },
-  { text: "You're one decision away from a completely different life.", author: null },
-  { text: "Motivation is a guest. Discipline is the landlord.", author: null },
-  { text: "Nobody is coming to save you. That's good news.", author: null },
-  { text: "Every time you choose comfort you vote against your future.", author: null },
-  { text: "Your habits are voting for your future every single day.", author: null },
-  { text: "You don't need more time. You need more focus.", author: null },
-  { text: "Average effort gives average results. That's not you.", author: null },
-  { text: "What you tolerate becomes your standard.", author: null },
-  { text: "Your future is created by what you do today — not tomorrow.", author: null },
-  { text: "Discipline looks like punishment until it looks like freedom.", author: null },
-  { text: "Your biggest competition is who you were yesterday.", author: null },
-  { text: "The moment you stop chasing approval is the moment you start winning.", author: null },
-  { text: "You're not late. You're exactly on time for your own story.", author: null },
-  { text: "Your energy is currency. Spend it wisely.", author: null },
-  { text: "Level up quietly. Let success scream.", author: null },
-  { text: "Your breakthrough is hidden in the habits you're avoiding.", author: null },
-  { text: "Stop trying to be perfect. Start trying to be consistent.", author: null },
-  { text: "Most people die at 25 and are buried at 75.", author: "Benjamin Franklin (paraphrased)" },
-  { text: "Self-doubt is a liar with very good marketing.", author: null },
-  { text: "Clarity comes from engagement, not thought.", author: null },
-  { text: "Become someone who keeps promises to themselves.", author: null },
-  { text: "The pain of growth is always less expensive than the cost of regret.", author: null },
-  { text: "Your standards are your future.", author: null },
-  { text: "Mental toughness is doing what you said you would do — even when you don't feel like it.", author: null },
-  { text: "You don't lack motivation. You lack clarity.", author: null },
-  { text: "Your environment is shaping you faster than your goals are.", author: null },
-  { text: "Small promises kept build massive self-trust.", author: null },
-  { text: "Real confidence isn't loud. It's quiet certainty.", author: null },
-  { text: "Your next chapter doesn't need their permission.", author: null },
-  { text: "Stop waiting to feel ready. You get ready by starting.", author: null },
-  { text: "Protect your attention like it's your most valuable asset — because it is.", author: null },
-  { text: "The version of you 5 years from now is begging you to start today.", author: null },
-  { text: "What you admire in others is usually what's asleep in you.", author: null },
-  { text: "The quietest progress makes the loudest results.", author: null },
-  { text: "You become what you believe — not just what you achieve.", author: null },
-  { text: "Stop apologizing for wanting more.", author: null },
-  { text: "You're not broken. You're becoming.", author: null },
-  { text: "The best revenge is unmatched consistency.", author: null },
-  { text: "Stop collecting information. Start applying it.", author: null },
-  { text: "Comfort is a slow killer of potential.", author: null },
-  { text: "Your story isn't over just because this chapter hurts.", author: null },
-  { text: "Peace over people-pleasing. Always.", author: null },
-  { text: "You don't need more inspiration. You need better habits.", author: null },
-  { text: "Your energy is finite. Guard it ruthlessly.", author: null },
-  { text: "You don't rise to the occasion. You fall to your habits.", author: null },
-  { text: "Your future self already knows the answer. Listen.", author: null },
-  { text: "Discipline today = freedom tomorrow.", author: null },
-  { text: "Your peace is non-negotiable.", author: null },
-  { text: "The quiet ones are usually the most dangerous when focused.", author: null },
-  { text: "Your growth doesn't need an audience.", author: null },
-  { text: "The strongest comeback stories start in silence.", author: null },
-  { text: "Peace is the new hustle.", author: null },
-  { text: "Your potential is bored of your excuses.", author: null },
-  { text: "Become the person who no longer needs the validation you once craved.", author: null },
-  { text: "The best revenge is becoming unrecognizable.", author: null },
-  { text: "You don't need permission to evolve.", author: null },
-  { text: "Your worth was never up for debate.", author: null },
-  { text: "Your silence is strategy, not surrender.", author: null },
-  { text: "The life you want costs courage, not perfection.", author: null },
-  { text: "Your healing is allowed to be messy.", author: null },
-  { text: "Stop performing for an audience that left the theater years ago.", author: null },
-  { text: "You become powerful the moment you stop explaining your worth.", author: null },
-  { text: "The person you become tomorrow depends on the promises you keep today.", author: null },
-  { text: "Stop asking for a sign. You are the sign.", author: null },
-  { text: "You don't rise by being loud. You rise by being consistent.", author: null },
-  { text: "Your next level doesn't need applause. It needs action.", author: null },
-  { text: "The glow-up nobody expected is the most satisfying one.", author: null },
-  { text: "Your peace is the ultimate flex.", author: null },
-  { text: "Allah does not burden a soul beyond that it can bear.", author: "Quran 2:286" },
-  { text: "Indeed, with hardship [will be] ease.", author: "Quran 94:6" },
-  { text: "Seek help through patience and prayer. Indeed, Allah is with the patient.", author: "Quran 2:153" },
-  { text: "Be patient. Indeed, the promise of Allah is truth.", author: "Quran 30:60" },
-  { text: "Whoever is patient and forgives — indeed, that is of the matters requiring determination.", author: "Quran 42:43" },
-  { text: "Allah is with those who are patient.", author: "Quran — repeated theme" },
-  { text: "And be patient, for indeed Allah does not allow the reward of the doers of good to be lost.", author: "Quran 11:115" },
-  { text: "Patience is at the first stroke of a calamity.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "No one has been given a gift better and greater than patience.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "The strong believer is better and more beloved to Allah than the weak believer, while there is good in both.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "Tie your camel and trust in Allah.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "The best among you are those who have the best manners and character.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "Kindness is a mark of faith, and whoever has no kindness has no faith.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "Do not belittle any good deed, even meeting your brother with a cheerful face.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "The polish for the heart is the remembrance of Allah.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "Modesty is part of faith.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "Be kind, for when kindness becomes part of something, it beautifies it.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "A good word is charity.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "The best jihad is a word of truth in front of a tyrant ruler.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "Actions are judged by intentions.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "The most perfect believer in faith is the one whose behavior is finest.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "Do good deeds properly, sincerely and moderately.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "Avoid what is doubtful to protect your faith and honor.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "The merciful will be shown mercy by the Most Merciful.", author: "Hadith — Prophet Muhammad ﷺ" },
-  { text: "He who has a why to live can bear almost any how.", author: null },
-  { text: "Discipline is choosing between what you want now and what you want most.", author: null },
-  { text: "Your habits decide your future more than your goals.", author: null },
-  { text: "Master yourself and you master your life.", author: null },
-  { text: "The pain of regret hurts far longer than the pain of effort.", author: null },
-  { text: "Build habits stronger than your excuses.", author: null },
-  { text: "Consistency turns average into excellence over time.", author: null },
-  { text: "Your future self thanks you for today's discipline.", author: null },
-  { text: "Small daily choices create radically different lives.", author: null },
-  { text: "Stop wishing for better odds — become better.", author: null },
-  { text: "The gap between who you are and who you want to be is bridged by action.", author: null },
-  { text: "Focus on systems, not just goals.", author: null },
-  { text: "What you do repeatedly becomes who you are.", author: null },
-  { text: "Effort compounds silently before it explodes visibly.", author: null },
-  { text: "Become the person who no longer needs motivation to act.", author: null },
-  { text: "Your energy is finite — invest it in what moves the needle.", author: null },
-  { text: "Comfort today often means struggle tomorrow.", author: null },
-  { text: "The quiet daily grind outshines flashy motivation every time.", author: null },
-  { text: "You don't rise to your goals — you fall to your standards.", author: null },
-  { text: "Protect your mornings — they shape your days.", author: null },
-  { text: "Delayed gratification is the ultimate power move.", author: null },
-  { text: "Train your mind to see opportunity in difficulty.", author: null },
-  { text: "Your story changes the moment you refuse to stay the same.", author: null },
-  { text: "Become obsessed with getting 1% better every day.", author: null },
-  { text: "The mind gives up long before the body does — push through.", author: null },
-  { text: "Real growth feels uncomfortable at first.", author: null },
-  { text: "Stop waiting for perfect conditions — they don't exist.", author: null },
-  { text: "Your potential expands only when you do.", author: null },
-  { text: "Discipline is freedom in disguise.", author: null },
-  { text: "What you tolerate becomes your ceiling.", author: null },
-  { text: "Focus ruthlessly — mediocrity loves divided attention.", author: null },
-  { text: "Turn 'someday' into 'day one'.", author: null },
-  { text: "The version of you that succeeds already exists — embody it.", author: null },
-  { text: "Progress hides in boring routines.", author: null },
-  { text: "You are what you do when motivation disappears.", author: null },
-  { text: "Small promises to yourself build unbreakable trust.", author: null },
-  { text: "Your environment whispers your future — design it wisely.", author: null },
-  { text: "Become addicted to your own improvement.", author: null },
-  { text: "Failure is feedback — not final.", author: null },
-  { text: "The real test is what you do on the days you feel nothing.", author: null },
-  { text: "Chase mastery, not applause.", author: null },
-  { text: "Your next level demands your next level habits.", author: null },
-  { text: "Stop collecting knowledge — start applying it.", author: null },
-  { text: "Peace comes from alignment, not achievement.", author: null },
-  { text: "You heal by becoming, not by wishing.", author: null },
-  { text: "Boundaries are self-respect in action.", author: null },
-  { text: "The loudest growth happens in silence.", author: null },
-  { text: "Your energy is currency — spend it intentionally.", author: null },
-  { text: "Outgrow quietly — let results speak.", author: null },
-  { text: "What you admire in others is calling you to develop it.", author: null },
-  { text: "Stop performing for ghosts of the past.", author: null },
-  { text: "Your peace is non-negotiable.", author: null },
-  { text: "Courage follows the first step — not the other way around.", author: null },
-  { text: "You don't find time for priorities — you make it.", author: null },
-  { text: "Become dangerous to your excuses.", author: null },
-  { text: "The glow-up nobody sees is the strongest one.", author: null },
-  { text: "Your habits vote louder than your dreams.", author: null },
-  { text: "Stop shrinking to fit old versions of the world.", author: null },
-  { text: "You are allowed to want more — and pursue it unapologetically.", author: null },
-  { text: "Healing is allowed to be unglamorous.", author: null },
-  { text: "Your next chapter doesn't need permission.", author: null },
-  { text: "Discipline today buys freedom forever.", author: null },
-  { text: "You become powerful when you stop explaining your worth.", author: null },
-  { text: "The bridge to your desired life is daily consistency.", author: null },
-  { text: "Stay low while leveling up.", author: null },
-  { text: "Your vibe is your invitation — raise it.", author: null },
-  { text: "You are not late — you are right on time for your story.", author: null },
-  { text: "Protect your energy like it's your oxygen.", author: null },
-  { text: "The best comeback is becoming unrecognizable.", author: null },
-  { text: "You don't need to prove growth — live it.", author: null },
-  { text: "Your standards shape your circle.", author: null },
-  { text: "Peace is the new power move.", author: null },
-  { text: "Stop romanticizing struggle — celebrate execution.", author: null },
-  { text: "You are not broken — you are unfolding.", author: null },
-  { text: "The life you want is built one intentional Tuesday at a time.", author: null },
-  { text: "Your trauma stops with you.", author: null },
-  { text: "Stop collecting dreams — start collecting evidence.", author: null },
-  { text: "You are allowed to disappear until you reappear stronger.", author: null },
-  { text: "Your silence can be strategy.", author: null },
-  { text: "The version of you that wins doesn't negotiate with fear.", author: null },
-  { text: "You have asked for too little for too long.", author: null },
-  { text: "Wear your peace daily — it looks good on you.", author: null },
-  { text: "Your breakthrough hides in postponed habits.", author: null },
-  { text: "Time is voting right now — listen.", author: null },
-  { text: "You are exactly on divine schedule.", author: null },
-  { text: "The quiet glow-up satisfies most.", author: null },
-  { text: "Effort without direction is just motion.", author: null },
-  { text: "Align heart and action — magic follows.", author: null },
-  { text: "Become someone who keeps private promises.", author: null },
-  { text: "Your capacity for discomfort sets your ceiling.", author: null },
-  { text: "Collect wins, not quotes.", author: null },
-  { text: "Guard attention like treasure.", author: null },
-  { text: "Rest is strategy, not laziness.", author: null },
-  { text: "Fall to your habits, not your hopes.", author: null },
-  { text: "Stop explaining to people who choose misunderstanding.", author: null },
-  { text: "Your future self already knows — act on it.", author: null },
-  { text: "You feel everything because you are alive.", author: null },
-  { text: "Build the life you want in private.", author: null },
-  { text: "Take your space — no apology needed.", author: null },
-  { text: "Your peace > their approval.", author: null },
-  { text: "Want more — then go get it.", author: null },
-  { text: "Focused quiet ones become unstoppable.", author: null },
-  { text: "Growth needs no audience.", author: null },
-  { text: "Outgrowing is not betrayal.", author: null },
-  { text: "Strongest stories begin unseen.", author: null },
-  { text: "Rewrite timelines with courage.", author: null },
-  { text: "Choose standards over comfort.", author: null },
-  { text: "Stop explaining your evolution.", author: null },
-  { text: "Healing doesn't need to be pretty.", author: null },
-  { text: "Choose yourself first.", author: null },
-  { text: "One brave 'no' unlocks new life.", author: null },
-  { text: "Your potential is tired of waiting.", author: null },
-  { text: "Fear of change keeps people stuck.", author: null },
-  { text: "Stop craving old validation.", author: null },
-  { text: "No approval required for next level.", author: null },
-  { text: "Romanticize discipline — not suffering.", author: null },
-  { text: "Energy is sacred — stop wasting it.", author: null },
-  { text: "Become unrecognizable through consistency.", author: null },
-  { text: "Evolution needs no permission slip.", author: null },
-  { text: "Your worth was never negotiable.", author: null },
-  { text: "Stop fitting into spaces too small for you.", author: null },
-  { text: "Silence can be your strongest move.", author: null },
-  { text: "You deserve the room you take.", author: null },
-  { text: "Peace looks better than chaos ever did.", author: null },
-  { text: "Trust the unseen preparation.", author: null },
-  { text: "Your delay carries purpose.", author: null },
-  { text: "Allah sees every quiet effort.", author: null },
-  { text: "What is for you cannot miss you.", author: null },
-  { text: "Tests come because love exists.", author: null },
-  { text: "Every hardship hides a gift.", author: null },
-  { text: "Patience invites miracles.", author: null },
-  { text: "Breathe — control is with Allah.", author: null },
-  { text: "Today's pain builds tomorrow's power.", author: null },
-  { text: "Stay steady — barakah follows effort.", author: null },
-  { text: "Allah replaces what is lost with better.", author: null },
-  { text: "Trust turns waiting into worship.", author: null },
-  { text: "Your story is written with mercy.", author: null },
-  { text: "Sabr turns trials into treasures.", author: null },
-  { text: "Allah never wastes the patient heart.", author: null },
-  { text: "The finish line favors the steadfast.", author: null },
-  { text: "Endurance writes the best endings.", author: null },
-  { text: "Keep going — Allah is the best of planners.", author: null },
-  { text: "Small consistent steps reach far.", author: null },
-  { text: "Faith + effort = victory.", author: null },
-  { text: "Rise after every fall — that's iman.", author: null },
-  { text: "Your Lord is closer in hardship.", author: null },
-  { text: "Persevere — reward is unlimited.", author: null },
-  { text: "Allah multiplies the patient reward.", author: null },
-  { text: "Goodness returns to the doers of good.", author: null },
-  { text: "Strive — guidance follows.", author: null },
-  { text: "Cooperate in righteousness, not sin.", author: null },
-  { text: "Justice and kindness are commanded.", author: null },
-  { text: "The reward of good is only good.", author: null },
-  { text: "Enter Islam completely — find peace.", author: null },
-  { text: "Invite with wisdom and beautiful preaching.", author: null },
-  { text: "Mercy to earth brings mercy from heaven.", author: null },
-  { text: "Truth spoken to power is great jihad.", author: null },
-  { text: "Character is faith in motion.", author: null }
-];
+// ─── State ────────────────────────────────────────────────
+let currentSource = 'random';
+let currentQuote = { text: '', author: '', arabic: '', source: '' };
+let isLoading = false;
 
-let currentIndex = -1;
-let currentQuote = null;
+// ─── Source config ────────────────────────────────────────
+const SOURCES = ['quran', 'hadith', 'quranquotes'];
 
-function getRandomIndex() {
-  const arr = new Uint32Array(1);
-  crypto.getRandomValues(arr);
-  let idx;
-  do { idx = arr[0] % quotes.length; }
-  while (idx === currentIndex && quotes.length > 1);
-  return idx;
+const SOURCE_NAMES = {
+  random:      'Random',
+  quran:       'Quran',
+  hadith:      'Hadith',
+  quranquotes: 'Quran Quotes',
+};
+
+// ─── API helpers ──────────────────────────────────────────
+
+// Total Quran verses: 6236. We pick a random surah:ayah
+function randomAyahRef() {
+  // Surah lengths (approximate, for 114 surahs)
+  const surahLengths = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,54,59,37,75,85,54,54,53,89,45,72,60,119,40,31,60,58,22,48,63,11,34,30,60,70,70,80,52,47,59,55,17,58,44,24,37,31,40,15,57,13,19,16,9,27,37,12,11,12,30,84,54,20,66,17,23,35,45,48,29,15,91,21,54,15,14,12,11,14,11,14,12,3,12,10,13,10,11,12,14,9,11];
+  const surah = Math.floor(Math.random() * 114) + 1;
+  const len = surahLengths[surah - 1] || 10;
+  const ayah = Math.floor(Math.random() * len) + 1;
+  return `${surah}:${ayah}`;
 }
 
-function getRandomQuote() {
-  currentIndex = getRandomIndex();
-  currentQuote = quotes[currentIndex];
-  return currentQuote;
+async function fetchQuran() {
+  const ref = randomAyahRef();
+  const url = `https://api.alquran.cloud/v1/ayah/${ref}/editions/quran-simple,en.asad`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Quran API failed');
+  const data = await res.json();
+  const editions = data.data;
+  const arabic = editions[0];
+  const english = editions[1];
+  return {
+    arabic: arabic.text,
+    text: english.text,
+    author: `Surah ${arabic.surah.englishName} (${arabic.surah.number}:${arabic.numberInSurah})`,
+    source: 'Al-Quran · alquran.cloud',
+  };
 }
 
-const quoteBox = document.getElementById('quoteBox');
-const quoteText = document.getElementById('quoteText');
-const authorText = document.getElementById('authorText');
-const generateBtn = document.getElementById('generateBtn');
+async function fetchHadith() {
+  // Use hadith-api.vercel.app — free, no key needed
+  // Collections: bukhari (7563 hadiths), muslim (3033)
+  const collections = [
+    { name: 'bukhari', count: 7563 },
+    { name: 'muslim',  count: 3033 },
+  ];
+  const col = collections[Math.floor(Math.random() * collections.length)];
+  const id = Math.floor(Math.random() * col.count) + 1;
+  const url = `https://hadith-api.vercel.app/api/hadiths/${col.name}/${id}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Hadith API failed');
+  const data = await res.json();
+  const h = data.hadith || data;
+  const arabic = h.arabic || h.body_arabic || '';
+  const text = h.english || h.body || h.text || '';
+  const narrator = h.narrator || h.narrator_english || '';
+  return {
+    arabic,
+    text,
+    author: narrator ? narrator : `Sahih ${col.name.charAt(0).toUpperCase() + col.name.slice(1)} #${id}`,
+    source: `Sahih ${col.name.charAt(0).toUpperCase() + col.name.slice(1)} · hadith-api`,
+  };
+}
 
-function showNewQuote(instant = false) {
-  const { text, author } = getRandomQuote();
+async function fetchQuranQuotes() {
+  // quranquotes.vercel.app — English only, ~50 quotes
+  const id = Math.floor(Math.random() * 50) + 1;
+  const url = `https://quranquotes.vercel.app/api/get/${id}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('QuranQuotes API failed');
+  const data = await res.json();
+  return {
+    arabic: '',
+    text: data.quote || data.text || data.content || JSON.stringify(data),
+    author: data.surah ? `Surah ${data.surah}` : (data.reference || data.author || 'Quran'),
+    source: 'Quran Quotes · quranquotes.vercel.app',
+  };
+}
 
-  if (instant) {
-    quoteText.textContent = text;
-    authorText.textContent = author ? `— ${author}` : '';
-    quoteBox.classList.add('visible');
-    return;
+async function fetchRandom() {
+  const pick = SOURCES[Math.floor(Math.random() * SOURCES.length)];
+  if (pick === 'quran') return fetchQuran();
+  if (pick === 'hadith') return fetchHadith();
+  return fetchQuranQuotes();
+}
+
+async function fetchQuote() {
+  if (currentSource === 'random') return fetchRandom();
+  if (currentSource === 'quran') return fetchQuran();
+  if (currentSource === 'hadith') return fetchHadith();
+  if (currentSource === 'quranquotes') return fetchQuranQuotes();
+}
+
+// ─── UI helpers ───────────────────────────────────────────
+const quoteBox      = document.getElementById('quoteBox');
+const quoteContent  = document.getElementById('quoteContent');
+const loadingSpinner= document.getElementById('loadingSpinner');
+const quoteText     = document.getElementById('quoteText');
+const authorText    = document.getElementById('authorText');
+const arabicText    = document.getElementById('arabicText');
+const arabicDivider = document.getElementById('arabicDivider');
+const sourceTag     = document.getElementById('sourceTag');
+const sourceTagText = document.getElementById('sourceTagText');
+const errorMsg      = document.getElementById('errorMsg');
+const generateBtn   = document.getElementById('generateBtn');
+
+function showLoading() {
+  isLoading = true;
+  generateBtn.disabled = true;
+  quoteBox.classList.remove('visible');
+  quoteContent.classList.add('hidden');
+  errorMsg.classList.remove('show');
+  loadingSpinner.classList.add('active');
+  setTimeout(() => quoteBox.classList.add('visible'), 50);
+}
+
+function showQuote(q) {
+  currentQuote = q;
+  isLoading = false;
+  generateBtn.disabled = false;
+
+  loadingSpinner.classList.remove('active');
+  errorMsg.classList.remove('show');
+
+  // Arabic
+  if (q.arabic && q.arabic.trim()) {
+    arabicText.textContent = q.arabic;
+    arabicText.style.display = 'block';
+    arabicDivider.style.display = 'block';
+  } else {
+    arabicText.style.display = 'none';
+    arabicDivider.style.display = 'none';
   }
+
+  // English text — truncate very long hadiths for display
+  let displayText = q.text;
+  if (displayText.length > 600) displayText = displayText.slice(0, 600).trimEnd() + '…';
+  quoteText.textContent = displayText;
+  authorText.textContent = q.author ? `— ${q.author}` : '';
+
+  // Source tag
+  if (q.source) {
+    sourceTagText.textContent = q.source;
+    sourceTag.style.display = 'inline-flex';
+  } else {
+    sourceTag.style.display = 'none';
+  }
+
+  quoteContent.classList.remove('hidden');
 
   quoteBox.classList.remove('visible');
-  setTimeout(() => {
-    quoteText.textContent = text;
-    authorText.textContent = author ? `— ${author}` : '';
-    quoteBox.classList.add('visible');
-  }, 320);
+  requestAnimationFrame(() => requestAnimationFrame(() => quoteBox.classList.add('visible')));
 }
 
-// First quote on load
-setTimeout(() => showNewQuote(), 400);
-generateBtn.addEventListener('click', () => showNewQuote());
+function showError() {
+  isLoading = false;
+  generateBtn.disabled = false;
+  loadingSpinner.classList.remove('active');
+  quoteContent.classList.add('hidden');
+  errorMsg.classList.add('show');
+  quoteBox.classList.add('visible');
+}
 
-// Re-roll when user navigates back (bfcache restore)
-window.addEventListener('pageshow', (e) => {
-  if (e.persisted) showNewQuote(true);
+async function generate() {
+  if (isLoading) return;
+  showLoading();
+  try {
+    const q = await fetchQuote();
+    showQuote(q);
+  } catch(e) {
+    console.error(e);
+    showError();
+  }
+}
+
+// ─── Source dropdown ──────────────────────────────────────
+const sourcePill     = document.getElementById('sourcePill');
+const sourceDropdown = document.getElementById('sourceDropdown');
+const sourcePillName = document.getElementById('sourcePillName');
+
+sourcePill.addEventListener('click', (e) => {
+  e.stopPropagation();
+  sourcePill.classList.toggle('open');
+  sourceDropdown.classList.toggle('open');
 });
 
-// Keyboard shortcut
+document.addEventListener('click', () => {
+  sourcePill.classList.remove('open');
+  sourceDropdown.classList.remove('open');
+});
+
+sourceDropdown.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const opt = e.target.closest('.source-option');
+  if (!opt) return;
+  const src = opt.dataset.source;
+  currentSource = src;
+  sourcePillName.textContent = SOURCE_NAMES[src];
+  document.querySelectorAll('.source-option').forEach(o => o.classList.remove('active'));
+  opt.classList.add('active');
+  sourcePill.classList.remove('open');
+  sourceDropdown.classList.remove('open');
+  generate();
+});
+
+// ─── Generate button & keyboard ───────────────────────────
+generateBtn.addEventListener('click', () => generate());
+
 window.addEventListener('keydown', (e) => {
-  if (e.code === 'Space' || e.code === 'Enter') {
+  if ((e.code === 'Space' || e.code === 'Enter') && !isLoading) {
     e.preventDefault();
-    showNewQuote();
+    generate();
   }
 });
 
-// Build canvas image blob for sharing
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted) generate();
+});
+
+// First load
+setTimeout(() => generate(), 400);
+
+// ─── Canvas image builder ─────────────────────────────────
 async function buildQuoteImage() {
   try {
-    const fontQuote = new FontFace(
-      'Cormorant Garamond',
-      'url(https://fonts.gstatic.com/s/cormorantgaramond/v22/co3YmX5slCNuHLi8bLeY9MK7whWMhyjYrEPjuw.woff2)'
-    );
-    const fontAuthor = new FontFace(
-      'Cormorant Garamond Italic',
-      'url(https://fonts.gstatic.com/s/cormorantgaramond/v22/co3WmX5slCNuHLi8bLeY9MK7whWMhyjQAllvuQ.woff2)',
-      { style: 'italic', weight: '500' }
-    );
-    await Promise.all([fontQuote.load(), fontAuthor.load()]);
+    const fontQuote = new FontFace('Cormorant Garamond', 'url(https://fonts.gstatic.com/s/cormorantgaramond/v22/co3YmX5slCNuHLi8bLeY9MK7whWMhyjYrEPjuw.woff2)');
+    const fontArabic = new FontFace('Amiri', 'url(https://fonts.gstatic.com/s/amiri/v27/J7aRnpd8CGxBHqUpvrIw74NL.woff2)');
+    await Promise.all([fontQuote.load(), fontArabic.load()]);
     document.fonts.add(fontQuote);
-    document.fonts.add(fontAuthor);
-  } catch(e) { /* fall back to serif */ }
+    document.fonts.add(fontArabic);
+  } catch(e) { /* fallback */ }
 
   const size = 1080;
   const canvas = document.createElement("canvas");
@@ -681,79 +801,111 @@ async function buildQuoteImage() {
 
   ctx.strokeStyle = "rgba(180, 150, 255, 0.25)";
   ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(size * 0.25, 120); ctx.lineTo(size * 0.75, 120); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(size*0.22, 110); ctx.lineTo(size*0.78, 110); ctx.stroke();
 
-  ctx.fillStyle = "rgba(180, 150, 255, 0.20)";
-  ctx.font = "italic 180px 'Cormorant Garamond', Georgia, serif";
-  ctx.textAlign = "center";
-  ctx.fillText("\u201C", size / 2, 280);
-
-  const quote = document.getElementById("quoteText").textContent;
-  const author = document.getElementById("authorText").textContent;
-
-  const maxWidth = 820;
-  const lineHeight = 78;
-  const quoteFont = "500 58px 'Cormorant Garamond', Georgia, serif";
-
-  function wrapText(text, font) {
+  function wrapText(text, font, maxW) {
     ctx.font = font;
     const words = text.split(" ");
     let line = "", lines = [];
     for (let n = 0; n < words.length; n++) {
-      const testLine = line + words[n] + " ";
-      if (ctx.measureText(testLine).width > maxWidth && n > 0) {
-        lines.push(line.trim()); line = words[n] + " ";
-      } else { line = testLine; }
+      const test = line + words[n] + " ";
+      if (ctx.measureText(test).width > maxW && n > 0) { lines.push(line.trim()); line = words[n] + " "; }
+      else { line = test; }
     }
     lines.push(line.trim());
     return lines;
   }
 
-  const lines = wrapText(quote, quoteFont);
-  const authorHeight = author ? 100 : 0;
-  const totalHeight = lines.length * lineHeight + authorHeight;
-  let y = (size - totalHeight) / 2 + lineHeight;
+  const maxWidth = 840;
+  ctx.textAlign = "center";
 
-  ctx.font = quoteFont;
+  const quote  = currentQuote.text   || '';
+  const author = currentQuote.author ? `— ${currentQuote.author}` : '';
+  const arabic = currentQuote.arabic || '';
+  const source = currentQuote.source || '';
+
+  // Measure everything first to center vertically
+  const englishFont = "500 52px 'Cormorant Garamond', Georgia, serif";
+  const arabicFont  = "400 58px 'Amiri', serif";
+  const authorFont  = "italic 400 34px 'Cormorant Garamond', Georgia, serif";
+  const sourceFont  = "300 26px 'Plus Jakarta Sans', sans-serif";
+
+  let displayQuote = quote;
+  if (displayQuote.length > 500) displayQuote = displayQuote.slice(0,500).trimEnd() + '…';
+
+  const englishLines = wrapText(displayQuote, englishFont, maxWidth);
+  const arabicLines  = arabic ? wrapText(arabic, arabicFont, maxWidth - 60) : [];
+
+  const lhEn = 70, lhAr = 80;
+  const arabicBlock = arabicLines.length ? (arabicLines.length * lhAr + 40) : 0;
+  const dividerH    = arabicLines.length ? 30 : 0;
+  const englishBlock= englishLines.length * lhEn;
+  const authorH     = author ? 70 : 0;
+  const sourceH     = source ? 50 : 0;
+  const totalH = arabicBlock + dividerH + englishBlock + authorH + sourceH;
+  let y = (size - totalH) / 2 + lhAr;
+
+  // Arabic block
+  if (arabicLines.length) {
+    ctx.font = arabicFont;
+    ctx.fillStyle = "rgba(230,217,255,0.9)";
+    arabicLines.forEach(line => { ctx.fillText(line, size/2, y); y += lhAr; });
+    y += 20;
+    ctx.strokeStyle = "rgba(192,132,252,0.2)";
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(size*0.35, y); ctx.lineTo(size*0.65, y); ctx.stroke();
+    y += dividerH;
+  }
+
+  // English
+  ctx.font = englishFont;
   ctx.fillStyle = "#f0eaff";
-  lines.forEach(line => { ctx.fillText(line, size / 2, y); y += lineHeight; });
+  englishLines.forEach(line => { ctx.fillText(line, size/2, y); y += lhEn; });
 
+  // Author
   if (author) {
-    y += 30;
-    ctx.font = "italic 400 38px 'Cormorant Garamond', Georgia, serif";
-    ctx.fillStyle = "rgba(192, 158, 255, 0.80)";
-    ctx.fillText(author, size / 2, y);
+    y += 20;
+    ctx.font = authorFont;
+    ctx.fillStyle = "rgba(192,158,255,0.8)";
+    ctx.fillText(author, size/2, y);
+    y += authorH - 20;
+  }
+
+  // Source
+  if (source) {
+    y += 10;
+    ctx.font = sourceFont;
+    ctx.fillStyle = "rgba(255,255,255,0.25)";
+    ctx.fillText(source, size/2, y);
   }
 
   ctx.strokeStyle = "rgba(180, 150, 255, 0.25)";
   ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(size * 0.25, size - 120); ctx.lineTo(size * 0.75, size - 120); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(size*0.22, size-110); ctx.lineTo(size*0.78, size-110); ctx.stroke();
 
   return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 }
 
-// Share helpers — text only
-function getQuoteText() {
-  if (!currentQuote) return '';
-  return currentQuote.author
-    ? `"${currentQuote.text}" — ${currentQuote.author}`
-    : `"${currentQuote.text}"`;
+// ─── Share helpers ────────────────────────────────────────
+function getShareText() {
+  let txt = currentQuote.text || '';
+  if (txt.length > 280) txt = txt.slice(0, 277) + '…';
+  if (currentQuote.author) txt += ` — ${currentQuote.author}`;
+  if (currentQuote.source) txt += `\n\n[${currentQuote.source}]`;
+  return txt;
 }
 
-function shareToX() {
-  const txt = getQuoteText();
+document.getElementById('shareX').addEventListener('click', () => {
+  const txt = getShareText();
   if (!txt) return;
   window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(txt), '_blank');
-}
+});
 
-function shareToTelegram() {
-  const txt = getQuoteText();
+document.getElementById('shareTg').addEventListener('click', () => {
+  const txt = getShareText();
   if (!txt) return;
   window.open('https://t.me/share/url?url=%20&text=' + encodeURIComponent(txt), '_blank');
-}
-
-document.getElementById('shareX').addEventListener('click', shareToX);
-document.getElementById('shareTg').addEventListener('click', shareToTelegram);
+});
 
 document.getElementById("saveBtn").addEventListener("click", async () => {
   const blob = await buildQuoteImage();
@@ -764,7 +916,6 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   link.click();
   URL.revokeObjectURL(url);
 });
-
 </script>
 </body>
 </html>
