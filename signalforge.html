@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SignalForge · BTC 5M Predictor</title>
+  <meta name="description" content="Multi-factor confluence engine for BTC 5-minute candle signals. Only fires on high-conviction setups." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      background: #0a0a0f;
+      color: #e5e7eb;
+      font-family: 'IBM Plex Mono', 'Fira Code', monospace;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(245,158,11,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.04) 0%, transparent 50%);
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #111; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 2px; }
+
+    #app { max-width: 900px; margin: 0 auto; }
+
+    /* ── Animations ── */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    @keyframes slideIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    /* ── Header ── */
+    .header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; flex-wrap: wrap;
+      gap: 12px; margin-bottom: 28px;
+    }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #f59e0b; display: inline-block;
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 8px #f59e0b;
+      margin-right: 8px;
+    }
+    .live-label { font-size: 11px; color: #6b7280; letter-spacing: 2px; display: flex; align-items: center; margin-bottom: 4px; }
+    .brand { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: #f9fafb; letter-spacing: -0.5px; }
+    .brand span { color: #f59e0b; }
+    .tagline { font-size: 11px; color: #6b7280; margin-top: 2px; }
+    .price-display { text-align: right; }
+    .live-price { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: #f9fafb; }
+    .update-time { font-size: 10px; color: #6b7280; margin-top: 2px; }
+
+    /* ── Error ── */
+    .error-box {
+      background: #2d0707; border: 1px solid #7f1d1d;
+      border-radius: 10px; padding: 12px 16px;
+      margin-bottom: 20px; color: #fca5a5; font-size: 12px;
+    }
+
+    /* ── Loading ── */
+    .loading {
+      text-align: center; padding: 60px 0; color: #6b7280;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid #1f2937;
+      border-top-color: #f59e0b;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    /* ── Main Signal Card ── */
+    .signal-card {
+      border-radius: 16px; padding: 24px;
+      margin-bottom: 20px; position: relative; overflow: hidden;
+      animation: slideIn 0.4s ease;
+    }
+    .signal-card-inner { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+    .signal-card-glow {
+      position: absolute; inset: 0; border-radius: 16px;
+      pointer-events: none;
+    }
+
+    /* ── Confidence Arc ── */
+    .arc-wrap { position: relative; width: 128px; height: 128px; flex-shrink: 0; }
+    .arc-label {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .arc-dir { font-family: 'Syne', sans-serif; font-weight: 800; line-height: 1; }
+    .arc-pct { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+
+    /* ── Signal description ── */
+    .sig-desc { flex: 1; min-width: 180px; }
+    .sig-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .sig-meta { font-size: 12px; color: #9ca3af; line-height: 1.7; }
+    .conf-badge {
+      margin-top: 10px; display: inline-block;
+      border-radius: 6px; padding: 3px 10px;
+      font-size: 11px;
+    }
+
+    /* ── Mini chart ── */
+    .minichart-wrap {
+      background: #0a0a0f; border-radius: 10px;
+      padding: 8px 12px; border: 1px solid #1f2937;
+    }
+    .minichart-label { font-size: 10px; color: #4b5563; margin-bottom: 4px; letter-spacing: 1px; }
+
+    /* ── Stats Row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px; margin-bottom: 20px;
+    }
+    .stat-pill {
+      background: #111827; border: 1px solid #1f2937;
+      border-radius: 8px; padding: 8px 14px; text-align: center;
+    }
+    .stat-label { font-size: 10px; color: #6b7280; letter-spacing: 1.5px; margin-bottom: 3px; }
+    .stat-value { font-size: 14px; font-weight: 700; }
+
+    /* ── Bottom Grid ── */
+    .bottom-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; align-items: start;
+    }
+    @media (max-width: 600px) {
+      .bottom-grid { grid-template-columns: 1fr; }
+      .signal-card-inner { flex-direction: column; }
+    }
+
+    /* ── Panel ── */
+    .panel {
+      background: #0d1117; border: 1px solid #1f2937;
+      border-radius: 12px; overflow: hidden;
+    }
+    .panel-header {
+      padding: 12px 16px; border-bottom: 1px solid #1f2937;
+      font-size: 11px; color: #6b7280; letter-spacing: 2px;
+    }
+    .panel-body { padding: 0 12px; }
+    .panel-pad { padding: 16px; }
+
+    /* ── Factor Row ── */
+    .factor-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 0; border-bottom: 1px solid #1f2937;
+    }
+    .factor-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      border-radius: 3px; padding: 1px 5px;
+      min-width: 34px; text-align: center;
+    }
+    .factor-name { font-size: 12px; color: #d1d5db; flex: 1; }
+    .factor-val { font-size: 11px; color: #9ca3af; }
+    .factor-bars { display: flex; gap: 2px; }
+    .factor-bar { width: 5px; height: 12px; border-radius: 2px; }
+
+    /* ── Controls ── */
+    .ctrl-btn {
+      background: #1f2937; border: 1px solid #374151;
+      border-radius: 8px; color: #d1d5db;
+      padding: 7px 14px; font-size: 11px; cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px;
+      transition: background 0.15s;
+    }
+    .ctrl-btn:hover { background: #374151; }
+    .ctrl-btn.active {
+      background: #052e16; border-color: #166534; color: #22c55e;
+    }
+    .interval-btn {
+      background: #111827; border: 1px solid #1f2937;
+      border-radius: 6px; padding: 4px 10px;
+      font-size: 11px; cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace; color: #9ca3af;
+      transition: all 0.15s;
+    }
+    .interval-btn.active {
+      background: #1d4ed8; border-color: #3b82f6; color: #93c5fd;
+    }
+    .ctrl-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .interval-row { display: flex; gap: 6px; }
+    .ctrl-sublabel { font-size: 10px; color: #6b7280; margin-bottom: 6px; }
+
+    /* ── History ── */
+    .hist-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 12px; border-bottom: 1px solid #111827;
+      font-size: 11px;
+    }
+    .hist-time { color: #6b7280; min-width: 52px; }
+    .hist-dir {
+      font-weight: 700; min-width: 50px;
+      border-radius: 3px; padding: 1px 6px;
+      text-align: center; border: 1px solid;
+    }
+    .hist-conf { color: #d1d5db; }
+    .hist-price { color: #9ca3af; margin-left: auto; }
+    .no-data { padding: 16px; font-size: 11px; color: #4b5563; }
+
+    /* ── Disclaimer ── */
+    .disclaimer {
+      margin-top: 20px; padding: 12px 16px;
+      background: #111827; border: 1px solid #1f2937;
+      border-radius: 10px; font-size: 10px;
+      color: #4b5563; line-height: 1.7;
+    }
+    .disclaimer b { color: #6b7280; }
+
+    /* ── Right col stack ── */
+    .right-col { display: flex; flex-direction: column; gap: 14px; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div>
+      <div class="live-label"><span class="live-dot"></span>LIVE · BTCUSDT · 5M</div>
+      <div class="brand">Signal<span>Forge</span></div>
+      <div class="tagline">Multi-factor confluence engine · Only fires on high-conviction setups</div>
+    </div>
+    <div class="price-display">
+      <div class="live-price" id="livePrice">–</div>
+      <div class="update-time" id="updateTime"></div>
+    </div>
+  </div>
+
+  <div class="error-box" id="errorBox" style="display:none"></div>
+
+  <div class="loading" id="loadingState">
+    <div class="spinner"></div>
+    <div style="font-size:13px">Fetching live BTC data…</div>
+  </div>
+
+  <div id="mainContent" style="display:none; animation: fadeIn 0.4s ease">
+
+    <!-- Signal Card -->
+    <div class="signal-card" id="signalCard">
+      <div class="signal-card-glow" id="signalGlow"></div>
+      <div class="signal-card-inner">
+        <div class="arc-wrap">
+          <svg id="arcSvg" width="128" height="128" style="transform:rotate(-90deg)">
+            <circle cx="64" cy="64" r="52" fill="none" stroke="#1f2937" stroke-width="8"/>
+            <circle id="arcFill" cx="64" cy="64" r="52" fill="none" stroke="#6b7280"
+              stroke-width="8" stroke-dasharray="0 327" stroke-linecap="round"
+              style="transition: stroke-dasharray 0.8s ease, stroke 0.4s"/>
+          </svg>
+          <div class="arc-label">
+            <div class="arc-dir" id="arcDir" style="font-size:22px">–</div>
+            <div class="arc-pct" id="arcPct"></div>
+          </div>
+        </div>
+        <div class="sig-desc" id="sigDesc"></div>
+        <div class="minichart-wrap">
+          <div class="minichart-label">LAST 40 CANDLES</div>
+          <svg id="miniChart" width="300" height="70"></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row" id="statsRow"></div>
+
+    <!-- Bottom Grid -->
+    <div class="bottom-grid">
+      <div class="panel">
+        <div class="panel-header" id="factorHeader">ACTIVE FACTORS</div>
+        <div class="panel-body" id="factorList"></div>
+      </div>
+      <div class="right-col">
+        <!-- Controls -->
+        <div class="panel">
+          <div class="panel-header">CONTROLS</div>
+          <div class="panel-pad">
+            <div class="ctrl-row">
+              <button class="ctrl-btn" id="btnRefresh">↺ REFRESH NOW</button>
+              <button class="ctrl-btn" id="btnAuto">AUTO · 30s</button>
+            </div>
+            <div class="ctrl-sublabel">REFRESH INTERVAL</div>
+            <div class="interval-row">
+              <button class="interval-btn" data-s="15">15s</button>
+              <button class="interval-btn active" data-s="30">30s</button>
+              <button class="interval-btn" data-s="60">60s</button>
+            </div>
+          </div>
+        </div>
+        <!-- History -->
+        <div class="panel">
+          <div class="panel-header">SIGNAL HISTORY</div>
+          <div id="historyList"><div class="no-data">History builds as signals update…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠ <b>Not financial advice.</b> Uses RSI, EMA (9/21/50), MACD, Bollinger Bands, ATR, OBV, and volume analysis.
+      Does not account for macro events, whale activity, or news. Signals only fire when confluence clears the gate threshold.
+      Backtest any strategy before trading real capital.
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIG — tweak these to adjust sensitivity
+// ═══════════════════════════════════════════════════════════
+const CONFIG = {
+  CONFLUENCE_GATE: 0.25,   // raise to 0.35 for fewer, stronger signals
+  CONFIDENCE_GATE: 0.45,   // raise to 0.55 for even higher bar
+  RSI_OVERSOLD:    35,     // below = bullish signal
+  RSI_OVERBOUGHT:  65,     // above = bearish signal
+  VOL_SPIKE_MIN:   1.8,    // volume must be X times average to count
+  BB_SQUEEZE_MAX:  0.02,   // BB width % below this = squeeze
+};
+
+const PROXY   = "https://api.allorigins.win/raw?url=";
+const BINANCE  = "https://api.binance.com/api/v3";
+
+// ═══════════════════════════════════════════════════════════
+// MATH HELPERS
+// ═══════════════════════════════════════════════════════════
+function calcEMA(data, period) {
+  const k = 2 / (period + 1);
+  let ema = data.slice(0, period).reduce((a, b) => a + b, 0) / period;
+  const result = new Array(period - 1).fill(null);
+  result.push(ema);
+  for (let i = period; i < data.length; i++) {
+    ema = data[i] * k + ema * (1 - k);
+    result.push(ema);
+  }
+  return result;
+}
+
+function calcRSI(closes, period = 14) {
+  const result = new Array(period).fill(null);
+  let gains = 0, losses = 0;
+  for (let i = 1; i <= period; i++) {
+    const d = closes[i] - closes[i-1];
+    if (d > 0) gains += d; else losses -= d;
+  }
+  let avgGain = gains / period, avgLoss = losses / period;
+  result.push(avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss));
+  for (let i = period + 1; i < closes.length; i++) {
+    const d = closes[i] - closes[i-1];
+    avgGain = (avgGain * (period-1) + Math.max(d,0)) / period;
+    avgLoss = (avgLoss * (period-1) + Math.max(-d,0)) / period;
+    result.push(avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss));
+  }
+  return result;
+}
+
+function calcMACD(closes) {
+  const ema12 = calcEMA(closes, 12);
+  const ema26 = calcEMA(closes, 26);
+  const macdLine = closes.map((_, i) =>
+    ema12[i] != null && ema26[i] != null ? ema12[i] - ema26[i] : null
+  );
+  const validMacd = macdLine.filter(v => v != null);
+  const signalRaw = calcEMA(validMacd, 9);
+  const signal = new Array(macdLine.length - validMacd.length).fill(null);
+  let j = 0;
+  for (let i = 0; i < macdLine.length; i++) {
+    if (macdLine[i] != null) signal.push(signalRaw[j++]);
+  }
+  return { macdLine, signal };
+}
+
+function calcBB(closes, period = 20, stdMult = 2) {
+  return closes.map((_, i) => {
+    if (i < period - 1) return null;
+    const slice = closes.slice(i - period + 1, i + 1);
+    const mean = slice.reduce((a,b) => a+b, 0) / period;
+    const std = Math.sqrt(slice.reduce((a,b) => a + (b-mean)**2, 0) / period);
+    return { upper: mean + stdMult*std, mid: mean, lower: mean - stdMult*std };
+  });
+}
+
+function calcATR(highs, lows, closes, period = 14) {
+  const tr = closes.map((c, i) => {
+    if (i === 0) return highs[i] - lows[i];
+    return Math.max(highs[i]-lows[i], Math.abs(highs[i]-closes[i-1]), Math.abs(lows[i]-closes[i-1]));
+  });
+  const result = new Array(period - 1).fill(null);
+  let atr = tr.slice(0, period).reduce((a,b) => a+b, 0) / period;
+  result.push(atr);
+  for (let i = period; i < tr.length; i++) {
+    atr = (atr*(period-1) + tr[i]) / period;
+    result.push(atr);
+  }
+  return result;
+}
+
+function calcOBV(closes, volumes) {
+  const obv = [0];
+  for (let i = 1; i < closes.length; i++) {
+    if (closes[i] > closes[i-1]) obv.push(obv[i-1] + volumes[i]);
+    else if (closes[i] < closes[i-1]) obv.push(obv[i-1] - volumes[i]);
+    else obv.push(obv[i-1]);
+  }
+  return obv;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SIGNAL ENGINE
+// ═══════════════════════════════════════════════════════════
+function computeSignal(candles) {
+  if (candles.length < 50) return null;
+
+  const opens   = candles.map(c => c.open);
+  const closes  = candles.map(c => c.close);
+  const highs   = candles.map(c => c.high);
+  const lows    = candles.map(c => c.low);
+  const volumes = candles.map(c => c.volume);
+  const n = closes.length - 1;
+
+  const rsi = calcRSI(closes);
+  const ema9  = calcEMA(closes, 9);
+  const ema21 = calcEMA(closes, 21);
+  const ema50 = calcEMA(closes, 50);
+  const { macdLine, signal: macdSignal } = calcMACD(closes);
+  const bb  = calcBB(closes);
+  const atr = calcATR(highs, lows, closes);
+  const obv = calcOBV(closes, volumes);
+
+  const curClose   = closes[n];
+  const curRSI     = rsi[n];
+  const curEMA9    = ema9[n];
+  const curEMA21   = ema21[n];
+  const curEMA50   = ema50[n];
+  const curMACD    = macdLine[n];
+  const curMACDSig = macdSignal[n];
+  const curBB      = bb[n];
+  const curATR     = atr[n];
+  const curOBV     = obv[n];
+  const prevOBV    = obv[n-3];
+
+  const bodySize   = Math.abs(curClose - opens[n]);
+  const candleRange = highs[n] - lows[n];
+  const bodyRatio  = candleRange > 0 ? bodySize / candleRange : 0;
+
+  const avgVol  = volumes.slice(n-10, n).reduce((a,b) => a+b, 0) / 10;
+  const volRatio = volumes[n] / avgVol;
+
+  let bullScore = 0, bearScore = 0;
+  const factors = [];
+
+  // 1. RSI
+  if (curRSI != null) {
+    if (curRSI < CONFIG.RSI_OVERSOLD)  { bullScore += 2; factors.push({ name:"RSI Oversold",   dir:"bull", value:curRSI.toFixed(1), weight:2 }); }
+    else if (curRSI > CONFIG.RSI_OVERBOUGHT) { bearScore += 2; factors.push({ name:"RSI Overbought", dir:"bear", value:curRSI.toFixed(1), weight:2 }); }
+    else if (curRSI < 50) bullScore += 0.5;
+    else bearScore += 0.5;
+  }
+
+  // 2. EMA Stack
+  if (curEMA9 && curEMA21 && curEMA50) {
+    if (curEMA9 > curEMA21 && curEMA21 > curEMA50) { bullScore += 2; factors.push({ name:"EMA Stack Bullish", dir:"bull", value:"9>21>50", weight:2 }); }
+    else if (curEMA9 < curEMA21 && curEMA21 < curEMA50) { bearScore += 2; factors.push({ name:"EMA Stack Bearish", dir:"bear", value:"9<21<50", weight:2 }); }
+    if (curClose > curEMA21) bullScore += 1; else bearScore += 1;
+  }
+
+  // 3. MACD
+  if (curMACD != null && curMACDSig != null) {
+    const prevMACD = macdLine[n-1], prevSig = macdSignal[n-1];
+    if (prevMACD != null && prevSig != null) {
+      if (prevMACD < prevSig && curMACD > curMACDSig) { bullScore += 2.5; factors.push({ name:"MACD Crossover ↑", dir:"bull", value:curMACD.toFixed(2), weight:2.5 }); }
+      else if (prevMACD > prevSig && curMACD < curMACDSig) { bearScore += 2.5; factors.push({ name:"MACD Crossover ↓", dir:"bear", value:curMACD.toFixed(2), weight:2.5 }); }
+      else if (curMACD > curMACDSig) bullScore += 1;
+      else bearScore += 1;
+    }
+  }
+
+  // 4. Bollinger Bands
+  if (curBB) {
+    const bbWidth = (curBB.upper - curBB.lower) / curBB.mid;
+    if (curClose <= curBB.lower)  { bullScore += 2; factors.push({ name:"BB Lower Touch", dir:"bull", value:curClose.toFixed(0), weight:2 }); }
+    else if (curClose >= curBB.upper) { bearScore += 2; factors.push({ name:"BB Upper Touch", dir:"bear", value:curClose.toFixed(0), weight:2 }); }
+    if (bbWidth < CONFIG.BB_SQUEEZE_MAX && volRatio > 1.5) {
+      const breakDir = curClose > curBB.mid ? "bull" : "bear";
+      if (breakDir === "bull") { bullScore += 1.5; factors.push({ name:"BB Squeeze Break ↑", dir:"bull", value:(bbWidth*100).toFixed(2)+"%", weight:1.5 }); }
+      else { bearScore += 1.5; factors.push({ name:"BB Squeeze Break ↓", dir:"bear", value:(bbWidth*100).toFixed(2)+"%", weight:1.5 }); }
+    }
+  }
+
+  // 5. Volume Spike
+  if (volRatio > CONFIG.VOL_SPIKE_MIN) {
+    const vDir = curClose > opens[n] ? "bull" : "bear";
+    if (vDir === "bull") { bullScore += 1.5; factors.push({ name:"Volume Spike ↑", dir:"bull", value:volRatio.toFixed(1)+"x", weight:1.5 }); }
+    else { bearScore += 1.5; factors.push({ name:"Volume Spike ↓", dir:"bear", value:volRatio.toFixed(1)+"x", weight:1.5 }); }
+  }
+
+  // 6. OBV
+  if (curOBV > prevOBV) { bullScore += 1; factors.push({ name:"OBV Rising", dir:"bull", value:"↑", weight:1 }); }
+  else { bearScore += 1; factors.push({ name:"OBV Falling", dir:"bear", value:"↓", weight:1 }); }
+
+  // 7. Body Strength
+  if (bodyRatio > 0.65) {
+    const bDir = curClose > opens[n] ? "bull" : "bear";
+    if (bDir === "bull") { bullScore += 1; factors.push({ name:"Strong Bull Body", dir:"bull", value:(bodyRatio*100).toFixed(0)+"%", weight:1 }); }
+    else { bearScore += 1; factors.push({ name:"Strong Bear Body", dir:"bear", value:(bodyRatio*100).toFixed(0)+"%", weight:1 }); }
+  }
+
+  const totalScore = bullScore + bearScore;
+  const rawConf    = Math.min(Math.max(bullScore, bearScore) / 10, 1);
+  const confluence = Math.abs(bullScore - bearScore) / (totalScore || 1);
+  const bbPos      = curBB ? ((curClose - curBB.lower) / (curBB.upper - curBB.lower) * 100) : null;
+
+  const base = { factors, bullScore:bullScore.toFixed(1), bearScore:bearScore.toFixed(1),
+                  rsi:curRSI, macd:curMACD, atr:curATR, bbPos, volRatio, price:curClose };
+
+  if (confluence < CONFIG.CONFLUENCE_GATE || rawConf < CONFIG.CONFIDENCE_GATE) {
+    return { ...base, direction:"NEUTRAL", confidence:0, gated:true };
+  }
+
+  const direction  = bullScore > bearScore ? "BULL" : "BEAR";
+  const confidence = Math.round(Math.min(rawConf * 100 * (0.5 + confluence * 0.7), 92));
+  return { ...base, direction, confidence, gated:false };
+}
+
+// ═══════════════════════════════════════════════════════════
+// DATA FETCHING
+// ═══════════════════════════════════════════════════════════
+async function fetchCandles(symbol="BTCUSDT", interval="5m", limit=100) {
+  const url = `${BINANCE}/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`;
+  const res = await fetch(`${PROXY}${encodeURIComponent(url)}`);
+  const data = await res.json();
+  return data.map(c => ({
+    openTime: c[0], open: +c[1], high: +c[2], low: +c[3], close: +c[4], volume: +c[5]
+  }));
+}
+
+async function fetchPrice(symbol="BTCUSDT") {
+  const url = `${BINANCE}/ticker/price?symbol=${symbol}`;
+  const res = await fetch(`${PROXY}${encodeURIComponent(url)}`);
+  const d = await res.json();
+  return parseFloat(d.price);
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER HELPERS
+// ═══════════════════════════════════════════════════════════
+function dirColor(dir) {
+  return dir === "BULL" ? "#22c55e" : dir === "BEAR" ? "#ef4444" : "#6b7280";
+}
+function dirBg(dir) {
+  return dir === "BULL" ? "#052e16" : dir === "BEAR" ? "#2d0707" : "#111827";
+}
+function dirBorder(dir) {
+  return dir === "BULL" ? "#166534" : dir === "BEAR" ? "#7f1d1d" : "#1f2937";
+}
+
+function renderArc(signal) {
+  const circ = 2 * Math.PI * 52;
+  const pct  = signal.confidence / 100;
+  const fill = document.getElementById("arcFill");
+  fill.style.strokeDasharray = `${circ * pct} ${circ}`;
+  fill.style.stroke = dirColor(signal.direction);
+
+  const arcDir = document.getElementById("arcDir");
+  arcDir.style.color = dirColor(signal.direction);
+  arcDir.style.fontSize = signal.gated ? "13px" : "22px";
+  arcDir.textContent = signal.gated ? "WAIT" : signal.direction;
+
+  const arcPct = document.getElementById("arcPct");
+  arcPct.textContent = signal.gated ? "" : signal.confidence + "%";
+}
+
+function renderSignalCard(signal) {
+  const card  = document.getElementById("signalCard");
+  const glow  = document.getElementById("signalGlow");
+  const desc  = document.getElementById("sigDesc");
+  const c     = dirColor(signal.direction);
+
+  card.style.background = dirBg(signal.direction);
+  card.style.border     = `1px solid ${signal.gated ? "#1f2937" : c}`;
+  glow.style.background = signal.gated ? "none"
+    : `radial-gradient(ellipse at 50% 0%, ${c}12 0%, transparent 60%)`;
+
+  if (signal.gated) {
+    desc.innerHTML = `
+      <div class="sig-title" style="color:#9ca3af">No High-Conviction Setup</div>
+      <p style="font-size:12px;color:#6b7280;line-height:1.6;margin-top:6px">
+        Indicators are mixed or conflicting. The engine is
+        <span style="color:#f59e0b">withholding the signal</span> to protect accuracy.
+        Wait for confluence.
+      </p>`;
+  } else {
+    const emoji = signal.direction === "BULL" ? "🟢" : "🔴";
+    const verb  = signal.direction === "BULL" ? "GREEN" : "RED";
+    const confLabel = signal.confidence >= 75 ? "★ HIGH CONFIDENCE"
+                    : signal.confidence >= 60 ? "◈ MEDIUM CONFIDENCE" : "◇ MODERATE";
+    const confirming = signal.factors.filter(f => f.dir === (signal.direction === "BULL" ? "bull" : "bear")).length;
+    desc.innerHTML = `
+      <div class="sig-title" style="color:${c}">${emoji} Next candle likely ${verb}</div>
+      <div class="sig-meta" style="margin-top:4px">
+        <b>${confirming}</b> confirming factors ·
+        Bull: <span style="color:#22c55e">${signal.bullScore}</span> ·
+        Bear: <span style="color:#ef4444">${signal.bearScore}</span>
+      </div>
+      <div class="conf-badge" style="margin-top:10px;background:${c}22;border:1px solid ${c}44;color:${c}">
+        ${confLabel}
+      </div>`;
+  }
+}
+
+function renderMiniChart(candles) {
+  const svg    = document.getElementById("miniChart");
+  const recent = candles.slice(-40);
+  const w = 300, h = 70, pad = 4;
+  const minP = Math.min(...recent.map(c => c.low));
+  const maxP = Math.max(...recent.map(c => c.high));
+  const range = maxP - minP || 1;
+
+  const xS = i => pad + (i / (recent.length - 1)) * (w - pad*2);
+  const yS = p => h - pad - ((p - minP) / range) * (h - pad*2);
+
+  const pts = recent.map((c, i) => `${xS(i)},${yS(c.close)}`).join(" ");
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.25"/>
+        <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <polyline points="${pts}" fill="none" stroke="#f59e0b"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+}
+
+function renderStats(signal) {
+  const row = document.getElementById("statsRow");
+  const stats = [
+    { label:"RSI (14)", value: signal.rsi ? signal.rsi.toFixed(1) : "–",
+      color: signal.rsi > CONFIG.RSI_OVERBOUGHT ? "#ef4444" : signal.rsi < CONFIG.RSI_OVERSOLD ? "#22c55e" : "#d1d5db" },
+    { label:"MACD", value: signal.macd ? (signal.macd > 0 ? "+" : "") + signal.macd.toFixed(1) : "–",
+      color: signal.macd > 0 ? "#22c55e" : "#ef4444" },
+    { label:"ATR (14)", value: signal.atr ? "$" + signal.atr.toFixed(0) : "–", color:"#d1d5db" },
+    { label:"BB Position", value: signal.bbPos != null ? signal.bbPos.toFixed(0) + "%" : "–",
+      color: signal.bbPos > 80 ? "#ef4444" : signal.bbPos < 20 ? "#22c55e" : "#d1d5db" },
+    { label:"Vol Ratio", value: signal.volRatio ? signal.volRatio.toFixed(2) + "x" : "–",
+      color: signal.volRatio > 2 ? "#f59e0b" : "#d1d5db" },
+  ];
+  row.innerHTML = stats.map(s => `
+    <div class="stat-pill">
+      <div class="stat-label">${s.label}</div>
+      <div class="stat-value" style="color:${s.color};font-family:'IBM Plex Mono',monospace">${s.value}</div>
+    </div>`).join("");
+}
+
+function renderFactors(signal) {
+  document.getElementById("factorHeader").textContent =
+    `ACTIVE FACTORS · ${signal.factors.length} detected`;
+
+  const list = document.getElementById("factorList");
+  if (!signal.factors.length) {
+    list.innerHTML = `<div style="padding:16px 0;font-size:12px;color:#6b7280">No strong factors detected.</div>`;
+    return;
+  }
+  list.innerHTML = signal.factors.map(f => {
+    const c  = f.dir === "bull" ? "#22c55e" : "#ef4444";
+    const bg = f.dir === "bull" ? "#052e16" : "#2d0707";
+    const bc = f.dir === "bull" ? "#166534" : "#7f1d1d";
+    const bars = Array.from({ length: Math.round(f.weight * 2) })
+      .map((_, i) => `<div class="factor-bar" style="background:${c};opacity:${0.6 + i*0.08}"></div>`).join("");
+    return `
+      <div class="factor-row">
+        <span class="factor-badge" style="color:${c};background:${bg};border:1px solid ${bc}">
+          ${f.dir.toUpperCase()}
+        </span>
+        <span class="factor-name">${f.name}</span>
+        <span class="factor-val">${f.value}</span>
+        <div class="factor-bars">${bars}</div>
+      </div>`;
+  }).join("");
+}
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let autoRefresh   = true;
+let refreshSecs   = 30;
+let countdown     = 30;
+let autoTimer     = null;
+let countTimer    = null;
+let signalHistory = [];
+let lastSignalKey = null;
+
+function updateBtnAuto() {
+  const btn = document.getElementById("btnAuto");
+  btn.textContent = autoRefresh ? `AUTO · ${countdown}s` : "AUTO OFF";
+  btn.classList.toggle("active", autoRefresh);
+}
+
+function startTimers() {
+  clearInterval(autoTimer);
+  clearInterval(countTimer);
+  if (!autoRefresh) return;
+  countdown = refreshSecs;
+  updateBtnAuto();
+  autoTimer = setInterval(() => { doRefresh(); countdown = refreshSecs; }, refreshSecs * 1000);
+  countTimer = setInterval(() => { countdown = Math.max(0, countdown - 1); updateBtnAuto(); }, 1000);
+}
+
+function addHistory(sig, price) {
+  const now = new Date();
+  const t = now.toLocaleTimeString("en-US", { hour12:false, hour:"2-digit", minute:"2-digit", second:"2-digit" });
+  const key = sig.direction + "_" + sig.confidence;
+  if (key === lastSignalKey) return;
+  lastSignalKey = key;
+  signalHistory.unshift({ time:t, direction:sig.direction, confidence:sig.confidence, price });
+  if (signalHistory.length > 20) signalHistory.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById("historyList");
+  if (!signalHistory.length) {
+    el.innerHTML = `<div class="no-data">History builds as signals update…</div>`;
+    return;
+  }
+  el.innerHTML = signalHistory.slice(0, 8).map(h => {
+    const c  = dirColor(h.direction);
+    const bg = h.direction === "NEUTRAL" ? "transparent" : dirBg(h.direction);
+    const bc = h.direction === "NEUTRAL" ? c : dirBorder(h.direction);
+    return `
+      <div class="hist-row">
+        <span class="hist-time">${h.time}</span>
+        <span class="hist-dir" style="color:${c};background:${bg};border-color:${bc}">${h.direction}</span>
+        <span class="hist-conf">${h.confidence > 0 ? h.confidence + "%" : "–"}</span>
+        <span class="hist-price">$${h.price?.toLocaleString()}</span>
+      </div>`;
+  }).join("");
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAIN REFRESH
+// ═══════════════════════════════════════════════════════════
+async function doRefresh() {
+  document.getElementById("errorBox").style.display = "none";
+  try {
+    const [candles, price] = await Promise.all([
+      fetchCandles(), fetchPrice()
+    ]);
+
+    document.getElementById("livePrice").textContent =
+      "$" + price.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
+    document.getElementById("updateTime").textContent =
+      "Updated " + new Date().toLocaleTimeString("en-US", { hour12:false });
+
+    const signal = computeSignal(candles);
+    if (!signal) return;
+
+    document.getElementById("loadingState").style.display = "none";
+    document.getElementById("mainContent").style.display  = "block";
+
+    renderArc(signal);
+    renderSignalCard(signal);
+    renderMiniChart(candles);
+    renderStats(signal);
+    renderFactors(signal);
+    addHistory(signal, price);
+
+  } catch(e) {
+    const box = document.getElementById("errorBox");
+    box.style.display = "block";
+    box.textContent = "⚠ Failed to fetch data. Binance may be rate-limiting the proxy. Try refreshing in a few seconds.";
+    document.getElementById("loadingState").style.display = "none";
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════════════════════════════
+document.getElementById("btnRefresh").addEventListener("click", () => {
+  doRefresh();
+  countdown = refreshSecs;
+  updateBtnAuto();
+});
+
+document.getElementById("btnAuto").addEventListener("click", () => {
+  autoRefresh = !autoRefresh;
+  startTimers();
+});
+
+document.querySelectorAll(".interval-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".interval-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    refreshSecs = parseInt(btn.dataset.s);
+    countdown   = refreshSecs;
+    startTimers();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════
+doRefresh();
+startTimers();
+</script>
+</body>
+</html>
